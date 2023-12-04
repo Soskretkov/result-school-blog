@@ -7,12 +7,6 @@ mod types;
 #[tokio::main]
 async fn main() {
     let store = store::Store::new("postgres://postgres@localhost:5432/rustwebdev").await;
-
-    sqlx::migrate!()
-        .run(&store.clone().connection)
-        .await
-        .expect("Cannot migrate DB");
-
     let store_filter = warp::any().map(move || store.clone()); // любой запрос будет работать с клоном Store
 
     let cors = warp::cors()

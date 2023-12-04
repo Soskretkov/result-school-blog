@@ -10,4 +10,4 @@ serde_json = "1.0"
 tokio = { version = "1.32", features = ["full"] }
 handle_errors = { path = "handle-errors" }
 uuid = { version = "0.8", features = ["v4"] }
-sqlx = {version = "0.7", features = [ "runtime-tokio-rustls", "migrate", "postgres" ]}
+sqlx = {version = "0.7", features = [ "runtime-tokio-rustls", "postgres" ]}
