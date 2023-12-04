@@ -1,5 +1,4 @@
 #![warn(clippy::all)]
-use tracing_subscriber::fmt::format::FmtSpan;
 use warp::{http::Method, Filter};
 mod routes;
 mod store;
@@ -7,15 +6,6 @@ mod types;
 
 #[tokio::main]
 async fn main() {
-    let crate_name = env!("CARGO_PKG_NAME");
-    let default_filter = format!("handle_errors=warn,{}=info,warp=error", crate_name);
-    let log_filter = std::env::var("RUST_LOG").unwrap_or_else(|_| default_filter);
-
-    tracing_subscriber::fmt()
-        .with_env_filter(log_filter)
-        .with_span_events(FmtSpan::CLOSE)
-        .init();
-
     let store = store::Store::new("postgres://postgres@localhost:5432/rustwebdev").await;
 
     sqlx::migrate!()
@@ -36,18 +26,8 @@ async fn main() {
         .and(warp::path::end()) //модификатор предыдущего фильтра, без него он работал шире
         .and(warp::query()) //арг 1 get_questions: раст-тип по данным после ? в URL, в нашем случае хешмапа где -k,-v заданы: ?start=201&end=400
         .and(store_filter.clone()) //арг 2 get_questions: передается через фильтр, строку можно поместить выше соблюдая порядок аргументов
-        .and_then(routes::question::get_questions)
-        //добавит новый span с именем "get_questions request".
-        //спан создан ниже get_questions, но все равно будет в ее логах, так как связан по контексту трассировки.
-        //когда добавляете with(warp::trace(...)) к маршруту get_questions, вы связываете этот спан с обработкой запроса этого маршрута.
-        .with(warp::trace(|info| {
-            tracing::info_span!(
-                "get_questions request",
-                method = %info.method(),
-                path = %info.path(),
-                id = %uuid::Uuid::new_v4(),
-            )
-        }));
+        .and_then(routes::question::get_questions);
+
 
     let add_question = warp::post()
         .and(warp::path("questions"))

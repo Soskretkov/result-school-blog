@@ -44,8 +44,7 @@ impl Store {
 
         match result {
             Ok(question) => Ok(question),
-            Err(e) => {
-                tracing::event!(tracing::Level::ERROR, "{:?}", e);
+            Err(_) => {
                 Err(Error::DatabaseQueryError)
             }
         }
@@ -70,8 +69,7 @@ impl Store {
 
         match result {
             Ok(questions) => Ok(questions),
-            Err(e) => {
-                tracing::event!(tracing::Level::ERROR, "{:?}", e);
+            Err(_) => {
                 Err(Error::DatabaseQueryError)
             }
         }
@@ -103,8 +101,7 @@ impl Store {
 
         match result {
             Ok(question) => Ok(question),
-            Err(e) => {
-                tracing::event!(tracing::Level::ERROR, "{:?}", e);
+            Err(_) => {
                 Err(Error::DatabaseQueryError)
             }
         }
@@ -118,8 +115,7 @@ impl Store {
 
         match result {
             Ok(_) => Ok(true),
-            Err(e) => {
-                tracing::event!(tracing::Level::ERROR, "{:?}", e);
+            Err(_) => {
                 Err(Error::DatabaseQueryError)
             }
         }
@@ -138,8 +134,7 @@ impl Store {
             .await
         {
             Ok(answer) => Ok(answer),
-            Err(e) => {
-                tracing::event!(tracing::Level::ERROR, "{:?}", e);
+            Err(_) => {
                 Err(Error::DatabaseQueryError)
             }
         }

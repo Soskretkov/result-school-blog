@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use tracing::{event, info, instrument, Level};
 use warp::{http::StatusCode, Rejection, Reply};
 
 use crate::store::Store;
@@ -7,22 +6,16 @@ use crate::types::pagination;
 use crate::types::question::{NewQuestion, Question};
 use pagination::Pagination;
 
-#[instrument]
 pub async fn get_questions(
     params: HashMap<String, String>, //это ?start=1&end=200 в адресе веб
     store: Store,
 ) -> Result<impl Reply, Rejection> {
-    event!(target: "practical_rust_book", Level::INFO, "querying questions");
     let mut pagination = Pagination::default();
 
     // возврат JSON Array
     if !params.is_empty() {
-        event!(Level::INFO, pagination = true);
         pagination = pagination::extract_pagination(params)?;
-    } else {
-        info!(pagination = false);
-    }
-
+    } 
     let res: Vec<Question> = match store
         .get_questions(pagination.limit, pagination.offset)
         .await
