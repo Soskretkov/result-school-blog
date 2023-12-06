@@ -12,7 +12,6 @@ pub struct Authorize {
 pub struct Server;
 
 impl Server {
-    #[tokio::main]
     pub async fn authorize(login: &str, password: &str) -> Authorize {
         let wrapped_user = db_utils::get_user(login).await;
 

@@ -1,7 +1,6 @@
-// mod bff;
-// mod shared;
+mod bff;
+mod shared;
 use leptos::*;
-// use tokio;
 mod components;
 use components::App;
 

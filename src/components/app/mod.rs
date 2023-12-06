@@ -1,48 +1,40 @@
 use leptos::*;
-// use leptos_router::*;
+use crate::bff;
 
 #[component]
 pub fn App() -> impl IntoView {
-  // view! {
-  //   <Router>
-  //     <nav>
-  //       /* ... */
-  //     </nav>
-  //     <main>
-  //       /* ... */
-  //     </main>
-  //   </Router>
-  // }
+    let users = create_resource(|| (), |_| async move {
+        bff::db_utils::get_users().await
+    });
 
+    view! {
+        <div>
+            {
+                // Отображаем данные или сообщение о загрузке
+                match users.get() {
+                    Some(data) => view! { <p>{format!("Users: {:?}", data)}</p> },
+                    None => view! { <p>{"Loading users..."}</p> }
+                }
+            }
+        </div>
+    }
+}
 
+#[component]
+pub fn Load() -> impl IntoView {
+    let users = create_resource(|| (), |_| async move {
+        bff::db_utils::get_users().await
+    });
 
-
-  let (count, set_count) = leptos::create_signal(0);
-  let double_count = move || count() * 2;
-  let on_click = move |_| set_count.update(|x| *x += 1);
-
-  view! {
-      <button
-          on:click=on_click
-          // class:red=move || count() % 2 == 1
-          class=move || if count() % 2 == 1 { "red" } else { "" }
-
-      >
-          "Click me"
-      </button>
-      <br/>
-      <progress
-          max=50
-          value=count
-      >
-      </progress>
-      <br/>
-      <progress
-          max="50"
-          value=double_count
-      >
-      </progress>
-      <p>"Count: " {count}</p>
-      <p>"Double Count: " {double_count}</p>
-  }
+    view! {
+        <div>
+            {
+                // Отображаем данные или сообщение о загрузке
+                match users.get() {
+                    Some(data) => view! { <p>{format!("Users: {:?}", data)}</p> },
+                    None => view! { <p>{"Loading users..."}</p> }
+                }
+            }
+        </div>
+    }
 }
