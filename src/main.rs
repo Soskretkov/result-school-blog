@@ -1,15 +1,11 @@
-mod bff;
-mod shared;
-use tokio;
+// mod bff;
+// mod shared;
+use leptos::*;
+// use tokio;
+mod components;
+use components::App;
 
-
-
-
-
-
-
-#[tokio::main]
-async fn main() {
-    // let x = bff::generate_random_date();
-    // println!("{}", x);
+// #[tokio::main]
+fn main() {
+    mount_to_body(|| App);
 }
