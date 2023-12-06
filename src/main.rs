@@ -1,19 +1,15 @@
-use reqwest;
-use serde::Deserialize;
 mod bff;
-
-
-
-#[derive(Deserialize)]
-struct User {
-    login: String,
-    password: String,
-
-}
+mod shared;
+use tokio;
 
 
 
 
-fn main() {
-    println!("Hello, world!");
+
+
+
+#[tokio::main]
+async fn main() {
+    // let x = bff::generate_random_date();
+    // println!("{}", x);
 }
