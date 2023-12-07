@@ -1,0 +1,3 @@
+https://github.com/leptos-rs/leptos/blob/main/examples/tailwind_csr/README.md
+
+Ctrl+Shift+P -> Preferences: Open Workspace Settings (JSON)

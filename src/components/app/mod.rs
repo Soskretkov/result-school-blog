@@ -8,7 +8,7 @@ pub fn App() -> impl IntoView {
         <Router>
             <Header/>
             <Routes>
-                <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
+                <Route path="/" view=|| view!{<div class="text-red-600">"Главная страница"</div>}/>
                 <Route path="/login" view=|| view!{<div>"Авторизация"</div>}/>
                 <Route path="/register" view=|| view!{<div>"Регистрация"</div>}/>
                 <Route path="/users" view=|| view!{<div>"Пользователи"</div>}/>
