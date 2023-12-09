@@ -7,7 +7,7 @@ use leptos_router::*;
 
 // #[tokio::main]
 fn main() {
-    mount_to_body(|| App);
+    leptos::mount_to_body(App);
 }
 
 #[component]
@@ -16,7 +16,7 @@ pub fn App() -> impl IntoView {
         <Router>
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
                 <Header/>
-                <div class="mt-[120px]">
+                <main class="mt-[120px]">
                     <Routes>
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
                         <Route path="/login" view=|| view!{<div>"Авторизация"</div>}/>
@@ -27,7 +27,7 @@ pub fn App() -> impl IntoView {
                         <Route path="/post" view=|| view!{<div>"Новая статья"</div>}/>
                         <Route path="/*" view=|| view!{<div>"Ошибка"</div>}/>
                     </Routes>
-                </div>
+                </main>
                 <Footer/>
             </div>
         </Router>
