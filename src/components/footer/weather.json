@@ -1,5 +1,7 @@
 {
-    "main": "main",
-    "name": "name",
-    "weather": "weather"
+    "main": {
+        "temp": 18.0
+    },
+    "name": "Москва",
+    "weather": ["облачно с прояснениями"]
 }
