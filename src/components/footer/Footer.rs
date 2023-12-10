@@ -14,11 +14,11 @@ pub fn Footer() -> impl IntoView {
     // let weather: Weather = serde_json::from_str(file).unwrap();
 
 
-    // let weather = Weather {
-    //     main: "",
-    //     name: "",
-    //     weather: "",
-    // };
+    let weather = Weather {
+        main: "",
+        name: "",
+        weather: "",
+    };
 
 
 
