@@ -3,9 +3,11 @@ use super::session::Session;
 use crate::shared::types::Role;
 use chrono::{TimeZone, Utc};
 use rand::Rng;
+use serde::{Serialize, Deserialize};
 
+#[derive(Serialize, Deserialize)]
 pub struct Authorize {
-    pub error: Option<&'static str>,
+    pub error: Option<String>,
     pub res: Option<Session>,
 }
 
@@ -17,7 +19,7 @@ impl Server {
 
         if wrapped_user.is_none() {
             return Authorize {
-                error: Some("Такой пользователь не найден"),
+                error: Some("Такой пользователь не найден".to_string()),
                 res: None,
             };
         }
@@ -25,7 +27,7 @@ impl Server {
 
         if user.password != password {
             return Authorize {
-                error: Some("Такой пользователь не найден"),
+                error: Some("Такой пользователь не найден".to_string()),
                 res: None,
             };
         }
@@ -45,7 +47,7 @@ impl Server {
 
         if user.is_some() {
             return Authorize {
-                error: Some("Такой логин уже занят"),
+                error: Some("Такой логин уже занят".to_string()),
                 res: None,
             };
         }

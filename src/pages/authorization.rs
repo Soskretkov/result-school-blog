@@ -14,8 +14,12 @@ pub fn Authorization() -> impl IntoView {
         let login = login_node_ref.get().unwrap().value();
         let password = password_node_ref.get().unwrap().value();
 
-        let server_resp = Server::authorize(&login, &password);
-        logging::log!("логин {login}\nпароль {password}");
+        // logging::log!("логин {}\nпароль {}", &login, &password);
+
+
+        let server_resp = create_resource(|| (), move |_| async {
+            Server::authorize(&login, "").await
+        });
     };
 
     let error_msg = "сообщение ошибки";
