@@ -2,18 +2,21 @@ mod bff;
 mod shared;
 use leptos::*;
 mod components;
+mod pages;
 use components::{Footer, Header};
 use leptos_router::*;
+use pages::Authorization;
 
 // #[tokio::main]
 fn main() {
     leptos::mount_to_body(App);
 }
 
-
-// пока Footer не будет перемонтирован, он не обновит погоду и дату
+// Условности:
+// 1) пока Footer не будет перемонтирован, он не обновит погоду и дату
 // рендеринг App не вызовет рендеринга/перемонтирования Footer
 // В React, когда родительский перерендеривается, это ведет к перерендерингу всей дочерней иерархии.
+// 2) Нет валидации авторизации
 #[component]
 pub fn App() -> impl IntoView {
     view! {
@@ -23,7 +26,7 @@ pub fn App() -> impl IntoView {
                 <main class="mt-[120px]">
                     <Routes>
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
-                        <Route path="/login" view=|| view!{<div>"Авторизация"</div>}/>
+                        <Route path="/login" view=Authorization/>
                         <Route path="/register" view=|| view!{<div>"Регистрация"</div>}/>
                         <Route path="/users" view=|| view!{<div>"Пользователи"</div>}/>
                         <Route path="/post" view=|| view!{<div>"Новая статья"</div>}/>
@@ -38,19 +41,19 @@ pub fn App() -> impl IntoView {
     }
 }
 
-#[component]
-pub fn Load() -> impl IntoView {
-    let users = create_resource(|| (), |_| async move { bff::db_utils::get_users().await });
+// #[component]
+// pub fn Load() -> impl IntoView {
+//     let users = create_resource(|| (), |_| async move { bff::db_utils::get_users().await });
 
-    view! {
-        <div>
-            {
-                // Отображаем данные или сообщение о загрузке
-                match users.get() {
-                    Some(data) => view! { <p>{format!("Users: {:?}", data)}</p> },
-                    None => view! { <p>{"Loading users..."}</p> }
-                }
-            }
-        </div>
-    }
-}
+//     view! {
+//         <div>
+//             {
+//                 // Отображаем данные или сообщение о загрузке
+//                 match users.get() {
+//                     Some(data) => view! { <p>{format!("Users: {:?}", data)}</p> },
+//                     None => view! { <p>{"Loading users..."}</p> }
+//                 }
+//             }
+//         </div>
+//     }
+// }

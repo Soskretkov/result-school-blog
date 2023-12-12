@@ -1,4 +1,7 @@
 mod session;
-pub mod db_utils;
+mod db_utils;
 mod server;
+
+// pub use session::Session;
+pub use server::{Server, Authorize};
 

@@ -5,7 +5,7 @@ use chrono::{TimeZone, Utc};
 use rand::Rng;
 
 pub struct Authorize {
-    pub error: &'static str,
+    pub error: Option<&'static str>,
     pub res: Option<Session>,
 }
 
@@ -17,7 +17,7 @@ impl Server {
 
         if wrapped_user.is_none() {
             return Authorize {
-                error: "Такой пользователь не найден",
+                error: Some("Такой пользователь не найден"),
                 res: None,
             };
         }
@@ -25,7 +25,7 @@ impl Server {
 
         if user.password != password {
             return Authorize {
-                error: "Такой пользователь не найден",
+                error: Some("Такой пользователь не найден"),
                 res: None,
             };
         }
@@ -35,7 +35,7 @@ impl Server {
         let session = Session::new(role);
 
         Authorize {
-            error: "",
+            error: None,
             res: Some(session),
         }
     }
@@ -45,7 +45,7 @@ impl Server {
 
         if user.is_some() {
             return Authorize {
-                error: "Такой логин уже занят",
+                error: Some("Такой логин уже занят"),
                 res: None,
             };
         }
@@ -63,7 +63,7 @@ impl Server {
         db_utils::add_user(&new_user).await;
 
         Authorize {
-            error: "",
+            error: None,
             res: Some(Session::new(Role::Reader)),
         }
     }
