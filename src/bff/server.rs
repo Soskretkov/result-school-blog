@@ -4,8 +4,9 @@ use crate::shared::types::Role;
 use chrono::{TimeZone, Utc};
 use rand::Rng;
 use serde::{Serialize, Deserialize};
+use leptos::*;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Authorize {
     pub error: Option<String>,
     pub res: Option<Session>,
@@ -15,9 +16,12 @@ pub struct Server;
 
 impl Server {
     pub async fn authorize(login: &str, password: &str) -> Authorize {
+
         let wrapped_user = db_utils::get_user(login).await;
 
         if wrapped_user.is_none() {
+            logging::log!("Такой пользователь не найден");
+
             return Authorize {
                 error: Some("Такой пользователь не найден".to_string()),
                 res: None,
@@ -26,15 +30,22 @@ impl Server {
         let user = wrapped_user.unwrap();
 
         if user.password != password {
+            logging::log!("Пароль не верен");
+
             return Authorize {
-                error: Some("Такой пользователь не найден".to_string()),
+                error: Some("Пароль не верен".to_string()),
                 res: None,
             };
         }
 
+
+
         let role_id = user.role_id;
         let role = Role::from_id(role_id).unwrap();
         let session = Session::new(role);
+
+
+        logging::log!("Сервер дал успешный ответ");
 
         Authorize {
             error: None,
@@ -63,6 +74,8 @@ impl Server {
         };
 
         db_utils::add_user(&new_user).await;
+
+
 
         Authorize {
             error: None,

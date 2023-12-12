@@ -1,7 +1,7 @@
 use crate::shared::types::Role;
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Session {
     role: Role,
 }

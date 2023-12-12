@@ -4,25 +4,27 @@ use leptos::{ev::SubmitEvent, html::Input, *};
 
 #[component]
 pub fn Authorization() -> impl IntoView {
-    let (error, setError) = create_signal::<Option<String>>(None);
+    let (authorize, set_authorize) = create_signal::<Option<Authorize>>(None);
 
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
 
-    let on_submit = move |ev: SubmitEvent| {
-        ev.prevent_default();
+    let async_handler = move |_: () | {
         let login = login_node_ref.get().unwrap().value();
         let password = password_node_ref.get().unwrap().value();
-
-        // logging::log!("логин {}\nпароль {}", &login, &password);
-
-
-        let server_resp = create_resource(|| (), move |_| async {
-            Server::authorize(&login, "").await
-        });
+        async move {
+            Server::authorize(&login, &password).await
+        }
     };
 
-    let error_msg = "сообщение ошибки";
+    let on_submit = {
+        move |ev: SubmitEvent| {
+            ev.prevent_default();
+            let server_resp = create_resource(|| (), async_handler);
+            set_authorize.set(server_resp.get());
+        }
+    };
+
 
     view! {
         <div class="flex items-center flex-col">
@@ -39,7 +41,10 @@ pub fn Authorization() -> impl IntoView {
                     node_ref = password_node_ref
                 />
                 <button type="submit">"Войти"</button>
-                <div>{error_msg}</div>
+                {move || match authorize.get() {
+                    None => {}.into_view(),
+                    Some(data) => view! { <div>{data.error}</div> }.into_view()
+                }}
             </form>
         </div>
     }
