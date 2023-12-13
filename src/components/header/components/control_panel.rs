@@ -1,4 +1,4 @@
-use crate::components::Icon;
+use crate::components::{Icon, Button};
 use leptos::*;
 use leptos_router::*;
 
@@ -9,7 +9,7 @@ pub fn ControlPanel() -> impl IntoView {
     view! {
         <div>
             <A href="/login" class="no-underline">
-                <button class="text-[18px] w-[100px] h-[32px] cursor-pointer" >Войти</button>
+                <Button>Войти</Button>
             </A>
             <div class="flex justify-end">
                 <button on:click= move |_| history.back().unwrap() class="text-[24px] mt-[10px] cursor-pointer">

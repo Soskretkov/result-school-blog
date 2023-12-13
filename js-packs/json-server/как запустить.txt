@@ -1,2 +1,9 @@
+сделать 'npm i' если нет папки node_modules
+
+
 cd .\js-packs\json-server\
 npx json-server --watch ../../db.json --port 3005
+
+
+в PowerShell:
+Start-Process cmd -ArgumentList "/k cd .\js-packs\json-server\ && npx json-server --watch ../../db.json --port 3005"
