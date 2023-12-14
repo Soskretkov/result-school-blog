@@ -1,62 +1,64 @@
-use super::db_utils::{self, User};
 use super::session::Session;
-use crate::shared::types::Role;
+use super::shared::User;
+use super::{db_utils, sessions::Sessions};
 use chrono::{TimeZone, Utc};
-use rand::Rng;
-use serde::{Serialize, Deserialize};
 use leptos::*;
+use rand::Rng;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize)]
+// клиентская сторона не конфигурирует Authorize, это ответ сервера
 pub struct Authorize {
     pub error: Option<String>,
     pub res: Option<Session>,
 }
 
-pub struct Server;
+#[derive(Clone)]
+pub struct Server {
+    sessions: Sessions,
+}
 
 impl Server {
-    pub async fn authorize(login: &str, password: &str) -> Authorize {
+    pub fn new() -> Self {
+        Self {
+            sessions: Sessions::new(),
+        }
+    }
 
+    pub async fn authorize(&mut self, login: &str, password: &str) -> Authorize {
         let wrapped_user = db_utils::get_user(login).await;
 
-        if wrapped_user.is_none() {
-            logging::log!("Такой пользователь не найден");
+        if let Some(user) = wrapped_user {
+            if user.password != password {
+                logging::log!("Пароль не верен");
 
+                return Authorize {
+                    error: Some("Пароль не верен".to_string()),
+                    res: None,
+                };
+            }
+
+            logging::log!("Сервер дал успешный ответ");
+            let session_id = self.sessions.create();
+            let session = Session::new(user, session_id);
+
+            return Authorize {
+                error: None,
+                res: Some(session),
+            };
+        } else {
+            logging::log!("Такой пользователь не найден");
             return Authorize {
                 error: Some("Такой пользователь не найден".to_string()),
                 res: None,
             };
-        }
-        let user = wrapped_user.unwrap();
-
-        if user.password != password {
-            logging::log!("Пароль не верен");
-
-            return Authorize {
-                error: Some("Пароль не верен".to_string()),
-                res: None,
-            };
-        }
-
-
-
-        let role_id = user.role_id;
-        let role = Role::from_id(role_id).unwrap();
-        let session = Session::new(role);
-
-
-        logging::log!("Сервер дал успешный ответ");
-
-        Authorize {
-            error: None,
-            res: Some(session),
-        }
+        };
     }
 
-    pub async fn register(login: String, password: String) -> Authorize {
-        let user = db_utils::get_user(&login).await;
+    pub async fn register(&mut self, login: String, password: String) -> Authorize {
+        let wrapped_user = db_utils::get_user(&login).await;
 
-        if user.is_some() {
+        if wrapped_user.is_some() {
             return Authorize {
                 error: Some("Такой логин уже занят".to_string()),
                 res: None,
@@ -75,11 +77,12 @@ impl Server {
 
         db_utils::add_user(&new_user).await;
 
-
+        let session_id = self.sessions.create();
+        let session = Session::new(new_user, session_id);
 
         Authorize {
             error: None,
-            res: Some(Session::new(Role::Reader)),
+            res: Some(session),
         }
     }
 }

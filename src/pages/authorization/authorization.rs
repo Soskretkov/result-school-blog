@@ -5,24 +5,24 @@ use leptos::{ev::SubmitEvent, html::Input, *};
 use leptos_router::*;
 
 #[component]
-pub fn Authorization() -> impl IntoView {
+pub fn Authorization(server: &'static mut Server) -> impl IntoView {
     let (authorize, set_authorize) = create_signal::<Option<Authorize>>(None);
 
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
 
     let on_submit = {
-        let async_handler = move |_: ()| {
-            let login = login_node_ref.get().unwrap().value();
-            let password = password_node_ref.get().unwrap().value();
-            async move { Server::authorize(&login, &password).await }
-        };
+    //     let async_handler = move |_: ()| {
+    //         let login = login_node_ref.get().unwrap().value();
+    //         let password = password_node_ref.get().unwrap().value();
+    //         let serv = server.clone();
+    //         async move { serv.clone().authorize(&login, &password).await }
+    //     };
 
         move |ev: SubmitEvent| {
             ev.prevent_default();
-            let server_resp = create_resource(|| (), async_handler);
+            // let server_resp = create_resource(|| (), async_handler);
             // set_authorize.set(server_resp.get());
-            todo!()
         }
     };
 

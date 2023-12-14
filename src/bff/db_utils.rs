@@ -1,14 +1,6 @@
-use serde::{Deserialize, Serialize};
 use reqwest;
+use super::shared::User;
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct User {
-    pub id: String,
-    pub login: String,
-    pub password: String,
-    pub registed_at: String,
-    pub role_id: u8,
-}
 
 pub async fn get_users() -> Vec<User> {
     let users: Vec<User> = reqwest::get("http://localhost:3005/users")
