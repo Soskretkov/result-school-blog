@@ -1,4 +1,5 @@
 use crate::bff::{Authorize, Server};
+use crate::entities::User;
 use crate::components::{Button, Input};
 use super::h2::H2;
 use leptos::{ev::SubmitEvent, html::Input, *};
@@ -24,6 +25,8 @@ pub fn Authorization(server: &'static mut Server) -> impl IntoView {
             // let server_resp = create_resource(|| (), async_handler);
             // set_authorize.set(server_resp.get());
         }
+
+    // (создание entities::User)
     };
 
     view! {

@@ -1,5 +1,5 @@
 mod bff;
-mod shared;
+mod entities;
 use leptos::*;
 mod components;
 mod pages;

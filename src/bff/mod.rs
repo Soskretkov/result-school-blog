@@ -4,6 +4,6 @@ mod server;
 mod shared;
 mod sessions;
 
-// pub use session::Session;
+pub use session::Session;
 pub use server::{Server, Authorize};
 
