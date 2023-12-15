@@ -85,6 +85,10 @@ impl Server {
             res: Some(session),
         }
     }
+    // функция не асинхронная, так как в уроке сесии хранятся не в БД
+    pub fn logout(&mut self, session_id: &str) -> bool {
+        self.sessions.del(session_id)
+    }
 }
 
 fn get_rnd_date() -> String {

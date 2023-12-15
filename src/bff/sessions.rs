@@ -21,11 +21,11 @@ impl Sessions {
         session_id
     }
 
-    pub fn del(&mut self, hash: String) -> Option<String> {
-        self.store.remove(&hash)
+    pub fn del(&mut self, session_id: &str) -> bool {
+        self.store.remove(session_id).is_none()
     }
 
-    fn add(&mut self, hash: String) {
-        self.store.insert(hash.clone(), hash);
+    fn add(&mut self, session_id: String) {
+        self.store.insert(session_id.clone(), session_id);
     }
 }

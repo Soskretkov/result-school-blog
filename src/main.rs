@@ -5,14 +5,13 @@ mod components;
 mod pages;
 use bff::Server;
 use components::{Footer, Header};
+use entities::User;
 use leptos_router::*;
 use pages::Authorization;
 
 // #[tokio::main]
 fn main() {
-    let server = Server::new();
-    // let server = leptos::mount_to_body(move || view! {<App server=server/>});
-    let server = leptos::mount_to_body(App);
+    leptos::mount_to_body(App);
 }
 
 // Условности:
@@ -23,15 +22,20 @@ fn main() {
 // 3) Нет асинхронных запросов у авторизации
 #[component]
 pub fn App() -> impl IntoView {
-// pub fn App(server: Server) -> impl IntoView {
+    let (_, set_server) = create_signal(Server::new());
+    provide_context(set_server);
+
+    let rw_user = create_rw_signal::<Option<User>>(None);
+    let user = rw_user.read_only();
+
     view! {
         <Router>
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
-                <Header/>
+                <Header rw_user={rw_user}/>
                 <main class="mt-[120px]">
                     <Routes>
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
-                        // <Route path="/login" view= || view!{<Authorization server={&mut server}/>}/>
+                        <Route path="/login" view=move || view!{<Authorization rw_user={rw_user}/>}/>
                         <Route path="/register" view=|| view!{<div>"Регистрация"</div>}/>
                         <Route path="/users" view=|| view!{<div>"Пользователи"</div>}/>
                         <Route path="/post" view=|| view!{<div>"Новая статья"</div>}/>

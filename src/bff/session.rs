@@ -19,8 +19,4 @@ impl Session {
             user_role: user.role_id,
         }
     }
-
-    pub fn remove(hesh: String) -> bool {
-        todo!()
-    }
 }

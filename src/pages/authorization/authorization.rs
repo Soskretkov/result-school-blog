@@ -1,32 +1,44 @@
-use crate::bff::{Authorize, Server};
-use crate::entities::User;
-use crate::components::{Button, Input};
 use super::h2::H2;
+use crate::bff::{Authorize, Server};
+use crate::components::{Button, Input};
+use crate::entities::User;
 use leptos::{ev::SubmitEvent, html::Input, *};
 use leptos_router::*;
 
 #[component]
-pub fn Authorization(server: &'static mut Server) -> impl IntoView {
+pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
     let (authorize, set_authorize) = create_signal::<Option<Authorize>>(None);
 
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
 
     let on_submit = {
-    //     let async_handler = move |_: ()| {
-    //         let login = login_node_ref.get().unwrap().value();
-    //         let password = password_node_ref.get().unwrap().value();
-    //         let serv = server.clone();
-    //         async move { serv.clone().authorize(&login, &password).await }
-    //     };
+        let async_handler = move |_: ()| {
+            let login = login_node_ref.get().unwrap().value();
+            let password = password_node_ref.get().unwrap().value();
+            // let set_server = use_context::<WriteSignal<Server>>().unwrap();
+
+            // let authorize = async move {
+            //     set_server.update(|serv| {
+            //         let auth = serv.authorize(&login, &password);
+            //     })
+            // };
+        };
 
         move |ev: SubmitEvent| {
             ev.prevent_default();
             // let server_resp = create_resource(|| (), async_handler);
             // set_authorize.set(server_resp.get());
+
+            rw_user.set(Some(User {
+                id: "id".to_string(),
+                login: login_node_ref.get().unwrap().value(),
+                role: crate::entities::user::Role::Reader,
+                session_id: "session_id".to_string(),
+            }));
         }
 
-    // (создание entities::User)
+        // (создание entities::User)
     };
 
     view! {
