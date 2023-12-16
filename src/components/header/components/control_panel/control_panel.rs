@@ -13,7 +13,7 @@ pub fn ControlPanel(rw_user: RwSignal<Option<User>>) -> impl IntoView {
             <Login rw_user={rw_user}></Login>
 
             <div class="w-[95px] mt-2.5 justify-between grid grid-flow-col auto-cols-fr">
-                <Icon on:click= move |_| history.back().unwrap()  id="fa-backward" class="cursor-pointer text-[24px] text-left"/>
+                <Icon on:click= move |_| {let _ = history.back();}  id="fa-backward" class="cursor-pointer text-[24px] text-left"/>
 
                 <A href="/post" class="no-underline text-current">
                     <Icon id="mx-[5px] fa-file-text-o" class="text-[24px] text-center"/>

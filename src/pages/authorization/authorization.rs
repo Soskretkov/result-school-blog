@@ -5,6 +5,7 @@ use crate::entities::User;
 use leptos::{ev::SubmitEvent, html::Input, *};
 use leptos_router::*;
 
+
 #[component]
 pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
     let (authorize, set_authorize) = create_signal::<Option<Authorize>>(None);
@@ -14,8 +15,6 @@ pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
 
     let on_submit = {
         let async_handler = move |_: ()| {
-            let login = login_node_ref.get().unwrap().value();
-            let password = password_node_ref.get().unwrap().value();
             // let set_server = use_context::<WriteSignal<Server>>().unwrap();
 
             // let authorize = async move {
@@ -30,15 +29,23 @@ pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
             // let server_resp = create_resource(|| (), async_handler);
             // set_authorize.set(server_resp.get());
 
+            let login_node = login_node_ref.get().unwrap();
+            let password_node = password_node_ref.get().unwrap();
+
             rw_user.set(Some(User {
                 id: "id".to_string(),
-                login: login_node_ref.get().unwrap().value(),
+                login: login_node.value(),
                 role: crate::entities::user::Role::Reader,
                 session_id: "session_id".to_string(),
             }));
-        }
 
-        // (создание entities::User)
+            // Очистка формы
+            login_node.set_value("");
+            password_node.set_value("");
+
+            // Возврат
+            let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
+        }
     };
 
     view! {

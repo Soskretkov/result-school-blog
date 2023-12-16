@@ -24,8 +24,8 @@ pub fn Login(rw_user: RwSignal<Option<User>>) -> impl IntoView {
                 true => {
                     view! {
                         <div class="flex h-8">
-                            <div class="text-[18px] font-bold">{rw_user.get().unwrap().login}</div>
-                            <button on:click=on_click class="bg-inherit mt-[0px] ml-2.5 px-0 py-0 border-none cursor-pointer">
+                            <div class="mt-[2px] text-[18px] font-bold">{rw_user.get().unwrap().login}</div>
+                            <button on:click=on_click class="bg-inherit ml-2.5 px-0 py-0 border-none cursor-pointer">
                                 <Icon id="fa-sign-out" class="text-[24px]"/>
                             </button>
                         </div>
