@@ -9,12 +9,11 @@ pub fn ControlPanel(rw_user: RwSignal<Option<User>>) -> impl IntoView {
     let history = leptos::web_sys::window().unwrap().history().unwrap();
 
     view! {
-        <div>
+        <div class="flex flex-col items-end">
             <Login rw_user={rw_user}></Login>
-            <div class="mt-2.5 justify-between box-content grid grid-flow-col auto-cols-fr">
-                <button on:click= move |_| history.back().unwrap() class="p-0 bg-inherit border-none cursor-pointer">
-                    <Icon id="fa-backward" class="text-[24px] text-left"/>
-                </button>
+
+            <div class="w-[95px] mt-2.5 justify-between grid grid-flow-col auto-cols-fr">
+                <Icon on:click= move |_| history.back().unwrap()  id="fa-backward" class="cursor-pointer text-[24px] text-left"/>
 
                 <A href="/post" class="no-underline text-current">
                     <Icon id="mx-[5px] fa-file-text-o" class="text-[24px] text-center"/>

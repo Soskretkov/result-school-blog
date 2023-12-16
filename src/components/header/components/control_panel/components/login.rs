@@ -1,8 +1,8 @@
-use crate::entities::User;
 use crate::bff::Server;
-use leptos_router::*;
 use crate::components::{Button, Icon};
+use crate::entities::User;
 use leptos::*;
+use leptos_router::*;
 
 #[component]
 pub fn Login(rw_user: RwSignal<Option<User>>) -> impl IntoView {
@@ -23,15 +23,10 @@ pub fn Login(rw_user: RwSignal<Option<User>>) -> impl IntoView {
             move || match rw_user.with(|data| data.is_some()) {
                 true => {
                     view! {
-                        // <span>{rw_user.get().unwrap().login}</span>
-                        // <button on:click=on_click class="text-[16px] px-0 py-0 border-none cursor-pointer">
-                        //     <Icon id="fa-sign-out"/>
-                        // </button>
-
-                        <div class="flex">
+                        <div class="flex h-8">
                             <div class="text-[18px] font-bold">{rw_user.get().unwrap().login}</div>
-                            <button on:click=on_click class="bg-inherit px-0 py-0 border-none cursor-pointer">
-                                <Icon id="fa-sign-out" class="text-[18px]"/>
+                            <button on:click=on_click class="bg-inherit mt-[0px] ml-2.5 px-0 py-0 border-none cursor-pointer">
+                                <Icon id="fa-sign-out" class="text-[24px]"/>
                             </button>
                         </div>
                     }
@@ -39,27 +34,11 @@ pub fn Login(rw_user: RwSignal<Option<User>>) -> impl IntoView {
                 }
 
                 false => view! {
-                    <A href="/login" class="no-underline">
+                    <A href="/login" class="w-full no-underline h-8">
                         <Button>Войти</Button>
                     </A>
                 },
             }
         }
     }
-
-    // view! {
-    //     <Show
-    //         when=move|| {rw_user.with(|data| data.is_none())}
-    //         fallback=move || view!{
-    //             <div>"Вася"</div>
-    //             <button on:click={on_click} class="text-[8px] cursor-pointer">
-    //                 <Icon id="fa-sign-out"/>
-    //             </button>
-    //         }
-    //     >
-    //         <A href="/login" class="no-underline">
-    //             <Button>Войти</Button>
-    //         </A>
-    //     </Show>
-    // }
 }
