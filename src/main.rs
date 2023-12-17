@@ -7,7 +7,7 @@ use bff::Server;
 use components::{Footer, Header};
 use entities::User;
 use leptos_router::*;
-use pages::Authorization;
+use pages::authentication::{Authorization, Registration};
 
 // #[tokio::main]
 fn main() {
@@ -20,6 +20,7 @@ fn main() {
 // В React, когда родительский перерендеривается, это ведет к перерендерингу всей дочерней иерархии.
 // 2) Нет валидации авторизации, нет disabled на кнопку
 // 3) Нет асинхронных запросов у авторизации
+// 4) Добавить перенаправление на главную если лигиненый попал на страницы аутентификации
 #[component]
 pub fn App() -> impl IntoView {
     let (_, set_server) = create_signal(Server::new());
@@ -36,7 +37,7 @@ pub fn App() -> impl IntoView {
                     <Routes>
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
                         <Route path="/login" view=move || view!{<Authorization rw_user={rw_user}/>}/>
-                        <Route path="/register" view=|| view!{<div>"Регистрация"</div>}/>
+                        <Route path="/register" view=move || view!{<Registration rw_user={rw_user}/>}/>
                         <Route path="/users" view=|| view!{<div>"Пользователи"</div>}/>
                         <Route path="/post" view=|| view!{<div>"Новая статья"</div>}/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>

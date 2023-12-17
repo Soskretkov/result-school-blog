@@ -1,5 +1,5 @@
-use super::h2::H2;
-use crate::bff::{Authorize, Server};
+use super::components::{H2, FormErrMsg};
+use crate::bff::{Authentic, Server};
 use crate::components::{Button, Input};
 use crate::entities::User;
 use leptos::{ev::SubmitEvent, html::Input, *};
@@ -8,7 +8,7 @@ use leptos_router::*;
 
 #[component]
 pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
-    let (authorize, set_authorize) = create_signal::<Option<Authorize>>(None);
+    let (authentic, set_authentic) = create_signal::<Option<Authentic>>(None);
 
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
@@ -17,7 +17,7 @@ pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
         let async_handler = move |_: ()| {
             // let set_server = use_context::<WriteSignal<Server>>().unwrap();
 
-            // let authorize = async move {
+            // let authentic = async move {
             //     set_server.update(|serv| {
             //         let auth = serv.authorize(&login, &password);
             //     })
@@ -27,7 +27,7 @@ pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
         move |ev: SubmitEvent| {
             ev.prevent_default();
             // let server_resp = create_resource(|| (), async_handler);
-            // set_authorize.set(server_resp.get());
+            // set_authentic.set(server_resp.get());
 
             let login_node = login_node_ref.get().unwrap();
             let password_node = password_node_ref.get().unwrap();
@@ -67,25 +67,18 @@ pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
                 <Button
                     r#type="submit"
                     disabled={false}
-                >"Авторизоваться"
+                >"Войти"
                 </Button>
 
-                <ErrMsg/>
+                <FormErrMsg/>
 
                 <A href="/register" class="mt-5 text-[18px] text-center text-black">"Регистрация"</A>
 
-                {move || match authorize.get() {
+                {move || match authentic.get() {
                     None => {}.into_view(),
                     Some(data) => view! { <div>{data.error}</div> }.into_view()
                 }}
             </form>
         </div>
-    }
-}
-
-#[component]
-pub fn ErrMsg() -> impl IntoView {
-    view! {
-        <div class="bg-red-300 text-[18px] mt-2.5 px-2.5 py-2.5">"Заполните логин"</div>
     }
 }
