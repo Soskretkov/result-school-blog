@@ -78,7 +78,7 @@ pub fn Registration(rw_user: RwSignal<Option<User>>) -> impl IntoView {
                 >"Зарегистрироваться"
                 </Button>
 
-                <FormErrMsg/>
+                // <FormErrMsg/>
 
                 {move || match authentic.get() {
                     None => {}.into_view(),

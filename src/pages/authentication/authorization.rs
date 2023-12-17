@@ -70,7 +70,7 @@ pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
                 >"Войти"
                 </Button>
 
-                <FormErrMsg/>
+                // <FormErrMsg/>
 
                 <A href="/register" class="mt-5 text-[18px] text-center text-black">"Регистрация"</A>
 
