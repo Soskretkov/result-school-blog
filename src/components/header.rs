@@ -1,7 +1,9 @@
-use super::components::Logo;
-use super::components::ControlPanel;
+mod control_panel;
+mod logo;
 use crate::entities::User;
+use control_panel::ControlPanel;
 use leptos::*;
+use logo::Logo;
 
 #[component]
 pub fn Header(rw_user: RwSignal<Option<User>>) -> impl IntoView {
@@ -16,7 +18,7 @@ pub fn Header(rw_user: RwSignal<Option<User>>) -> impl IntoView {
 
 #[component]
 fn Description() -> impl IntoView {
-    view! { 
+    view! {
         <div class="italic">
             Веб-технологии
             <br/>

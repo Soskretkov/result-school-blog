@@ -1,8 +1,9 @@
 use crate::components::Icon;
 use crate::entities::User;
-use super::components::Login;
+mod login;
 use leptos::*;
 use leptos_router::*;
+use login::Login;
 
 #[component]
 pub fn ControlPanel(rw_user: RwSignal<Option<User>>) -> impl IntoView {
@@ -26,4 +27,3 @@ pub fn ControlPanel(rw_user: RwSignal<Option<User>>) -> impl IntoView {
         </div>
     }
 }
-

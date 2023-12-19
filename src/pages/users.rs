@@ -1,4 +1,4 @@
-use crate::components::H2;
+use super::shared_components::H2;
 use crate::entities::{User, Role};
 use leptos::*;
 

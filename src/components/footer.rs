@@ -17,7 +17,7 @@ struct Weather {
 
 #[component]
 pub fn Footer() -> impl IntoView {
-    let json_file_content: &str = include_str!("./weather.json");
+    let json_file_content: &str = include_str!("./footer/weather.json");
     let weather: Weather = serde_json::from_str(json_file_content).unwrap();
 
     let temperature = weather.main.temp;
@@ -62,3 +62,8 @@ fn month_to_russian(month: u32) -> &'static str {
         _ => "",
     }
 }
+
+
+
+
+
