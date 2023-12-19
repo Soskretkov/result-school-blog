@@ -1,5 +1,3 @@
-mod server;
-pub use server::Server;
 use crate::bff::shared::User;
 use serde::{Deserialize, Serialize};
 

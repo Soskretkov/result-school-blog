@@ -1,13 +1,15 @@
-use super::{Authentic, CurrentSession};
-use crate::bff::db_utils;
-use crate::bff::shared::{Sessions, User};
+mod types;
+use super::{
+    db_utils,
+    shared::{Sessions, User},
+};
 use crate::utils;
 use chrono::{TimeZone, Utc};
 use leptos::*;
+pub use types::{Authentic, CurrentSession};
 
 #[derive(Clone)]
-pub struct Server {
-}
+pub struct Server {}
 
 impl Server {
     pub async fn authorize(login: &str, password: &str) -> Authentic {
@@ -21,7 +23,7 @@ impl Server {
                     res: None,
                 };
             }
-            Some(user) => {                
+            Some(user) => {
                 let session = CurrentSession::new(user);
 
                 logging::log!("Сервер дал успешный ответ");
@@ -59,7 +61,7 @@ impl Server {
             password,
             registed_at: get_rnd_date(),
             role_id: 2,
-            sessions: sessions
+            sessions: sessions,
         };
 
         db_utils::add_user(&new_user);

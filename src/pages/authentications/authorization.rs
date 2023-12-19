@@ -35,7 +35,7 @@ pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
             rw_user.set(Some(User {
                 id: "id".to_string(),
                 login: login_node.value(),
-                role: crate::entities::user::Role::Reader,
+                role: crate::entities::Role::Reader,
                 session_id: "session_id".to_string(),
             }));
 

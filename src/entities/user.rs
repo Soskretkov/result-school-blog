@@ -1,5 +1,6 @@
-use super::Role;
+mod role;
 use crate::bff::server::CurrentSession;
+pub use role::Role;
 
 #[derive(Debug, Clone)]
 pub struct User {

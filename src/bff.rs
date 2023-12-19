@@ -3,4 +3,3 @@ pub mod server;
 mod shared;
 
 pub use server::{Server, Authentic};
-
