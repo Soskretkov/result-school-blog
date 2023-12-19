@@ -1,2 +1,2 @@
-# result_school_blog
+# result-school-blog
 Практическое задание для школы "Result school"

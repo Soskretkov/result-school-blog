@@ -13,7 +13,7 @@ impl Sessions {
         Self { data: HashSet::new() }
     }
 
-    pub fn get(&self) -> impl Iterator<Item = &String> {
+    pub fn iter(&self) -> impl Iterator<Item = &String> {
         self.data.iter()
     }
 
