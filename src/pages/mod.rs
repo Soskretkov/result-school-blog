@@ -1,3 +1,5 @@
-pub mod authentication;
+mod authentications;
+mod users;
 
-pub use authentication::{Authorization, Registration};
+pub use authentications::{Authorization, Registration};
+pub use users::Users;

@@ -1,6 +1,6 @@
-use super::components::{FormErrMsg, H2};
+use super::components::FormErrMsg;
 use crate::bff::{Authentic, Server};
-use crate::components::{Button, Input};
+use crate::components::{Button, Input, H2};
 use crate::entities::User;
 use leptos::{ev::SubmitEvent, html::Input, *};
 
@@ -19,9 +19,9 @@ pub fn Registration(rw_user: RwSignal<Option<User>>) -> impl IntoView {
             let authentic =  {
                 logging::log!("вызов асинхр. функции");
 
-                set_server.update(|serv| {
-                    let auth = serv.register(login, password);
-                })
+                // set_server.update(|serv| {
+                //     let auth = serv.register(login, password);
+                // })
             };
         };
 

@@ -3,11 +3,12 @@ mod entities;
 use leptos::*;
 mod components;
 mod pages;
+mod utils;
 use bff::Server;
 use components::{Footer, Header};
 use entities::User;
 use leptos_router::*;
-use pages::authentication::{Authorization, Registration};
+use pages::{Authorization, Registration, Users};
 
 // #[tokio::main]
 fn main() {
@@ -23,9 +24,6 @@ fn main() {
 // 4) Добавить перенаправление на главную если залогиненый попал на страницы аутентификации
 #[component]
 pub fn App() -> impl IntoView {
-    let (_, set_server) = create_signal(Server::new());
-    provide_context(set_server);
-
     let rw_user = create_rw_signal::<Option<User>>(None);
     let user = rw_user.read_only();
 
@@ -38,7 +36,7 @@ pub fn App() -> impl IntoView {
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
                         <Route path="/login" view=move || view!{<Authorization rw_user={rw_user}/>}/>
                         <Route path="/register" view=move || view!{<Registration rw_user={rw_user}/>}/>
-                        <Route path="/users" view=|| view!{<div>"Пользователи"</div>}/>
+                        <Route path="/users" view=|| view!{<Users/>}/>
                         <Route path="/post" view=|| view!{<div>"Новая статья"</div>}/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>
                         <Route path="/post" view=|| view!{<div>"Новая статья"</div>}/>

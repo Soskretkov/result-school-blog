@@ -1,9 +1,6 @@
-mod session;
 pub mod db_utils;
-mod server;
+pub mod server;
 mod shared;
-mod sessions;
 
-pub use session::Session;
 pub use server::{Server, Authentic};
 

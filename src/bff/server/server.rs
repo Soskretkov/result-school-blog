@@ -1,31 +1,16 @@
-use super::session::Session;
-use super::shared::User;
-use super::{db_utils, sessions::Sessions};
+use super::{Authentic, CurrentSession};
+use crate::bff::db_utils;
+use crate::bff::shared::{Sessions, User};
+use crate::utils;
 use chrono::{TimeZone, Utc};
 use leptos::*;
-use rand::Rng;
-use serde::{Deserialize, Serialize};
-
-#[derive(Clone, Serialize, Deserialize)]
-// клиентская сторона не конфигурирует Authorize, это ответ сервера
-pub struct Authentic {
-    pub error: Option<String>,
-    pub res: Option<Session>,
-}
 
 #[derive(Clone)]
 pub struct Server {
-    sessions: Sessions,
 }
 
 impl Server {
-    pub fn new() -> Self {
-        Self {
-            sessions: Sessions::new(),
-        }
-    }
-
-    pub async fn authorize(&mut self, login: &str, password: &str) -> Authentic {
+    pub async fn authorize(login: &str, password: &str) -> Authentic {
         let wrapped_user = db_utils::get_user(login).await;
 
         match wrapped_user {
@@ -37,8 +22,7 @@ impl Server {
                 };
             }
             Some(user) => {                
-                let session_id = self.sessions.create();
-                let session = Session::new(user, session_id);
+                let session = CurrentSession::new(user);
 
                 logging::log!("Сервер дал успешный ответ");
                 return Authentic {
@@ -56,7 +40,7 @@ impl Server {
         }
     }
 
-    pub async fn register(&mut self, login: String, password: String) -> Authentic {
+    pub async fn register(login: String, password: String) -> Authentic {
         let wrapped_user = db_utils::get_user(&login).await;
 
         if wrapped_user.is_some() {
@@ -67,18 +51,20 @@ impl Server {
             };
         }
 
+        let sessions = Sessions::new().add_rnd_session();
+
         let new_user = User {
-            id: rand::thread_rng().gen::<f64>().to_string(),
+            id: utils::create_rnd_float64().to_string(),
             login,
             password,
             registed_at: get_rnd_date(),
             role_id: 2,
+            sessions: sessions
         };
 
         db_utils::add_user(&new_user);
 
-        let session_id = self.sessions.create();
-        let session = Session::new(new_user, session_id);
+        let session = CurrentSession::new(new_user);
 
         logging::log!("Сервер дал успешный ответ");
         Authentic {
@@ -86,14 +72,16 @@ impl Server {
             res: Some(session),
         }
     }
-    pub async fn logout(&mut self, session_id: &str) -> bool {
-        self.sessions.del(session_id)
+    pub async fn logout(login: &str, session_id: &str) {
+        // заменить на запрос по ручке
+        let user = db_utils::get_user(&login).await.unwrap();
+        let _new_sessions = Sessions::del_session(user.sessions, session_id);
+        unimplemented!("отправить измененные сессии на хранение в бд")
     }
 }
 
 fn get_rnd_date() -> String {
-    let mut rng = rand::thread_rng(); // Получаем генератор случайных чисел
-    let random_float: f64 = rng.gen();
+    let random_float: f64 = utils::create_rnd_float64();
 
     let msecs = (random_float * 1000000000000.0 + 1999999999999.0) as i64;
 

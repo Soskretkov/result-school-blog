@@ -7,12 +7,10 @@ use leptos_router::*;
 #[component]
 pub fn Login(rw_user: RwSignal<Option<User>>) -> impl IntoView {
     let on_click = move |_: ev::MouseEvent| {
-        rw_user.with(|user| {
-            let session_id = &(user.as_ref().unwrap().session_id);
+        rw_user.with(|wrapped_user| {
+            let user = wrapped_user.as_ref().unwrap();
 
-            use_context::<WriteSignal<Server>>().unwrap().update(|sv| {
-                sv.logout(session_id);
-            });
+            Server::logout(&user.login, &user.session_id);
         });
 
         rw_user.set(None);

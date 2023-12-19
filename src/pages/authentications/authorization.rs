@@ -1,6 +1,6 @@
-use super::components::{H2, FormErrMsg};
+use super::components::FormErrMsg;
 use crate::bff::{Authentic, Server};
-use crate::components::{Button, Input};
+use crate::components::{Button, Input, H2};
 use crate::entities::User;
 use leptos::{ev::SubmitEvent, html::Input, *};
 use leptos_router::*;

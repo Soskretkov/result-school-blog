@@ -1,4 +1,4 @@
 mod types;
 pub mod constants;
 
-pub use types::User;
+pub use types::{Sessions, User};

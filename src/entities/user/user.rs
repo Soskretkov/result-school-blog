@@ -1,5 +1,5 @@
 use super::Role;
-use crate::bff::Session;
+use crate::bff::server::CurrentSession;
 
 #[derive(Debug, Clone)]
 pub struct User {
@@ -10,7 +10,7 @@ pub struct User {
 }
 
 impl User {
-    fn new(session: Session) -> Self {
+    fn new(session: CurrentSession) -> Self {
         let role = Role::from_id(session.user_role).unwrap();
         Self {
             id: session.user_id,
