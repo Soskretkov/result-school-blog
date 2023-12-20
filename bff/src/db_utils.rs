@@ -1,5 +1,4 @@
-use crate::bff::{URL, User};
-use leptos::logging;
+use crate::{URL, User};
 use reqwest;
 
 pub async fn get_users() -> Vec<User> {
@@ -21,7 +20,6 @@ pub async fn get_user(login_to_find: &str) -> Option<User> {
 }
 
 pub async fn add_user(new_user: &User) {
-    logging::log!("БД: добавлен пользователь {}", new_user.login);
     let url = format!("{URL}/users");
     let client = reqwest::Client::new();
 

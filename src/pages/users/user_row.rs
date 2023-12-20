@@ -38,7 +38,7 @@ pub fn UserRow() -> impl IntoView {
         );
 
     view! {
-        {users_view}
+        users_view
     }
 }
 

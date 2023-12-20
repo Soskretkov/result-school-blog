@@ -1,9 +1,8 @@
-mod bff;
+use bff;
 use leptos::*;
 mod components;
 mod pages;
 mod types;
-mod utils;
 use bff::Server;
 use components::{Footer, Header};
 use types::session::Session;

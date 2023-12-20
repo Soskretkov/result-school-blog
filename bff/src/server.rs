@@ -1,8 +1,7 @@
 use super::db_utils;
-use crate::bff::{Sessions, User};
+use crate::{Sessions, User};
 use crate::utils;
 use chrono::{TimeZone, Utc};
-use leptos::*;
 mod types;
 pub use types::Authentic;
 
@@ -15,7 +14,6 @@ impl Server {
 
         match wrapped_user {
             Some(user) if user.password != password => {
-                logging::log!("Пароль не верен");
                 return Authentic {
                     error: Some("Пароль не верен".to_string()),
                     res: None,
@@ -24,14 +22,12 @@ impl Server {
             Some(user) => {
                 let session = user.sessions.data.into_iter().next().unwrap();
 
-                logging::log!("Сервер дал успешный ответ");
                 return Authentic {
                     error: None,
                     res: Some(session),
                 };
             }
             None => {
-                logging::log!("Пользователь не найден");
                 return Authentic {
                     error: Some("Пользователь не найден".to_string()),
                     res: None,
@@ -44,7 +40,6 @@ impl Server {
         let wrapped_user = db_utils::get_user(&login).await;
 
         if wrapped_user.is_some() {
-            logging::log!("Логин уже занят");
             return Authentic {
                 error: Some("Логин уже занят".to_string()),
                 res: None,
@@ -66,7 +61,6 @@ impl Server {
 
         let session = new_user.sessions.data.into_iter().next().unwrap();
 
-        logging::log!("Сервер дал успешный ответ");
         Authentic {
             error: None,
             res: Some(session),
