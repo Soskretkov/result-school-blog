@@ -1,3 +1,3 @@
-mod user;
-pub use user::{User, Role};
+mod session;
+pub use session::{Session, Role};
 

@@ -1,12 +1,12 @@
 use super::shared_components::{FormErrMsg, H2};
 use crate::bff::{Authentic, Server};
 use crate::components::{Button, Input};
-use crate::entities::User;
+use crate::entities::Session;
 use leptos::{ev::SubmitEvent, html::Input, *};
 use leptos_router::*;
 
 #[component]
-pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
+pub fn Authorization(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
     let (authentic, set_authentic) = create_signal::<Option<Authentic>>(None);
 
     let login_node_ref = create_node_ref::<Input>();
@@ -31,9 +31,10 @@ pub fn Authorization(rw_user: RwSignal<Option<User>>) -> impl IntoView {
             let login_node = login_node_ref.get().unwrap();
             let password_node = password_node_ref.get().unwrap();
 
-            rw_user.set(Some(User {
+            rw_session.set(Some(Session {
                 id: "id".to_string(),
                 login: login_node.value(),
+                registered_at: "некая дата".to_string(),
                 role: crate::entities::Role::Reader,
                 session_id: "session_id".to_string(),
             }));

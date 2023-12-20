@@ -4,7 +4,7 @@
             "id": "001",
             "login": "anton",
             "password": "qwerty123",
-            "registed_at": "2050-09-22",
+            "registered_at": "2050-09-22",
             "role_id": 2,
             "session_id": [1, 2]
         }

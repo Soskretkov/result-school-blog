@@ -1,12 +1,18 @@
 use super::shared_components::H2;
 use crate::components::Icon;
-use crate::entities::{Role, User};
 use leptos::*;
+use serde::{Deserialize, Serialize};
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+struct TempUser {
+    pub id: String,
+    pub login: String,
+    pub registered_at: String,
+    pub role_id: u8,
+}
 
 #[component]
 pub fn Users() -> impl IntoView {
-
-
     view! {
         <div class="">
             <H2>"Пользователи"</H2>
@@ -23,11 +29,11 @@ pub fn Users() -> impl IntoView {
 
 #[component]
 pub fn UsersTableRow() -> impl IntoView {
-    let users_list: Vec<User> = vec![User {
+    let users_list: Vec<TempUser> = vec![TempUser {
         id: "1".to_string(),
         login: "login_test".to_string(),
-        role: Role::Reader,
-        session_id: "session id".to_string(),
+        registered_at: "некая дата".to_string(),
+        role_id: 2,
     }];
 
     let users = create_rw_signal(users_list);

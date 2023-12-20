@@ -6,7 +6,7 @@ mod pages;
 mod utils;
 use bff::Server;
 use components::{Footer, Header};
-use entities::User;
+use entities::Session;
 use leptos_router::*;
 use pages::{Authorization, Registration, Users};
 
@@ -24,18 +24,18 @@ fn main() {
 // 4) Нет асинхронных запросов у авторизации, регистрации, страницы users
 #[component]
 pub fn App() -> impl IntoView {
-    let rw_user = create_rw_signal::<Option<User>>(None);
-    let user = rw_user.read_only();
+    let rw_session = create_rw_signal::<Option<Session>>(None);
+    let user = rw_session.read_only();
 
     view! {
         <Router>
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
-                <Header rw_user={rw_user}/>
+                <Header rw_user={rw_session}/>
                 <main class="mt-[120px]">
                     <Routes>
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
-                        <Route path="/login" view=move || view!{<Authorization rw_user={rw_user}/>}/>
-                        <Route path="/register" view=move || view!{<Registration rw_user={rw_user}/>}/>
+                        <Route path="/login" view=move || view!{<Authorization rw_session={rw_session}/>}/>
+                        <Route path="/register" view=move || view!{<Registration rw_session={rw_session}/>}/>
                         <Route path="/users" view=|| view!{<Users/>}/>
                         <Route path="/post" view=|| view!{<div>"Новая статья"</div>}/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>

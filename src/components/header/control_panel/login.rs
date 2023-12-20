@@ -1,11 +1,11 @@
 use crate::bff::Server;
 use crate::components::{Button, Icon};
-use crate::entities::User;
+use crate::entities::Session;
 use leptos::*;
 use leptos_router::*;
 
 #[component]
-pub fn Login(rw_user: RwSignal<Option<User>>) -> impl IntoView {
+pub fn Login(rw_user: RwSignal<Option<Session>>) -> impl IntoView {
     let on_click = move |_: ev::MouseEvent| {
         rw_user.with(|wrapped_user| {
             let user = wrapped_user.as_ref().unwrap();

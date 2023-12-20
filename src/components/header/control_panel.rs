@@ -1,12 +1,12 @@
 use crate::components::Icon;
-use crate::entities::User;
+use crate::entities::Session;
 mod login;
 use leptos::*;
 use leptos_router::*;
 use login::Login;
 
 #[component]
-pub fn ControlPanel(rw_user: RwSignal<Option<User>>) -> impl IntoView {
+pub fn ControlPanel(rw_user: RwSignal<Option<Session>>) -> impl IntoView {
     let history = leptos::web_sys::window().unwrap().history().unwrap();
 
     view! {

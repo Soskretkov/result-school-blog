@@ -1,4 +1,3 @@
-mod types;
 use super::{
     db_utils,
     shared::{Sessions, User},
@@ -6,7 +5,8 @@ use super::{
 use crate::utils;
 use chrono::{TimeZone, Utc};
 use leptos::*;
-pub use types::{Authentic, CurrentSession};
+mod types;
+pub use types::Authentic;
 
 #[derive(Clone)]
 pub struct Server {}
@@ -24,7 +24,7 @@ impl Server {
                 };
             }
             Some(user) => {
-                let session = CurrentSession::new(user);
+                let session = user.sessions.data.into_iter().next().unwrap();
 
                 logging::log!("Сервер дал успешный ответ");
                 return Authentic {
@@ -33,9 +33,9 @@ impl Server {
                 };
             }
             None => {
-                logging::log!("Такой пользователь не найден");
+                logging::log!("Пользователь не найден");
                 return Authentic {
-                    error: Some("Такой пользователь не найден".to_string()),
+                    error: Some("Пользователь не найден".to_string()),
                     res: None,
                 };
             }
@@ -46,9 +46,9 @@ impl Server {
         let wrapped_user = db_utils::get_user(&login).await;
 
         if wrapped_user.is_some() {
-            logging::log!("Такой логин уже занят");
+            logging::log!("Логин уже занят");
             return Authentic {
-                error: Some("Такой логин уже занят".to_string()),
+                error: Some("Логин уже занят".to_string()),
                 res: None,
             };
         }
@@ -59,14 +59,14 @@ impl Server {
             id: utils::create_rnd_float64().to_string(),
             login,
             password,
-            registed_at: get_rnd_date(),
+            registered_at: get_rnd_date(),
             role_id: 2,
             sessions: sessions,
         };
 
         db_utils::add_user(&new_user);
 
-        let session = CurrentSession::new(new_user);
+        let session = new_user.sessions.data.into_iter().next().unwrap();
 
         logging::log!("Сервер дал успешный ответ");
         Authentic {
