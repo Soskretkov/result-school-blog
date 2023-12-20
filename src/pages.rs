@@ -1,7 +1,7 @@
 mod authorization;
 mod registration;
 mod users;
-mod shared_components;
+mod components;
 
 pub use authorization::Authorization;
 pub use registration::Registration;

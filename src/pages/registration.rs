@@ -1,4 +1,4 @@
-use super::shared_components::{FormErrMsg, H2};
+use super::components::{FormErrMsg, H2};
 use crate::bff::{Authentic, Server};
 use crate::components::{Button, Input};
 use crate::types::session::Session;
