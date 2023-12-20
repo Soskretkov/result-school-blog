@@ -1,12 +1,12 @@
 mod bff;
-mod entities;
 use leptos::*;
 mod components;
 mod pages;
+mod types;
 mod utils;
 use bff::Server;
 use components::{Footer, Header};
-use entities::Session;
+use types::session::Session;
 use leptos_router::*;
 use pages::{Authorization, Registration, Users};
 

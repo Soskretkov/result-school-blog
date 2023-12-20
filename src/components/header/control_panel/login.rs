@@ -1,6 +1,6 @@
 use crate::bff::Server;
 use crate::components::{Button, Icon};
-use crate::entities::Session;
+use crate::types::session::Session;
 use leptos::*;
 use leptos_router::*;
 

@@ -1,24 +1,24 @@
 use serde::{Serialize, Deserialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub enum Role {
+pub enum RoleName {
     Administrator,
     Moderator,
     Reader,
 }
 
-impl Role {
+impl RoleName {
     pub fn from_id(id: u8) -> Option<Self> {
         match id {
-            0 => Some(Role::Administrator),
-            1 => Some(Role::Moderator),
-            2 => Some(Role::Reader),
+            0 => Some(RoleName::Administrator),
+            1 => Some(RoleName::Moderator),
+            2 => Some(RoleName::Reader),
             _ => None,
         }
     }
     pub fn can_remove_comment(&self) -> bool {
         match self {
-            Role::Administrator | Role::Moderator => true,
+            RoleName::Administrator | RoleName::Moderator => true,
             _ => false,
         }
     }

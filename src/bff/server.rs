@@ -1,7 +1,5 @@
-use super::{
-    db_utils,
-    shared::{Sessions, User},
-};
+use super::db_utils;
+use crate::bff::{Sessions, User};
 use crate::utils;
 use chrono::{TimeZone, Utc};
 use leptos::*;

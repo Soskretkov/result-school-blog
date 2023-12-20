@@ -1,5 +1,4 @@
-use super::shared::User;
-use super::shared::constants::URL;
+use crate::bff::{URL, User};
 use leptos::logging;
 use reqwest;
 

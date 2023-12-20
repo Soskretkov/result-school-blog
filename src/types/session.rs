@@ -1,13 +1,13 @@
 mod role;
 // use crate::bff::server::CurrentSession;
-pub use role::Role;
+pub use role::RoleName;
 
 #[derive(Debug, Clone)]
 pub struct Session {
     pub id: String,
     pub login: String,
     pub registered_at: String,
-    pub role: Role,
+    pub role: RoleName,
     pub session_id: String,
 }
 

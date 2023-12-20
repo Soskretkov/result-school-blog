@@ -1,15 +1,7 @@
 use super::shared_components::H2;
 use crate::components::Icon;
+use crate::types::outer_api::{Role, User};
 use leptos::*;
-use serde::{Deserialize, Serialize};
-
-#[derive(Deserialize, Serialize, Debug, Clone)]
-struct TempUser {
-    pub id: String,
-    pub login: String,
-    pub registered_at: String,
-    pub role_id: u8,
-}
 
 #[component]
 pub fn Users() -> impl IntoView {
@@ -29,7 +21,7 @@ pub fn Users() -> impl IntoView {
 
 #[component]
 pub fn UsersTableRow() -> impl IntoView {
-    let users_list: Vec<TempUser> = vec![TempUser {
+    let users_list: Vec<User> = vec![User {
         id: "1".to_string(),
         login: "login_test".to_string(),
         registered_at: "некая дата".to_string(),
@@ -47,7 +39,11 @@ pub fn UsersTableRow() -> impl IntoView {
                 .map(|user| {
                     view! {
                         <div class="table-row">
-                            <div class="user-data">{user.login.clone()}</div>
+                            <div class="user-data">
+                                <div>{user.login.clone()}</div>
+                                <div>{user.registered_at.clone()}</div>
+                                <select value={user.role_id}>{user.registered_at.clone()}</select>
+                            </div>
                             <Icon on:click=on_click id="fa-trash-o" class="cursor-pointer text-[24px] ml-2.5"/>
                         </div>
                     }
