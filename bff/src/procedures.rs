@@ -49,9 +49,17 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 
     Ok(session)
 }
-pub async fn logout(login: &str, session_id: &str) {
+
+pub async fn logout(user_id: &str, session_id: &str) {
     // заменить на запрос по ручке
-    let user: User = out_api_utils::user_info(&login).await.unwrap();
+    let user: User = out_api_utils::user_info(&user_id).await.unwrap();
     let _new_sessions = Sessions::del_session(user.sessions, session_id);
     unimplemented!("отправить измененные сессии на хранение в бд")
+}
+
+pub async fn is_valid_session(user_id: &str, session_id: &str) -> bool {
+    out_api_utils::user_info(&user_id)
+        .await
+        .filter(|user: &User| user.sessions.is_exist(session_id))
+        .is_some()
 }

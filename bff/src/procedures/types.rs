@@ -24,6 +24,10 @@ impl Sessions {
         self
     }
 
+    pub fn is_exist(&self, session_id: &str) -> bool {
+        self.data.get(session_id).is_some()
+    }
+
     pub fn add_rnd_session(mut self) -> Self {
         let session_id = utils::create_rnd_float64().to_string();
         self.data.insert(session_id);

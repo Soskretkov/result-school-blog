@@ -12,11 +12,11 @@ where
     users
 }
 
-pub async fn user_info<T>(login_to_find: &str) -> Option<T>
+pub async fn user_info<T>(user_id_to_find: &str) -> Option<T>
 where
     T: DeserializeOwned,
 {
-    let url = format!("{URL}/users?login={login_to_find}");
+    let url = format!("{URL}/id?login={user_id_to_find}");
     let relevant_users: Vec<T> = reqwest::get(url).await.unwrap().json().await.unwrap();
 
     relevant_users.into_iter().next()
