@@ -3,7 +3,6 @@ use leptos::*;
 mod components;
 mod pages;
 mod types;
-use bff::Server;
 use components::{Footer, Header};
 use types::session::Session;
 use leptos_router::*;

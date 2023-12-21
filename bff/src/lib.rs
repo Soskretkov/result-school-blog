@@ -1,46 +1,13 @@
-mod db_utils;
-mod server;
-mod utils;
-use serde::{Deserialize, Serialize};
-pub use server::{Authentic, Server};
-use std::collections::HashSet;
+mod procedures;
+mod json_sv_utils;
+pub use json_sv_utils::{all_users, user_info};
+pub use procedures::Authentic;
 
-const URL: &'static str = "http://localhost:3005";
-
-#[derive(Deserialize, Serialize, Debug, Clone)]
-struct Sessions {
-    data: HashSet<String>,
+pub mod bff_utils {
+    pub use crate::json_sv_utils::all_users;
+    pub use crate::json_sv_utils::user_info;
 }
 
-impl Sessions {
-    fn new() -> Self {
-        Self {
-            data: HashSet::new(),
-        }
-    }
-
-    fn iter(&self) -> impl Iterator<Item = &String> {
-        self.data.iter()
-    }
-
-    fn del_session(mut self, session_id: &str) -> Self {
-        self.data.remove(session_id);
-        self
-    }
-
-    fn add_rnd_session(mut self) -> Self {
-        let session_id = utils::create_rnd_float64().to_string();
-        self.data.insert(session_id);
-        self
-    }
-}
-
-#[derive(Deserialize, Serialize, Debug, Clone)]
-struct User {
-    id: String,
-    login: String,
-    password: String,
-    registered_at: String,
-    role_id: u8,
-    sessions: Sessions,
+pub mod bff_procs {
+    pub use crate::procedures::*;
 }

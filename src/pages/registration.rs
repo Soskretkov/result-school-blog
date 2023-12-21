@@ -1,5 +1,5 @@
 use super::components::{FormErrMsg, H2};
-use crate::bff::{Authentic, Server};
+use crate::bff::{Authentic, bff_procs};
 use crate::components::{Button, Input};
 use crate::types::session::Session;
 use leptos::{ev::SubmitEvent, html::Input, *};
@@ -14,7 +14,7 @@ pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
 
     let on_submit = {
         let async_handler = move |login: String, password: String| {
-            let set_server = use_context::<WriteSignal<Server>>().unwrap();
+            // let set_server = use_context::<WriteSignal<Server>>().unwrap();
 
             let authentic = {
                 logging::log!("вызов асинхр. функции");
