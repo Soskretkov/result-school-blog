@@ -3,13 +3,6 @@ use std::collections::HashSet;
 use super::utils;
 
 
-#[derive(Clone, Serialize, Deserialize)]
-// клиентская сторона не конфигурирует Authorize, это ответ сервера
-pub struct Authentic {
-    pub error: Option<String>,
-    pub res: Option<String>,
-}
-
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Sessions {
     pub data: HashSet<String>,

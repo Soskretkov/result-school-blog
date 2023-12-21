@@ -1,12 +1,12 @@
 use super::components::{FormErrMsg, H2};
-use crate::bff::{Authentic, bff_procs};
+use crate::bff::bff_procs;
 use crate::components::{Button, Input};
 use crate::types::session::Session;
 use leptos::{ev::SubmitEvent, html::Input, *};
 
 #[component]
 pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
-    let (authentic, set_authentic) = create_signal::<Option<Authentic>>(None);
+    let (authentic, set_authentic) = create_signal::<Option<String>>(None);
 
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
@@ -81,10 +81,10 @@ pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
 
                 // <FormErrMsg/>
 
-                {move || match authentic.get() {
-                    None => {}.into_view(),
-                    Some(data) => view! { <div>{data.error}</div> }.into_view()
-                }}
+                // {move || match authentic.get() {
+                //     None => {}.into_view(),
+                //     Some(data) => view! { <div>{data.error}</div> }.into_view()
+                // }}
             </form>
         </div>
     }

@@ -1,11 +1,9 @@
 mod procedures;
-mod json_sv_utils;
-pub use json_sv_utils::{all_users, user_info};
-pub use procedures::Authentic;
+mod out_api_utils;
+pub use out_api_utils::{all_users, user_info};
 
 pub mod bff_utils {
-    pub use crate::json_sv_utils::all_users;
-    pub use crate::json_sv_utils::user_info;
+    pub use crate::out_api_utils::{all_users, user_info};
 }
 
 pub mod bff_procs {
