@@ -6,7 +6,7 @@ mod types;
 use components::{Footer, Header};
 use types::session::Session;
 use leptos_router::*;
-use pages::{Authorization, Registration, Users};
+use pages::{Authorization, Registration, Users, Test};
 
 // #[tokio::main]
 fn main() {
@@ -19,7 +19,7 @@ fn main() {
 // В React, когда родительский перерендеривается, это ведет к перерендерингу всей дочерней иерархии.
 // 2) Нет валидации авторизации, нет disabled на кнопку
 // 3) Добавить перенаправление на главную если залогиненый попал на страницы аутентификации
-// 4) Нет асинхронных запросов у авторизации, регистрации, страницы users
+// 4) Нет асинхронных запросов у авторизации, регистрации
 #[component]
 pub fn App() -> impl IntoView {
     let rw_session = create_rw_signal::<Option<Session>>(None);
@@ -35,9 +35,8 @@ pub fn App() -> impl IntoView {
                         <Route path="/login" view=move || view!{<Authorization rw_session={rw_session}/>}/>
                         <Route path="/register" view=move || view!{<Registration rw_session={rw_session}/>}/>
                         <Route path="/users" view=|| view!{<Users/>}/>
-                        <Route path="/post" view=|| view!{<div>"Новая статья"</div>}/>
+                        <Route path="/post" view=move || view!{<Test/>}/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>
-                        <Route path="/post" view=|| view!{<div>"Новая статья"</div>}/>
                         <Route path="/*" view=|| view!{<div>"Ошибка"</div>}/>
                     </Routes>
                 </main>

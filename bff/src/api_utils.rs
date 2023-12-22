@@ -3,6 +3,10 @@ use serde::{de::DeserializeOwned, Serialize};
 
 pub const URL: &'static str = "http://localhost:3005";
 
+pub async fn test() -> String {
+    "Успешный тест async fn".to_string()
+}
+
 pub async fn all_users<T>() -> Vec<T>
 where
     T: DeserializeOwned,

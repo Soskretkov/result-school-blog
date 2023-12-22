@@ -1,17 +1,19 @@
 use super::components::H2;
 use leptos::*;
-mod body_row;
+mod table_body;
 use crate::types::outer_api::{Role, User};
-use body_row::BodyRow;
+use table_body::TableBody;
 
 #[component]
 pub fn Users() -> impl IntoView {
+
     let users_list: Vec<User> = vec![User {
         id: "1".to_string(),
         login: "login_test".to_string(),
         registered_at: "некая дата".to_string(),
         role_id: 2,
     }];
+
 
     let users = create_rw_signal(users_list);
     view! {
@@ -26,20 +28,7 @@ pub fn Users() -> impl IntoView {
                         <th class="w-auto"></th>
                     </tr>
                 </thead>
-                <tbody>
-                    {users
-                        .with(
-                            |data| data
-                                .into_iter()
-                                .map(|user| {
-                                    view!{
-                                        <BodyRow user={user}/>
-                                    }
-                                })
-                                .collect_view()
-                        )
-                    }
-                </tbody>
+                <TableBody/>
             </table>
         </div>
     }
