@@ -6,8 +6,24 @@ use leptos::*;
 #[component]
 pub fn BodyRow<'a>(user: &'a User) -> impl IntoView {
     // удалить в бд, запросить пользователей, обновить ресурс или сигнал
-    let on_click = |_: ev::MouseEvent| !unimplemented!();
+    let on_click = |_: ev::MouseEvent| unimplemented!();
+
+
+
+
+    // let once = create_resource(|| (), |_| async move { asn().await });
+    let once = create_resource(|| (), |_| async move { bff::bff_utils::all_users::<User>().await });
+
+
     view! {
+
+
+        {move || match once.get() {
+            None => view! { <p>"Loading..."</p> }.into_view(),
+            Some(data) => view! { <div>"некие асинхронные данные"</div> }.into_view()
+            // Some(data) => view! { <div>{data}</div> }.into_view()
+        }}
+
         <tr class="flex">
             <td class="w-[172px] px-2.5">{user.login.clone()}</td>
             <td class="w-[213px] px-2.5">{user.registered_at.clone()}</td>

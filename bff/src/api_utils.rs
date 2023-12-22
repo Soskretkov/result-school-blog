@@ -8,8 +8,15 @@ where
     T: DeserializeOwned,
 {
     let url = format!("{URL}/users");
-    let users: Vec<T> = reqwest::get(url).await.unwrap().json().await.unwrap();
-    users
+    get_by_url(&url).await
+}
+
+pub async fn all_roles<T>() -> Vec<T>
+where
+    T: DeserializeOwned,
+{
+    let url = format!("{URL}/roles");
+    get_by_url(&url).await
 }
 
 pub async fn user_info<T>(user_id_to_find: &str) -> Option<T>
@@ -17,13 +24,13 @@ where
     T: DeserializeOwned,
 {
     let url = format!("{URL}/id?login={user_id_to_find}");
-    let relevant_users: Vec<T> = reqwest::get(url).await.unwrap().json().await.unwrap();
-
+    let relevant_users = get_by_url(&url).await;
     relevant_users.into_iter().next()
 }
 
 pub async fn add_user<T>(new_user: &T)
-where T: DeserializeOwned + Serialize,
+where
+    T: DeserializeOwned + Serialize,
 {
     let url = format!("{URL}/users");
     let client = reqwest::Client::new();
@@ -34,4 +41,16 @@ where T: DeserializeOwned + Serialize,
         .send()
         .await
         .unwrap();
+}
+
+async fn get_by_url<T>(url: &str) -> Vec<T>
+where
+    T: DeserializeOwned,
+{
+    reqwest::get(url)
+        .await
+        .unwrap()
+        .json::<Vec<T>>()
+        .await
+        .unwrap()
 }

@@ -1,10 +1,8 @@
 use super::components::H2;
 use leptos::*;
 mod body_row;
-mod table_row;
 use crate::types::outer_api::{Role, User};
 use body_row::BodyRow;
-use table_row::TableRow;
 
 #[component]
 pub fn Users() -> impl IntoView {

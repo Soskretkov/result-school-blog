@@ -1,9 +1,8 @@
 mod procedures;
-mod out_api_utils;
-pub use out_api_utils::{all_users, user_info};
+mod api_utils;
 
 pub mod bff_utils {
-    pub use crate::out_api_utils::{all_users, user_info};
+    pub use crate::api_utils::{all_users, user_info, all_roles};
 }
 
 pub mod bff_procs {

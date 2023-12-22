@@ -2,13 +2,13 @@
 // то есть json-server предоставляется в ведение клиента,
 // и только в особых случаях клиент вызывает этот модуль
 
-use super::out_api_utils;
+use super::api_utils;
 mod types;
 mod utils;
 pub use types::{Sessions, User};
 
 pub async fn authorize(login: &str, password: &str) -> Result<String, String> {
-    let wrapped_user: Option<User> = out_api_utils::user_info(login).await;
+    let wrapped_user: Option<User> = api_utils::user_info(login).await;
 
     match wrapped_user {
         Some(user) if user.password != password => {
@@ -26,7 +26,7 @@ pub async fn authorize(login: &str, password: &str) -> Result<String, String> {
 }
 
 pub async fn register(login: String, password: String) -> Result<String, String> {
-    let wrapped_user: Option<User> = out_api_utils::user_info(&login).await;
+    let wrapped_user: Option<User> = api_utils::user_info(&login).await;
 
     if wrapped_user.is_some() {
         return Err("Логин уже занят".to_string());
@@ -43,7 +43,7 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         sessions: sessions,
     };
 
-    out_api_utils::add_user(&new_user);
+    api_utils::add_user(&new_user);
 
     let session = new_user.sessions.data.into_iter().next().unwrap();
 
@@ -52,13 +52,13 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 
 pub async fn logout(user_id: &str, session_id: &str) {
     // заменить на запрос по ручке
-    let user: User = out_api_utils::user_info(&user_id).await.unwrap();
+    let user: User = api_utils::user_info(&user_id).await.unwrap();
     let _new_sessions = Sessions::del_session(user.sessions, session_id);
     unimplemented!("отправить измененные сессии на хранение в бд")
 }
 
 pub async fn is_valid_session(user_id: &str, session_id: &str) -> bool {
-    out_api_utils::user_info(&user_id)
+    api_utils::user_info(&user_id)
         .await
         .filter(|user: &User| user.sessions.is_exist(session_id))
         .is_some()
