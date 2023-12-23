@@ -7,8 +7,8 @@ use crate::bff::server;
 
 #[component]
 pub fn Users() -> impl IntoView {
-    let users_res = create_resource(|| (), |_| async { server::fetch_all_users().await.unwrap() });
-    let roles_res = create_resource(|| (), |_| async { server::fetch_all_roles().await.unwrap() });
+    let users_res = create_resource(|| (), |_| async { server::fetch_all_users("", "").await.unwrap() });
+    let roles_res = create_resource(|| (), |_| async { server::fetch_all_roles("", "").await.unwrap() });
 
     // Ресурсы также предоставляют refetch()метод, который позволяет вручную перезагрузить данные.
     view! {

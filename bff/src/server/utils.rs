@@ -29,3 +29,8 @@ pub fn get_rnd_date() -> String {
         .replace("T", " ")
 }
 
+pub fn get_current_date() -> String {
+    let now = Utc::now(); // Получаем текущее время
+    now.format("%Y-%m-%d %H:%M").to_string() // Форматируем дату и время
+}
+

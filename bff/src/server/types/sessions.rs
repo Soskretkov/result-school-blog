@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
-use crate::server::utils;
+use uuid::Uuid;
 
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -29,8 +29,8 @@ impl Sessions {
     }
 
     pub fn add_rnd_session(mut self) -> Self {
-        let session_id = utils::create_rnd_float64().to_string();
-        self.data.insert(session_id);
+        let sess_id = Uuid::new_v4().to_string();
+        self.data.insert(sess_id);
         self
     }
 }
