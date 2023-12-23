@@ -1,4 +1,4 @@
-use crate::bff::bff_procs;
+use crate::bff::server;
 use crate::components::{Button, Icon};
 use crate::types::session::Session;
 use leptos::*;
@@ -10,7 +10,7 @@ pub fn Login(rw_user: RwSignal<Option<Session>>) -> impl IntoView {
         rw_user.with(|wrapped_user| {
             let user = wrapped_user.as_ref().unwrap();
 
-            bff_procs::logout(&user.login, &user.session_id);
+            server::logout(&user.login, &user.session_id);
         });
 
         rw_user.set(None);

@@ -1,5 +1,5 @@
 use leptos::*;
-use bff::bff_utils;
+use bff::server;
 
 
 #[component]
@@ -7,7 +7,7 @@ pub fn Test() -> impl IntoView {
     let (click, set_click) = create_signal(0);
     let resource = create_resource(
         move || click, // Ресурс зависит от click
-        |_| async move { bff_utils::test().await }
+        |_| async move { server::test().await }
     );
 
     let on_click = move |_: ev::MouseEvent| {

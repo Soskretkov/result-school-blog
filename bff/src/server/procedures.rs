@@ -1,11 +1,6 @@
-// содержит методы, которых нет у json-server
-// то есть json-server предоставляется в ведение клиента,
-// и только в особых случаях клиент вызывает этот модуль
-
-use super::api_utils;
-mod types;
-mod utils;
-pub use types::{Sessions, User};
+use super::types::{Sessions, User};
+use super::utils;
+use crate::api_utils;
 
 pub async fn authorize(login: &str, password: &str) -> Result<String, String> {
     let wrapped_user: Option<User> = api_utils::user_info(login).await;

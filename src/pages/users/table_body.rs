@@ -1,12 +1,12 @@
-use crate::bff::bff_utils;
+use crate::bff::server;
 use crate::components::Icon;
 use crate::types::outer_api::{Role, User};
 use leptos::*;
 
 #[component]
 pub fn TableBody() -> impl IntoView {
-    let users_res = create_resource(|| (), |_| async { bff_utils::all_users::<User>().await });
-    let roles_res = create_resource(|| (), |_| async { bff_utils::all_roles::<Role>().await });
+    let users_res = create_resource(|| (), |_| async { server::all_users::<User>().await });
+    let roles_res = create_resource(|| (), |_| async { server::all_roles::<Role>().await });
 
     // Ресурсы также предоставляют refetch()метод, который позволяет вручную перезагрузить данные.
 
@@ -18,7 +18,7 @@ pub fn TableBody() -> impl IntoView {
                 //     Some(vec) => {
                         view! {
                             <Suspense
-                                fallback=move || view! { <p>"Loading..."</p> }
+                                fallback=move || view! { <p class="text-center">"Loading..."</p> }
                             >
                                 <For
                                     each=move || users_res.get().unwrap_or(Vec::new())
