@@ -1,5 +1,5 @@
 use crate::components::Icon;
-use crate::types::session::Session;
+use crate::Session;
 mod login;
 use leptos::*;
 use leptos_router::*;

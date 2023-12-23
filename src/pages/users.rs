@@ -2,13 +2,13 @@ use super::components::H2;
 use leptos::*;
 mod tbody_row;
 use tbody_row::TbodyRow;
-use crate::bff::server::{self, User, Role};
+use crate::bff::server;
 
 
 #[component]
 pub fn Users() -> impl IntoView {
-    let users_res = create_resource(|| (), |_| async { server::fetch_all_users::<User>().await.unwrap() });
-    let roles_res = create_resource(|| (), |_| async { server::fetch_all_users::<Role>().await.unwrap() });
+    let users_res = create_resource(|| (), |_| async { server::fetch_all_users().await.unwrap() });
+    let roles_res = create_resource(|| (), |_| async { server::fetch_all_roles().await.unwrap() });
 
     // Ресурсы также предоставляют refetch()метод, который позволяет вручную перезагрузить данные.
     view! {

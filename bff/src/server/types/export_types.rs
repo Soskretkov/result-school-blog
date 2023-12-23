@@ -8,4 +8,3 @@ pub struct User {
     pub registered_at: String,
     pub role_id: u8,
 }
-

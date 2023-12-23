@@ -1,7 +1,7 @@
 use super::components::{FormErrMsg, H2};
 use crate::bff::server;
 use crate::components::{Button, Input};
-use crate::types::session::{Session, RoleName};
+use crate::{Session, RoleName};
 use leptos::{ev::SubmitEvent, html::Input, *};
 use leptos_router::*;
 
@@ -36,7 +36,7 @@ pub fn Authorization(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
                 login: login_node.value(),
                 registered_at: "некая дата".to_string(),
                 role: RoleName::Reader,
-                session_id: "session_id".to_string(),
+                sess_id: "session_id".to_string(),
             }));
 
             // Очистка формы

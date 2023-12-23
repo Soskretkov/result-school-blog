@@ -1,18 +1,16 @@
+pub use super::types::export_types::{Role, User};
 use crate::api_utils;
-use serde::de::DeserializeOwned;
 pub use api_utils::test;
 
-pub async fn fetch_all_users<T>() -> Result<Vec<T>, String>
-where
-    T: DeserializeOwned,
-{
+// это не действия пользователя, а впринципе возможности запросить на сервере
+pub async fn fetch_all_users() -> Result<Vec<User>, String> {
     Ok(api_utils::all_users().await)
 }
 
-pub async fn fetch_all_roles<T>() -> Vec<T>
-where
-    T: DeserializeOwned,
-{
-    // Ok(api_utils::all_roles().await)
-    todo!()
+pub async fn fetch_user_by_id(id_to_find: &str) -> Option<User> {
+    api_utils::user_by_id(id_to_find).await
+}
+
+pub async fn fetch_all_roles() -> Result<Vec<Role>, String> {
+    Ok(api_utils::all_roles().await)
 }

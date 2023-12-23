@@ -1,6 +1,6 @@
 mod control_panel;
 mod logo;
-use crate::types::session::Session;
+use crate::Session;
 use control_panel::ControlPanel;
 use leptos::*;
 use logo::Logo;

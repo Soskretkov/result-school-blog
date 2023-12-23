@@ -1,7 +1,7 @@
 use super::components::{FormErrMsg, H2};
 use crate::bff::server;
 use crate::components::{Button, Input};
-use crate::types::session::Session;
+use crate::Session;
 use leptos::{ev::SubmitEvent, html::Input, *};
 
 #[component]
@@ -37,8 +37,8 @@ pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
                 id: "id".to_string(),
                 login: login_node.value(),
                 registered_at: "некая дата".to_string(),
-                role: crate::types::session::RoleName::Reader,
-                session_id: "session_id".to_string(),
+                role: crate::RoleName::Reader,
+                sess_id: "session_id".to_string(),
             }));
 
             // Очистка формы

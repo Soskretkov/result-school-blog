@@ -23,11 +23,20 @@ where
     fetch_by_url(&url).await
 }
 
-pub async fn user<T>(user_id_to_find: &str) -> Option<T>
+pub async fn user_by_id<T>(id_to_find: &str) -> Option<T>
 where
     T: DeserializeOwned,
 {
-    let url = format!("{URL}/id?login={user_id_to_find}");
+    let url = format!("{URL}/id?id={id_to_find}");
+    let relevant_users = fetch_by_url(&url).await;
+    relevant_users.into_iter().next()
+}
+
+pub async fn user_by_login<T>(id_to_find: &str) -> Option<T>
+where
+    T: DeserializeOwned,
+{
+    let url = format!("{URL}/id?login={id_to_find}");
     let relevant_users = fetch_by_url(&url).await;
     relevant_users.into_iter().next()
 }

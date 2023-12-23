@@ -4,11 +4,10 @@ mod components;
 mod pages;
 mod types;
 use components::{Footer, Header};
-use types::session::Session;
 use leptos_router::*;
-use pages::{Authorization, Registration, Users, Test};
+use pages::{Authorization, Registration, Test, Users};
+pub use types::{Session, RoleName};
 
-// #[tokio::main]
 fn main() {
     leptos::mount_to_body(App);
 }
@@ -22,8 +21,9 @@ fn main() {
 // 4) Нет асинхронных запросов у авторизации, регистрации
 #[component]
 pub fn App() -> impl IntoView {
+
     let rw_session = create_rw_signal::<Option<Session>>(None);
-    let user = rw_session.read_only();
+
 
     view! {
         <Router>
