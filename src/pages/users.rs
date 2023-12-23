@@ -1,21 +1,16 @@
 use super::components::H2;
 use leptos::*;
-mod table_body;
-use crate::types::outer_api::{Role, User};
-use table_body::TableBody;
+mod tbody_row;
+use tbody_row::TbodyRow;
+use crate::bff::server::{self, User, Role};
+
 
 #[component]
 pub fn Users() -> impl IntoView {
+    let users_res = create_resource(|| (), |_| async { server::fetch_all_users::<User>().await.unwrap() });
+    let roles_res = create_resource(|| (), |_| async { server::fetch_all_users::<Role>().await.unwrap() });
 
-    let users_list: Vec<User> = vec![User {
-        id: "1".to_string(),
-        login: "login_test".to_string(),
-        registered_at: "некая дата".to_string(),
-        role_id: 2,
-    }];
-
-
-    let users = create_rw_signal(users_list);
+    // Ресурсы также предоставляют refetch()метод, который позволяет вручную перезагрузить данные.
     view! {
         <div class="flex items-center flex-col w-[570px] mx-auto">
             <H2>"Пользователи"</H2>
@@ -28,7 +23,33 @@ pub fn Users() -> impl IntoView {
                         <th class="w-auto"></th>
                     </tr>
                 </thead>
-                <TableBody/>
+                <tbody>
+                {move || {
+                    // match users_res.get() {
+                    //     None => ().into_view(),
+                    //     Some(vec) => {
+                            view! {
+                                <Suspense
+                                    fallback=move || view! { <p class="text-center">"Loading..."</p> }
+                                >
+                                    <For
+                                        each=move || users_res.get().unwrap_or(Vec::new())
+                                        key=|user| user.id.clone()
+                                        children=move |user| {
+                                            view! {
+                                                <TbodyRow
+                                                    user={user}
+                                                    roles={roles_res}
+                                                />
+                                            }
+                                        }
+                                    />
+                                </Suspense>
+                            }
+                        }
+                    }
+                // }}
+            </tbody>
             </table>
         </div>
     }

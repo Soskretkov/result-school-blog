@@ -12,7 +12,7 @@ where
     T: DeserializeOwned,
 {
     let url = format!("{URL}/users");
-    get_by_url(&url).await
+    fetch_by_url(&url).await
 }
 
 pub async fn all_roles<T>() -> Vec<T>
@@ -20,15 +20,15 @@ where
     T: DeserializeOwned,
 {
     let url = format!("{URL}/roles");
-    get_by_url(&url).await
+    fetch_by_url(&url).await
 }
 
-pub async fn user_info<T>(user_id_to_find: &str) -> Option<T>
+pub async fn user<T>(user_id_to_find: &str) -> Option<T>
 where
     T: DeserializeOwned,
 {
     let url = format!("{URL}/id?login={user_id_to_find}");
-    let relevant_users = get_by_url(&url).await;
+    let relevant_users = fetch_by_url(&url).await;
     relevant_users.into_iter().next()
 }
 
@@ -47,7 +47,7 @@ where
         .unwrap();
 }
 
-async fn get_by_url<T>(url: &str) -> Vec<T>
+async fn fetch_by_url<T>(url: &str) -> Vec<T>
 where
     T: DeserializeOwned,
 {

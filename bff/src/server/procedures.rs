@@ -1,9 +1,10 @@
-use super::types::{Sessions, User};
+use super::types::db_types::User;
+use super::types::Sessions;
 use super::utils;
 use crate::api_utils;
 
 pub async fn authorize(login: &str, password: &str) -> Result<String, String> {
-    let wrapped_user: Option<User> = api_utils::user_info(login).await;
+    let wrapped_user: Option<User> = api_utils::user(login).await;
 
     match wrapped_user {
         Some(user) if user.password != password => {
@@ -21,7 +22,7 @@ pub async fn authorize(login: &str, password: &str) -> Result<String, String> {
 }
 
 pub async fn register(login: String, password: String) -> Result<String, String> {
-    let wrapped_user: Option<User> = api_utils::user_info(&login).await;
+    let wrapped_user: Option<User> = api_utils::user(&login).await;
 
     if wrapped_user.is_some() {
         return Err("Логин уже занят".to_string());
@@ -47,13 +48,13 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 
 pub async fn logout(user_id: &str, session_id: &str) {
     // заменить на запрос по ручке
-    let user: User = api_utils::user_info(&user_id).await.unwrap();
+    let user: User = api_utils::user(&user_id).await.unwrap();
     let _new_sessions = Sessions::del_session(user.sessions, session_id);
     unimplemented!("отправить измененные сессии на хранение в бд")
 }
 
 pub async fn is_valid_session(user_id: &str, session_id: &str) -> bool {
-    api_utils::user_info(&user_id)
+    api_utils::user(&user_id)
         .await
         .filter(|user: &User| user.sessions.is_exist(session_id))
         .is_some()
