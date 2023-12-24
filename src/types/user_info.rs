@@ -1,22 +1,16 @@
 mod role;
 pub use role::RoleName;
-use leptos::*;
 
 #[derive(Debug, Clone)]
-pub struct Session {
-    pub id: String,
+pub struct UserInfo {
     pub login: String,
     pub registered_at: String,
     pub role: RoleName,
-    pub sess_id: String,
 }
 
-impl Session {
-    pub fn new(user_id: String, sess_id: String) -> Option<Self> {
 
-        let value = create_memo(move |_| {
-            
-        });
+impl UserInfo {
+    pub fn new(user_id: String, sess_id: String) -> Option<Self> {
         todo!("создание сессии не реализовано")
     }
     pub fn update(&mut self) -> Option<Self> {

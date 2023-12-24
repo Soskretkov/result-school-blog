@@ -8,3 +8,9 @@ pub struct User {
     pub registered_at: String,
     pub role_id: u8,
 }
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct Session {
+    pub sess_id: String,
+    pub user_id: String,
+}

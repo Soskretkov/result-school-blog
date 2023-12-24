@@ -1,5 +1,5 @@
 mod protected;
-pub use super::types::export_types::{Role, User};
+use super::types::export_types::User;
 use crate::api_utils;
 pub use api_utils::test;
 

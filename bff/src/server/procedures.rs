@@ -1,5 +1,6 @@
 use super::types::db_types::User as DbUser;
-use super::types::Sessions;
+use super::types::SessionsStore;
+use super::types::export_types::Session;
 use super::utils;
 use crate::api_utils;
 use uuid::Uuid;
@@ -44,7 +45,7 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         password,
         registered_at: utils::get_current_date(),
         role_id: 2,
-        sessions: Sessions::new().add_rnd_session(),
+        sessions: SessionsStore::new().add_rnd_session(),
     };
 
     let _ = api_utils::add_user(&new_user);
@@ -52,16 +53,15 @@ pub async fn register(login: String, password: String) -> Result<String, String>
     Ok(id)
 }
 
-pub async fn logout(user_id: &str, sess_id: &str) {
-    // заменить на запрос по ручке
-    let user: DbUser = api_utils::user_by_id(&user_id).await.unwrap();
-    let _new_sessions = Sessions::del_session(user.sessions, sess_id);
+pub async fn logout(session: &Session) -> Result<(),()> {
+    let user: DbUser = api_utils::user_by_id(&session.user_id).await.unwrap();
+    let _new_sessions = user.sessions.del_session(&session.sess_id);
     unimplemented!("отправить измененные сессии на хранение в бд")
 }
 
-pub async fn _is_valid_session(user_id: &str, sess_id: &str) -> bool {
-    api_utils::user_by_id(&user_id)
+async fn _is_valid_session(session: &Session) -> bool {
+    api_utils::user_by_id(&session.user_id)
         .await
-        .filter(|user: &DbUser| user.sessions.is_exist(sess_id))
+        .filter(|user: &DbUser| user.sessions.is_exist(&session.sess_id))
         .is_some()
 }

@@ -4,11 +4,11 @@ use uuid::Uuid;
 
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Sessions {
+pub struct SessionsStore {
     pub data: HashSet<String>,
 }
 
-impl Sessions {
+impl SessionsStore {
     pub fn new() -> Self {
         Self {
             data: HashSet::new(),
@@ -19,13 +19,13 @@ impl Sessions {
         self.data.iter()
     }
 
-    pub fn del_session(mut self, session_id: &str) -> Self {
-        self.data.remove(session_id);
+    pub fn del_session(mut self, sess_id: &str) -> Self {
+        self.data.remove(sess_id);
         self
     }
 
-    pub fn is_exist(&self, session_id: &str) -> bool {
-        self.data.get(session_id).is_some()
+    pub fn is_exist(&self, sess_id: &str) -> bool {
+        self.data.get(sess_id).is_some()
     }
 
     pub fn add_rnd_session(mut self) -> Self {

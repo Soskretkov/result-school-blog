@@ -1,5 +1,5 @@
-mod session;
+mod user_info;
 mod others;
 
 pub use others::*;
-pub use session::{Session, RoleName};
+pub use user_info::{UserInfo, RoleName};

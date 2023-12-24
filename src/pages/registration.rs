@@ -1,11 +1,10 @@
 use super::components::{FormErrMsg, H2};
-use crate::bff::server;
+use crate::types::{RoleName, UserInfo};
 use crate::components::{Button, Input};
-use crate::Session;
 use leptos::{ev::SubmitEvent, html::Input, *};
 
 #[component]
-pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
+pub fn Registration(rw_session: RwSignal<Option<UserInfo>>) -> impl IntoView {
     let (authentic, set_authentic) = create_signal::<Option<String>>(None);
 
     let login_node_ref = create_node_ref::<Input>();
@@ -33,12 +32,10 @@ pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
 
             async_handler(login_node.value(), password_node.value());
 
-            rw_session.set(Some(Session {
-                id: "id".to_string(),
+            rw_session.set(Some(UserInfo {
                 login: login_node.value(),
                 registered_at: "некая дата".to_string(),
                 role: crate::RoleName::Reader,
-                sess_id: "session_id".to_string(),
             }));
 
             // Очистка формы

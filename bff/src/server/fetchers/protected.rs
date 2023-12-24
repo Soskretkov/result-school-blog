@@ -1,4 +1,4 @@
-use super::{User, Role};
+use crate::server::types::export_types::{User, Role};
 use crate::api_utils;
 
 
