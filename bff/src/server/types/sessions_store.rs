@@ -19,7 +19,7 @@ impl SessionsStore {
         self.data.iter()
     }
 
-    pub fn del_session(mut self, sess_id: &str) -> Self {
+    pub fn del_session(mut self, sess_id: &str) -> Self{
         self.data.remove(sess_id);
         self
     }
@@ -28,9 +28,9 @@ impl SessionsStore {
         self.data.get(sess_id).is_some()
     }
 
-    pub fn add_rnd_session(mut self) -> Self {
+    pub fn add_rnd_session(&mut self) -> String {
         let sess_id = Uuid::new_v4().to_string();
-        self.data.insert(sess_id);
-        self
+        self.data.insert(sess_id.clone());
+        sess_id
     }
 }

@@ -1,6 +1,6 @@
 use super::types::db_types::User as DbUser;
-use super::types::SessionsStore;
 use super::types::export_types::Session;
+use super::types::SessionsStore;
 use super::utils;
 use crate::api_utils;
 use uuid::Uuid;
@@ -9,15 +9,14 @@ pub async fn authorize(login: &str, password: &str) -> Result<String, String> {
     let wrapped_user: Option<DbUser> = api_utils::user_by_login(login).await;
 
     match wrapped_user {
-        None => {
-            return Err("Пользователь не найден".to_string());
-        }
-        Some(user) if user.password != password => {
-            return Err("Пароль не верен".to_string());
-        }
+        None => Err("Пользователь не найден".into()),
+        Some(user) if user.password != password => Err("Пароль не верен".into()),
         Some(user) => {
-            let session = user.sessions.data.into_iter().next().unwrap();
-            return Ok(session);
+            let mut new_sessions = user.sessions;
+            let session_id = new_sessions.add_rnd_session();
+            api_utils::update_user_sessions(&user.id, &new_sessions).await;
+            
+            Ok(session_id)
         }
     }
 }
@@ -29,34 +28,40 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         return Err("Логин уже занят".to_string());
     }
 
-    let id = Uuid::new_v4()
+    let user_id = Uuid::new_v4()
         .to_string()
         .chars()
         .take(8)
         .collect::<String>();
 
-    if id.len() < 8 {
-        panic!("UUID is shorter than 8 characters!");
+    if user_id.len() < 8 {
+        panic!("UUID короче чем 8 символов");
     }
 
     let new_user = DbUser {
-        id: id.clone(),
+        id: user_id,
         login,
         password,
         registered_at: utils::get_current_date(),
         role_id: 2,
-        sessions: SessionsStore::new().add_rnd_session(),
+        sessions: SessionsStore::new(),
     };
 
-    let _ = api_utils::add_user(&new_user);
+    api_utils::add_user(&new_user).await;
 
-    Ok(id)
+    Ok(new_user.id)
 }
 
-pub async fn logout(session: &Session) -> Result<(),()> {
+pub async fn logout(session: &Session) -> Result<(), ()> {
     let user: DbUser = api_utils::user_by_id(&session.user_id).await.unwrap();
-    let _new_sessions = user.sessions.del_session(&session.sess_id);
-    unimplemented!("отправить измененные сессии на хранение в бд")
+    let sessions = user.sessions;
+
+    // Удалить нужную сессию и образовать обновленное хранилище сессий
+    let new_sessions = sessions.del_session(&session.sess_id);
+
+    // Записать обновленые сессии через утилиту для json-server
+    api_utils::update_user_sessions(&user.id, &new_sessions).await;
+    Ok(())
 }
 
 async fn _is_valid_session(session: &Session) -> bool {
