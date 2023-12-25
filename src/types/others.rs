@@ -4,6 +4,6 @@ use super::UserInfo;
 
 #[derive(Debug, Clone)]
 pub struct GlobContext {
-    pub user_info: ReadSignal<Option<UserInfo>>,
+    pub user_info: Resource<RwSignal<Option<Session>>, Option<UserInfo>>,
     pub session: ReadSignal<Option<Session>>,
 }

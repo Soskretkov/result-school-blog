@@ -20,14 +20,26 @@ fn main() {
 // 2) Нет валидации авторизации, нет disabled на кнопку
 // 3) Добавить перенаправление на главную если залогиненый попал на страницы аутентификации
 // 4) Нет асинхронных запросов у авторизации, регистрации
+// 5) Страница Users: вход только с правами в принципе
 #[component]
 pub fn App() -> impl IntoView {
     let rw_session = create_rw_signal::<Option<Session>>(None);
-    let rw_user_info = create_rw_signal::<Option<UserInfo>>(None);
+
+    let user_info = create_local_resource(
+        move || rw_session,
+        move |_| async move {
+            match rw_session.get() {
+                Some(ref session) => bff::server::fetch_self_user_info(session)
+                    .await
+                    .map(|user| UserInfo::new(user)),
+                None => None,
+            }
+        }
+    );
 
     provide_context(GlobContext {
         session: rw_session.read_only(),
-        user_info: rw_user_info.read_only(),
+        user_info: user_info,
     });
 
     view! {
@@ -37,8 +49,8 @@ pub fn App() -> impl IntoView {
                 <main class="mt-[120px]">
                     <Routes>
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
-                        <Route path="/login" view=move || view!{<Authorization rw_session={rw_user_info}/>}/>
-                        <Route path="/register" view=move || view!{<Registration rw_session={rw_user_info}/>}/>
+                        <Route path="/login" view=move || view!{<Authorization rw_session={rw_session}/>}/>
+                        <Route path="/register" view=move || view!{<Registration rw_session={rw_session}/>}/>
                         <Route path="/users" view=|| view!{<Users/>}/>
                         <Route path="/post" view=move || view!{<Test/>}/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>

@@ -5,8 +5,8 @@ use super::utils;
 use crate::api_utils;
 use uuid::Uuid;
 
-pub async fn authorize(login: &str, password: &str) -> Result<String, String> {
-    let wrapped_user: Option<DbUser> = api_utils::user_by_login(login).await;
+pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
+    let wrapped_user: Option<DbUser> = api_utils::user_by_id(user_id).await;
 
     match wrapped_user {
         None => Err("Пользователь не найден".into()),
@@ -57,7 +57,7 @@ pub async fn logout(session: &Session) -> Result<(), ()> {
     let sessions = user.sessions;
 
     // Удалить нужную сессию и образовать обновленное хранилище сессий
-    let new_sessions = sessions.del_session(&session.sess_id);
+    let new_sessions = sessions.del_session(&session.id);
 
     // Записать обновленые сессии через утилиту для json-server
     api_utils::update_user_sessions(&user.id, &new_sessions).await;
@@ -67,6 +67,6 @@ pub async fn logout(session: &Session) -> Result<(), ()> {
 async fn _is_valid_session(session: &Session) -> bool {
     api_utils::user_by_id(&session.user_id)
         .await
-        .filter(|user: &DbUser| user.sessions.is_exist(&session.sess_id))
+        .filter(|user: &DbUser| user.sessions.is_exist(&session.id))
         .is_some()
 }

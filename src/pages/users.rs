@@ -1,14 +1,37 @@
 use super::components::H2;
 use leptos::*;
 mod tbody_row;
-use tbody_row::TbodyRow;
 use crate::bff::server;
-
+use crate::types::GlobContext;
+use tbody_row::TbodyRow;
 
 #[component]
 pub fn Users() -> impl IntoView {
-    let users_res = create_resource(|| (), |_| async { server::fetch_all_users("", "").await.unwrap() });
-    let roles_res = create_resource(|| (), |_| async { server::fetch_all_roles("", "").await.unwrap() });
+    let session = use_context::<GlobContext>().unwrap().session;
+
+    // Пользователь не авторизован, перенаправляем на авторизацию
+    if session.with(Option::is_none) {
+        let navigate = leptos_router::use_navigate();
+        navigate("/login", Default::default());
+    }
+
+    let users_res = create_resource(
+        || (),
+        move |_| async {
+            server::fetch_all_users(&use_context::<GlobContext>().unwrap().session.get().unwrap())
+                .await
+                .unwrap()
+        },
+    );
+
+    let roles_res = create_resource(
+        || (),
+        |_| async {
+            server::fetch_all_roles(&use_context::<GlobContext>().unwrap().session.get().unwrap())
+                .await
+                .unwrap()
+        },
+    );
 
     // Ресурсы также предоставляют refetch()метод, который позволяет вручную перезагрузить данные.
     view! {

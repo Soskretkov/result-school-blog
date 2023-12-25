@@ -29,7 +29,7 @@ pub fn Login(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
         {
             move || match glob_context.user_info.with(Option::is_some) {
                 true => {
-                    let login = glob_context.user_info.with(|user_info| user_info.as_ref().unwrap().login.clone());
+                    let login = glob_context.user_info.with(|user_info| user_info.as_ref().unwrap().as_ref().unwrap().login.clone());
                     view! {
                         <div class="flex h-8">
                             <div class="mt-[2px] text-[18px] font-bold">{login}</div>

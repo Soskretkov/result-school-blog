@@ -1,13 +1,20 @@
 use super::components::{FormErrMsg, H2};
 use crate::components::{Button, Input};
-use crate::types::{RoleName, UserInfo};
+use crate::types::UserInfo;
 
+use bff::server::Session;
 use leptos::{ev::SubmitEvent, html::Input, *};
 use leptos_router::*;
 
 #[component]
-pub fn Authorization(rw_session: RwSignal<Option<UserInfo>>) -> impl IntoView {
+pub fn Authorization(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
     // let (authentic, set_authentic) = create_signal::<Option<Authentic>>(None);
+
+    // Пользователь уже авторизован, перенаправляем на главную
+    if rw_session.with(Option::is_some) {
+        let navigate = leptos_router::use_navigate();
+        navigate("/", Default::default());        
+    }
 
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
@@ -31,10 +38,12 @@ pub fn Authorization(rw_session: RwSignal<Option<UserInfo>>) -> impl IntoView {
             let login_node = login_node_ref.get().unwrap();
             let password_node = password_node_ref.get().unwrap();
 
-            rw_session.set(Some(UserInfo {
-                login: login_node.value(),
-                registered_at: "некая дата".to_string(),
-                role: RoleName::Reader,
+            //id по логину и заблокировать поток пока не получу
+            //отправить id и пароль на регистрацию и заблокировать поток пока не получу сессию
+
+            rw_session.set(Some(Session {
+                id: "".to_string(),
+                user_id: "".to_string(),
             }));
 
             // Очистка формы

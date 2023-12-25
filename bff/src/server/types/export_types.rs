@@ -11,6 +11,6 @@ pub struct User {
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Session {
-    pub sess_id: String,
+    pub id: String,
     pub user_id: String,
 }

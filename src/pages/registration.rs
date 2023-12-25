@@ -1,11 +1,20 @@
 use super::components::{FormErrMsg, H2};
-use crate::types::{RoleName, UserInfo};
 use crate::components::{Button, Input};
+use crate::types::{RoleName, UserInfo};
 use leptos::{ev::SubmitEvent, html::Input, *};
+use bff::server::Session;
+
 
 #[component]
-pub fn Registration(rw_session: RwSignal<Option<UserInfo>>) -> impl IntoView {
+pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
+    // Пользователь уже авторизован, перенаправляем на главную
+    if rw_session.with(Option::is_some) {
+        let navigate = leptos_router::use_navigate();
+        navigate("/", Default::default());
+    }
+
     let (authentic, set_authentic) = create_signal::<Option<String>>(None);
+
 
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
@@ -32,10 +41,10 @@ pub fn Registration(rw_session: RwSignal<Option<UserInfo>>) -> impl IntoView {
 
             async_handler(login_node.value(), password_node.value());
 
-            rw_session.set(Some(UserInfo {
-                login: login_node.value(),
-                registered_at: "некая дата".to_string(),
-                role: crate::RoleName::Reader,
+
+            rw_session.set(Some(Session {
+                id: "".to_string(),
+                user_id: "".to_string(),
             }));
 
             // Очистка формы
