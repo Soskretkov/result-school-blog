@@ -41,7 +41,11 @@ impl UserInfo {
         self.resurce.get().and_then(|user_info| user_info)
     }
 
-    pub fn update(&mut self) -> Option<Self> {
-        todo!("обновление сессии не реализовано")
+    // pub fn user_data(&self) -> Option<&UserData> {
+    //     self.resurce.with(|rf| rf.as_ref().and_then(Option::as_ref))
+    // }    
+
+    pub fn refetch(&mut self) {
+        self.resurce.refetch();
     }
 }

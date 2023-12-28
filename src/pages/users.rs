@@ -7,13 +7,16 @@ use tbody_row::TbodyRow;
 
 #[component]
 pub fn Users() -> impl IntoView {
-    let session = use_context::<GlobContext>().unwrap().session;
+    let mut user_info = use_context::<GlobContext>().unwrap().user_info;
 
     // Пользователь не авторизован, перенаправляем на авторизацию
-    if session.with(Option::is_none) {
+    if user_info.user_data().is_none() {
         let navigate = leptos_router::use_navigate();
         navigate("/login", Default::default());
     }
+
+    // обновить информацию по пользователю
+    user_info.refetch();
 
     let users_res = create_resource(
         || (),
