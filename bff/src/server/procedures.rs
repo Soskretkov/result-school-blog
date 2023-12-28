@@ -5,12 +5,11 @@ use super::utils;
 use crate::api_utils;
 use uuid::Uuid;
 
-
 // исключительно для случая когда нет куки
 // почему подход выше работает: при смене пароля массив сессий обнуляется
 // почему id: при наличии учетки клиент так и так проясняет id чтобы образовать сессию
 pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
-    let wrapped_user: Option<DbUser> = api_utils::user_by_login(user_id).await;
+    let wrapped_user: Option<DbUser> = api_utils::find_user_by_kv("id", user_id).await;
 
     match wrapped_user {
         None => Err("Пользователь не найден".into()),
@@ -19,14 +18,14 @@ pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> 
             let mut new_sessions = user.sessions;
             let session_id = new_sessions.add_rnd_session();
             api_utils::update_user_sessions(&user.id, &new_sessions).await;
-            
+
             Ok(session_id)
         }
     }
 }
 
 pub async fn register(login: String, password: String) -> Result<String, String> {
-    let wrapped_user: Option<DbUser> = api_utils::user_by_login(&login).await;
+    let wrapped_user: Option<DbUser> = api_utils::find_user_by_kv("login", &login).await;
 
     if wrapped_user.is_some() {
         return Err("Логин уже занят".to_string());
@@ -57,7 +56,9 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 }
 
 pub async fn logout(session: &Session) -> Result<(), ()> {
-    let user: DbUser = api_utils::user_by_id(&session.user_id).await.unwrap();
+    let user: DbUser = api_utils::find_user_by_kv("id", &session.user_id)
+        .await
+        .unwrap();
     let sessions = user.sessions;
 
     // Удалить нужную сессию и образовать обновленное хранилище сессий
@@ -69,7 +70,7 @@ pub async fn logout(session: &Session) -> Result<(), ()> {
 }
 
 async fn _is_valid_session(session: &Session) -> bool {
-    api_utils::user_by_id(&session.user_id)
+    api_utils::find_user_by_kv("id", &session.user_id)
         .await
         .filter(|user: &DbUser| user.sessions.is_exist(&session.id))
         .is_some()

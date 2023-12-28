@@ -13,4 +13,6 @@ serde_json = "1.0"
 chrono = "0.4"
 rand = "0.8"
 uuid = { version = "1", features = ["v4"] }
+leptos = { version = "0.5", features = ["csr"] }
+
 

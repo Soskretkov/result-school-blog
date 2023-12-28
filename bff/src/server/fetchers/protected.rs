@@ -11,5 +11,5 @@ pub async fn fetch_all_roles(session: &Session) -> Result<Vec<Role>, String> {
 }
 
 pub async fn fetch_user_by_id(session: &Session, id_to_find: &str) -> Option<User> {
-    api_utils::user_by_id(id_to_find).await
+    api_utils::find_user_by_kv("id", id_to_find).await
 }

@@ -1,6 +1,7 @@
 use reqwest;
 use serde::de::DeserializeOwned;
 use super::URL;
+use leptos::*;
 
 pub async fn test() -> String {
     "Успешный тест async fn".to_string()
@@ -22,20 +23,11 @@ where
     fetch_by_url(&url).await
 }
 
-pub async fn user_by_id<T>(id_to_find: &str) -> Option<T>
+pub async fn find_user_by_kv<T>(key: &str, value: &str) -> Option<T>
 where
     T: DeserializeOwned,
 {
-    let url = format!("{URL}/id?id={id_to_find}");
-    let relevant_users = fetch_by_url(&url).await;
-    relevant_users.into_iter().next()
-}
-
-pub async fn user_by_login<T>(id_to_find: &str) -> Option<T>
-where
-    T: DeserializeOwned,
-{
-    let url = format!("{URL}/id?login={id_to_find}");
+    let url = format!("{URL}/users/?{key}={value}");
     let relevant_users = fetch_by_url(&url).await;
     relevant_users.into_iter().next()
 }
@@ -44,6 +36,8 @@ async fn fetch_by_url<T>(url: &str) -> Vec<T>
 where
     T: DeserializeOwned,
 {
+    // logging::log!("{}", url);
+
     reqwest::get(url)
         .await
         .unwrap()

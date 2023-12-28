@@ -1,6 +1,6 @@
 use super::components::{FormErrMsg, H2};
 use crate::components::{Button, Input};
-use crate::types::UserInfo;
+use crate::types::{GlobContext, UserInfo};
 
 use bff::server::Session;
 use leptos::{ev::SubmitEvent, html::Input, *};
@@ -8,47 +8,49 @@ use leptos_router::*;
 
 #[component]
 pub fn Authorization(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
-    // let (authentic, set_authentic) = create_signal::<Option<Authentic>>(None);
-
     // Пользователь уже авторизован, перенаправляем на главную
-    if rw_session.with(Option::is_some) {
+    if use_context::<GlobContext>().unwrap().user_info.is_loaded() {
         let navigate = leptos_router::use_navigate();
-        navigate("/", Default::default());        
+        navigate("/", Default::default());
     }
 
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
 
     let on_submit = {
-        let async_handler = move |_: ()| {
-            // let set_server = use_context::<WriteSignal<Server>>().unwrap();
+        // let async_handler = move |_: ()| {
+        //     let set_server = use_context::<WriteSignal<Server>>().unwrap();
 
-            // let authentic = async move {
-            //     set_server.update(|serv| {
-            //         let auth = serv.authorize(&login, &password);
-            //     })
-            // };
-        };
+        //     let authentic = async move {
+        //         set_server.update(|serv| {
+        //             let auth = serv.authorize(&login, &password);
+        //         })
+        //     };
+        // };
 
         move |ev: SubmitEvent| {
             ev.prevent_default();
-            // let server_resp = create_resource(|| (), async_handler);
-            // set_authentic.set(server_resp.get());
 
             let login_node = login_node_ref.get().unwrap();
             let password_node = password_node_ref.get().unwrap();
 
-            //id по логину и заблокировать поток пока не получу
-            //отправить id и пароль на регистрацию и заблокировать поток пока не получу сессию
+            // заблокировать поток пока не получу id по логину
+            // в случае ошибки установить сигнал ошибки в Some и прерваться
+            let user_id = "001".to_string();
 
-            rw_session.set(Some(Session {
-                id: "".to_string(),
-                user_id: "".to_string(),
-            }));
+            // заблокировать поток пока не получу sess_id (отправить id и пароль на регистрацию)
+            // в случае ошибки установить сигнал ошибки в Some и прерваться
+            let sess_id = "777".to_string();
 
-            // Очистка формы
-            login_node.set_value("");
-            password_node.set_value("");
+            let session = Session {
+                id: sess_id,
+                user_id,
+            };
+
+            rw_session.set(Some(session));
+
+            // установить сигнал ошибки в None, если он Some
+            ();
 
             // Возврат
             let _ = leptos::web_sys::window().unwrap().history().unwrap().back();

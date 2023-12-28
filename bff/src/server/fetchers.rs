@@ -7,9 +7,9 @@ pub use protected::*;
 
 
 pub async fn fetch_user_id (login: &str) -> Option<String> {
-    api_utils::user_by_login::<User>(login).await.map(|user| user.id)
+    api_utils::find_user_by_kv("login", login).await.map(|user: User| user.id)
 }
 
 pub async fn fetch_self_user_info(session: &Session) -> Option<User> {
-    api_utils::user_by_id(&session.id).await
+    api_utils::find_user_by_kv("id", &session.user_id).await
 }

@@ -9,7 +9,7 @@ pub struct User {
     pub role_id: u8,
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct Session {
     pub id: String,
     pub user_id: String,

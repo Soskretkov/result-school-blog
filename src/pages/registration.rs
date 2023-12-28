@@ -1,6 +1,6 @@
 use super::components::{FormErrMsg, H2};
 use crate::components::{Button, Input};
-use crate::types::{RoleName, UserInfo};
+use crate::types::{RoleName, GlobContext};
 use leptos::{ev::SubmitEvent, html::Input, *};
 use bff::server::Session;
 
@@ -8,7 +8,7 @@ use bff::server::Session;
 #[component]
 pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
     // Пользователь уже авторизован, перенаправляем на главную
-    if rw_session.with(Option::is_some) {
+    if use_context::<GlobContext>().unwrap().user_info.is_loaded() {
         let navigate = leptos_router::use_navigate();
         navigate("/", Default::default());
     }
@@ -22,35 +22,33 @@ pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
 
     let on_submit = {
         let async_handler = move |login: String, password: String| {
-            // let set_server = use_context::<WriteSignal<Server>>().unwrap();
-
-            let authentic = {
-                logging::log!("вызов асинхр. функции");
-
-                // set_server.update(|serv| {
-                //     let auth = serv.register(login, password);
-                // })
-            };
+            logging::log!("вызов асинхр. функции: логин - {login}, пароль - {password}");
         };
 
         move |ev: SubmitEvent| {
             ev.prevent_default();
             let login_node = login_node_ref.get().unwrap();
             let password_node = password_node_ref.get().unwrap();
-            let passcheck_node = passcheck_node_ref.get().unwrap();
 
             async_handler(login_node.value(), password_node.value());
 
+            // заблокировать поток пока не получу id (отправить логин и пароль на регистрацию)
+            // в случае ошибки установить сигнал ошибки в Some и прерваться
+            let user_id = "10".to_string();
 
-            rw_session.set(Some(Session {
-                id: "".to_string(),
-                user_id: "".to_string(),
-            }));
+            // заблокировать поток пока не получу sess_id (отправить id и пароль на авторизацию)
+            // в случае ошибки установить сигнал ошибки в Some и прерваться
+            let sess_id = "777".to_string();
 
-            // Очистка формы
-            login_node.set_value("");
-            password_node.set_value("");
-            passcheck_node.set_value("");
+            let session = Session {
+                id: sess_id,
+                user_id,
+            };
+            
+            rw_session.set(Some(session));
+
+            // установить сигнал ошибки в None, если он Some
+            ();
 
             // Возврат
             let _ = leptos::web_sys::window().unwrap().history().unwrap().back();

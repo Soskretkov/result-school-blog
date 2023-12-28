@@ -6,12 +6,12 @@ use leptos_router::*;
 use login::Login;
 
 #[component]
-pub fn ControlPanel(session: RwSignal<Option<Session>>) -> impl IntoView {
+pub fn ControlPanel(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
     let history = leptos::web_sys::window().unwrap().history().unwrap();
 
     view! {
         <div class="flex flex-col items-end">
-            <Login rw_session={session}></Login>
+            <Login rw_session={rw_session}></Login>
 
             <div class="w-[95px] mt-2.5 justify-between grid grid-flow-col auto-cols-fr">
                 <Icon on:click= move |_| {let _ = history.back();}  id="fa-backward" class="cursor-pointer text-[24px] text-left"/>
