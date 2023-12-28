@@ -26,27 +26,58 @@ pub fn Login(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
     let glob_context = use_context::<GlobContext>().unwrap();
 
     view! {
-        {
-            move || match glob_context.user_info.with(Option::is_some) {
-                true => {
-                    let login = glob_context.user_info.with(|user_info| user_info.as_ref().unwrap().as_ref().unwrap().login.clone());
-                    view! {
-                        <div class="flex h-8">
-                            <div class="mt-[2px] text-[18px] font-bold">{login}</div>
-                            <button on:click=on_click class="bg-inherit ml-2.5 px-0 py-0 border-none cursor-pointer">
-                                <Icon id="fa-sign-out" class="text-[24px]"/>
-                            </button>
-                        </div>
-                    }
-                    .into_view()
-                }
+        // {
+        //     // посмотри пример с users
+        //     move || match glob_context.user_info.with(Option::is_some) {
+        //         true => {
+        //             let login = glob_context.user_info.with(|user_info|
+        //                 user_info
+        //                     .as_ref()
+        //                     .and_then(|inner| inner.as_ref())
+        //                     .map(|info| info.login.clone())
+        //                     .unwrap_or_default()
+        //             );
 
-                false => view! {
-                    <A href="/login" class="w-full no-underline h-8">
-                        <Button>Войти</Button>
-                    </A>
-                },
+        //             logging::log!("{:#?}", glob_context.user_info.get());
+
+        //             view! {
+        //                 <div class="flex h-8">
+        //                     <div class="mt-[2px] text-[18px] font-bold">{login}</div>
+        //                     <button on:click=on_click class="bg-inherit ml-2.5 px-0 py-0 border-none cursor-pointer">
+        //                         <Icon id="fa-sign-out" class="text-[24px]"/>
+        //                     </button>
+        //                 </div>
+        //             }
+        //             .into_view()
+        //         }
+
+        //         false => view! {
+        //             <A href="/login" class="w-full no-underline h-8">
+        //                 <Button>Войти</Button>
+        //             </A>
+        //         },
+        //     }
+        // }
+
+        <Suspense
+            fallback=move || view! {
+                <A href="/login" class="w-full no-underline h-8">
+                    <Button>Войти</Button>
+                </A>
             }
-        }
+        >
+            <div class="flex h-8">
+                <div class="mt-[2px] text-[18px] font-bold">{glob_context.user_info.with(|user_info|
+                    user_info
+                        .as_ref()
+                        .and_then(|inner| inner.as_ref())
+                        .map(|info| info.login.clone())
+                        .unwrap_or_default()
+                )}</div>
+                <button on:click=on_click class="bg-inherit ml-2.5 px-0 py-0 border-none cursor-pointer">
+                    <Icon id="fa-sign-out" class="text-[24px]"/>
+                </button>
+            </div>
+        </Suspense>
     }
 }

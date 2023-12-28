@@ -28,7 +28,7 @@ pub fn App() -> impl IntoView {
     let user_info = create_local_resource(
         move || rw_session,
         move |_| async move {
-            match rw_session.get() {
+            match rw_session.get_untracked() {
                 Some(ref session) => bff::server::fetch_self_user_info(session)
                     .await
                     .map(|user| UserInfo::new(user)),

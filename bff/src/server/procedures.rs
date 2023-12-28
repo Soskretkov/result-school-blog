@@ -5,8 +5,12 @@ use super::utils;
 use crate::api_utils;
 use uuid::Uuid;
 
+
+// исключительно для случая когда нет куки
+// почему подход выше работает: при смене пароля массив сессий обнуляется
+// почему id: при наличии учетки клиент так и так проясняет id чтобы образовать сессию
 pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
-    let wrapped_user: Option<DbUser> = api_utils::user_by_id(user_id).await;
+    let wrapped_user: Option<DbUser> = api_utils::user_by_login(user_id).await;
 
     match wrapped_user {
         None => Err("Пользователь не найден".into()),
