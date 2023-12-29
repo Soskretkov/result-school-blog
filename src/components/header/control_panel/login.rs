@@ -36,11 +36,11 @@ pub fn Login(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
         >
             {
                 // нечто похожее на странице users
-                move || match use_context::<GlobContext>().unwrap().user_info.user_data() {
+                move || match &use_context::<GlobContext>().unwrap().user_info.user_data() {
                     Some(info) => {
                         view! {
                             <div class="flex h-8">
-                                <div class="mt-[2px] text-[18px] font-bold">{info.login}</div>
+                                <div class="mt-[2px] text-[18px] font-bold">{info.login.clone()}</div>
                                 <button on:click=on_click class="bg-inherit ml-2.5 px-0 py-0 border-none cursor-pointer">
                                     <Icon id="fa-sign-out" class="text-[24px]"/>
                                 </button>

@@ -7,7 +7,8 @@ use tbody_row::TbodyRow;
 
 #[component]
 pub fn Users() -> impl IntoView {
-    let mut user_info = use_context::<GlobContext>().unwrap().user_info;
+    // выяснить клонирование
+    let user_info = &mut use_context::<GlobContext>().unwrap().user_info;
 
     // Пользователь не авторизован, перенаправляем на авторизацию
     if user_info.user_data().is_none() {
@@ -18,23 +19,23 @@ pub fn Users() -> impl IntoView {
     // обновить информацию по пользователю
     user_info.refetch();
 
-    let users_res = create_resource(
-        || (),
-        move |_| async {
-            server::fetch_all_users(&use_context::<GlobContext>().unwrap().session.get().unwrap())
-                .await
-                .unwrap()
-        },
-    );
+    // let users_res = create_resource(
+    //     || (),
+    //     move |_| async {
+    //         // server::fetch_all_users(&use_context::<GlobContext>().unwrap().session.get().unwrap())
+    //         //     .await
+    //         //     .unwrap()
+    //     },
+    // );
 
-    let roles_res = create_resource(
-        || (),
-        |_| async {
-            server::fetch_all_roles(&use_context::<GlobContext>().unwrap().session.get().unwrap())
-                .await
-                .unwrap()
-        },
-    );
+    // let roles_res = create_resource(
+    //     || (),
+    //     |_| async {
+    //         server::fetch_all_roles(&use_context::<GlobContext>().unwrap().session.get().unwrap())
+    //             .await
+    //             .unwrap()
+    //     },
+    // );
 
     // Ресурсы также предоставляют refetch()метод, который позволяет вручную перезагрузить данные.
     view! {
@@ -55,22 +56,22 @@ pub fn Users() -> impl IntoView {
                     //     None => ().into_view(),
                     //     Some(vec) => {
                             view! {
-                                <Suspense
-                                    fallback=move || view! { <p class="text-center">"Loading..."</p> }
-                                >
-                                    <For
-                                        each=move || users_res.get().unwrap_or(Vec::new())
-                                        key=|user| user.id.clone()
-                                        children=move |user| {
-                                            view! {
-                                                <TbodyRow
-                                                    user={user}
-                                                    roles={roles_res}
-                                                />
-                                            }
-                                        }
-                                    />
-                                </Suspense>
+                                // <Suspense
+                                //     fallback=move || view! { <p class="text-center">"Loading..."</p> }
+                                // >
+                                //     <For
+                                //         each=move || users_res.get().unwrap_or(Vec::new())
+                                //         key=|user| user.id.clone()
+                                //         children=move |user| {
+                                //             view! {
+                                //                 <TbodyRow
+                                //                     user={user}
+                                //                     roles={roles_res}
+                                //                 />
+                                //             }
+                                //         }
+                                //     />
+                                // </Suspense>
                             }
                         }
                     }
