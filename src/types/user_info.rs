@@ -15,7 +15,7 @@ impl UserInfo {
         let user_info = create_local_resource(
             move || rw_session.get(),
             move |wrpd_session: Option<Session>| async move {
-                logging::log!("обновление данных пользователя");
+                logging::log!("user_info.rs: async данные пользователя");
                 match wrpd_session {
                     Some(ref session) => bff::server::fetch_self_user_info(session)
                         .await

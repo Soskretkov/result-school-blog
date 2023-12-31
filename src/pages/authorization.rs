@@ -14,6 +14,8 @@ pub fn Authorization(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
         navigate("/", Default::default());
     }
 
+    // logging::log!("{:?}", use_location().pathname.get());
+
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
 

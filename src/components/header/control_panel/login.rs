@@ -26,17 +26,17 @@ pub fn Login(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
     view! {
         <Suspense
             fallback=move || {
-                logging::log!("logging.rs: провал загрузки");
+                logging::log!("Header (logging.rs): fallback Suspense (нет UserInfo)");
                 view! {
                     <A href="/login" class="w-full no-underline h-8">
-                        <Button>Войти</Button>
+                        <Button>"Войти"</Button>
                     </A>
                 }
             }
         >
             {
                 // нечто похожее на странице users
-                move || match &use_context::<GlobContext>().unwrap().user_info.user_data() {
+                move || match use_context::<GlobContext>().unwrap().user_info.user_data() {
                     Some(info) => {
                         view! {
                             <div class="flex h-8">

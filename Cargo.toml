@@ -13,3 +13,7 @@ leptos_router = { version = "0.5", features = ["csr"] }
 chrono = "0.4"                                          # footer: отображает текущую дату
 bff = { path = "bff" }
 serde_json = "1.0"                                      # footer: берет погоду в файле
+
+gloo-timers = { version = "0.3.0", features = [
+    "futures",
+] } # footer: имитирует задержку

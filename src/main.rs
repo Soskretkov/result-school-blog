@@ -14,16 +14,16 @@ fn main() {
 }
 
 // Условности:
-// 1) только перемонтированый Footer обновит погоду и дату (а этого не происходит)
-// В React, когда родительский перерендеривается, это ведет к перерендерингу всей дочерней иерархии.
-// 2) Нет валидации авторизации, нет disabled на кнопку
-// 3) Нет асинхронных запросов у авторизации, регистрации
-// 4) Страница Users: вход только с правами в принципе, логика похожа на login.rs (Header)
+// 1) Нет валидации авторизации, нет disabled на кнопку
+// 2) Нет асинхронных запросов у авторизации, регистрации
+// 3) Страница Users: вход только с правами в принципе, логика похожа на login.rs (Header)
 #[component]
 pub fn App() -> impl IntoView {
     let rw_session = create_rw_signal::<Option<Session>>(None);
+    let (location, set_location) = create_signal("".to_string());
 
     provide_context(GlobContext {
+        location,
         session: rw_session.read_only(),
         user_info: UserInfo::new(rw_session),
     });
@@ -33,6 +33,13 @@ pub fn App() -> impl IntoView {
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
                 <Header rw_session={rw_session}/> // btn. "выход" сбросывает rw_session на None
                 <main class="mt-[120px]">
+
+                {create_effect(move |_| {
+                    let current_path = use_location().pathname;
+                    set_location.set(current_path.get());
+                    logging::log!("Переход на страницу: {}", current_path.get());
+                });}
+
                     <Routes>
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
                         <Route path="/login" view=move || view!{<Authorization rw_session={rw_session}/>}/>
