@@ -78,6 +78,7 @@ struct Weather {
 }
 
 async fn get_weather() -> Weather {
+    // logging::log!("Footer (weather.rs): погода сам асинхронный блок");
     TimeoutFuture::new(1_000).await;
 
     let json_file_content: &str = include_str!("./weather.json");

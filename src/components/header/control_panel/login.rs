@@ -26,7 +26,7 @@ pub fn Login(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
     view! {
         <Suspense
             fallback=move || {
-                logging::log!("Header (logging.rs): fallback Suspense (нет UserInfo)");
+                logging::log!("Header (logging.rs): Suspense fallback (нет UserInfo)");
                 view! {
                     <A href="/login" class="w-full no-underline h-8">
                         <Button>"Войти"</Button>

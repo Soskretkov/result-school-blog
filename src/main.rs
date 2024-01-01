@@ -30,16 +30,16 @@ pub fn App() -> impl IntoView {
 
     view! {
         <Router>
+            {
+                let current_path = use_location().pathname;
+                move || {
+                    logging::log!("Переход на страницу: {}", current_path.get());
+                    set_location.set(current_path.get());
+                }
+            }
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
                 <Header rw_session={rw_session}/> // btn. "выход" сбросывает rw_session на None
                 <main class="mt-[120px]">
-
-                {create_effect(move |_| {
-                    let current_path = use_location().pathname;
-                    set_location.set(current_path.get());
-                    logging::log!("Переход на страницу: {}", current_path.get());
-                });}
-
                     <Routes>
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
                         <Route path="/login" view=move || view!{<Authorization rw_session={rw_session}/>}/>
