@@ -1,23 +1,27 @@
 mod role;
 mod user_data;
-use bff::server::{Session};
+use bff::server::Session;
 use leptos::*;
 pub use role::RoleName;
 pub use user_data::UserData;
 
 #[derive(Debug, Clone)]
 pub struct UserInfo {
-    resurce: Resource<Option<Session>, Option<UserData>>,
+    resurce: Resource<(Option<Session>, String), Option<UserData>>,
+    // resurce: Resource<Option<Session>, Option<UserData>>,
 }
 
 impl UserInfo {
-    pub fn new(rw_session: RwSignal<Option<Session>>) -> Self {
+    pub fn new(session: ReadSignal<Option<Session>>, location: ReadSignal<String>) -> Self {
+        // pub fn new(session: ReadSignal<Option<Session>>) -> Self {
         let user_info = create_local_resource(
-            move || rw_session.get(),
-            move |wrpd_session: Option<Session>| async move {
+            // move || session.get(),
+            move || (session.get(), location.get()),
+            // move |wrpd_session| async move {
+            move |(wrpd_session, _)| async move {            
                 logging::log!("user_info.rs: async данные пользователя");
                 match wrpd_session {
-                    Some(ref session) => bff::server::fetch_self_user_info(session)
+                    Some(ref sess) => bff::server::fetch_self_user_info(sess)
                         .await
                         .map(|user| UserData::new(user)),
                     None => None,
@@ -43,9 +47,9 @@ impl UserInfo {
 
     // pub fn user_data(&self) -> Option<&UserData> {
     //     self.resurce.with(|rf| rf.as_ref().and_then(Option::as_ref))
-    // }    
+    // }
 
-    pub fn refetch(&mut self) {
-        self.resurce.refetch();
-    }
+    // pub fn refetch(&mut self) {
+    //     self.resurce.refetch();
+    // }
 }

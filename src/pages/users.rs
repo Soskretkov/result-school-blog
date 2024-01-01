@@ -20,7 +20,6 @@ pub fn Users() -> impl IntoView {
     //         .unwrap()
     //         .login
     // );
-    user_info.refetch();
 
     // Пользователь не авторизован, перенаправляем на авторизацию
     // if user_info.user_data().is_none() {

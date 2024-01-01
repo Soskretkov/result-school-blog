@@ -6,7 +6,7 @@ use bff::server::Session;
 
 
 #[component]
-pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
+pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
     // Пользователь уже авторизован, перенаправляем на главную
     if use_context::<GlobContext>().unwrap().user_info.is_loaded() {
         let navigate = leptos_router::use_navigate();
@@ -45,7 +45,7 @@ pub fn Registration(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
                 user_id,
             };
             
-            rw_session.set(Some(session));
+            set_session.set(Some(session));
 
             // установить сигнал ошибки в None, если он Some
             ();

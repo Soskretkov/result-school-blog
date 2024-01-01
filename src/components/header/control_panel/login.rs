@@ -6,21 +6,21 @@ use leptos::*;
 use leptos_router::*;
 
 #[component]
-pub fn Login(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
+pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
     // выход из учетной записи в гостевое представление
-    let logout_action = create_action(move |user_signal: &RwSignal<Option<Session>>| {
-        let wrapped_sess = user_signal.get();
+    let logout_action = create_action(move |wr_session: &WriteSignal<Option<Session>>| {
+        let wr_session_cloned = wr_session.clone();
         async move {
-            if let Some(session) = wrapped_sess {
+            if let Some(session) = use_context::<GlobContext>().unwrap().session.get() {
                 if server::logout(&session).await.is_ok() {
-                    rw_session.update(|rf| *rf = None);
+                    wr_session_cloned.update(|rf| *rf = None);
                 }
             }
         }
     });
 
     let on_click = move |_: ev::MouseEvent| {
-        logout_action.dispatch(rw_session);
+        logout_action.dispatch(set_session);
     };
 
     view! {

@@ -6,12 +6,12 @@ use leptos::*;
 use logo::Logo;
 
 #[component]
-pub fn Header(rw_session: RwSignal<Option<Session>>) -> impl IntoView {
+pub fn Header(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
     view! {
         <header class="flex justify-between bg-white h-[120px] w-[1000px] py-5 px-10 shadow-md fixed top-0">
             <Logo/>
             <Description/>
-            <ControlPanel rw_session={rw_session}/>
+            <ControlPanel set_session={set_session}/>
         </header>
     }
 }
