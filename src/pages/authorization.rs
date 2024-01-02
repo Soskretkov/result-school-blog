@@ -7,10 +7,15 @@ use leptos_router::*;
 
 #[component]
 pub fn Authorization(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
-    // Пользователь уже авторизован, перенаправляем на главную
-    if use_context::<GlobContext>().unwrap().user_info.is_loaded() {
-        let navigate = leptos_router::use_navigate();
-        navigate("/", Default::default());
+    let glob_ctx = use_context::<GlobContext>().unwrap();
+
+    // Пользователь уже авторизован, перенаправляем на 
+    // Предполагается что невалидные куки отсееваются на старте приложухи
+    if glob_ctx.session.with(Option::is_some) {
+        // let navigate = leptos_router::use_navigate();
+        // navigate("/", Default::default());
+        let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
+
     }
 
     let (auth_error, set_auth_error) = create_signal::<Option<String>>(None);

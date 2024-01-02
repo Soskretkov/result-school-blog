@@ -8,16 +8,12 @@ pub use user_data::UserData;
 #[derive(Debug, Clone)]
 pub struct UserInfo {
     resurce: Resource<(Option<Session>, String), Option<UserData>>,
-    // resurce: Resource<Option<Session>, Option<UserData>>,
 }
 
 impl UserInfo {
     pub fn new(session: ReadSignal<Option<Session>>, location: ReadSignal<String>) -> Self {
-        // pub fn new(session: ReadSignal<Option<Session>>) -> Self {
         let user_info = create_local_resource(
-            // move || session.get(),
             move || (session.get(), location.get()),
-            // move |wrpd_session| async move {
             move |(wrpd_session, _)| async move {            
                 logging::log!("user_info.rs: async данные пользователя");
                 match wrpd_session {

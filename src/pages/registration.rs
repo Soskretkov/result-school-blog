@@ -1,57 +1,51 @@
 use super::components::{FormErrMsg, H2};
 use crate::components::{Button, Input};
-use crate::types::{RoleName, GlobContext};
+use crate::types::GlobContext;
+use bff::server::{self, Session};
 use leptos::{ev::SubmitEvent, html::Input, *};
-use bff::server::Session;
-
 
 #[component]
 pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
+    let glob_ctx = use_context::<GlobContext>().unwrap();
+
     // Пользователь уже авторизован, перенаправляем на главную
-    if use_context::<GlobContext>().unwrap().user_info.is_loaded() {
-        let navigate = leptos_router::use_navigate();
-        navigate("/", Default::default());
+    // Предполагается что невалидные куки отсееваются на старте приложухи
+    if glob_ctx.session.with(Option::is_some) {
+        let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
     }
 
-    let (authentic, set_authentic) = create_signal::<Option<String>>(None);
-
-
+    let (auth_error, set_auth_error) = create_signal::<Option<String>>(None);
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
     let passcheck_node_ref = create_node_ref::<Input>();
 
     let on_submit = {
-        let async_handler = move |login: String, password: String| {
-            logging::log!("вызов асинхр. функции: логин - {login}, пароль - {password}");
-        };
+        let authorize = create_action(move |_: &()| {
+            let login = login_node_ref.get().unwrap().value();
+            let password = password_node_ref.get().unwrap().value();
+
+            async move {
+                match server::register(login, password.clone()).await {
+                    Ok(user_id) => match server::authorize(&user_id, &password).await {
+                        Ok(sess_id) => {
+                            set_session.set(Some(Session {
+                                id: sess_id,
+                                user_id,
+                            }));
+
+                            // Возврат
+                            let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
+                        }
+                        Err(err_msg) => set_auth_error.set(Some(err_msg)),
+                    },
+                    Err(e) => set_auth_error.set(Some(e)),
+                };
+            }
+        });
 
         move |ev: SubmitEvent| {
             ev.prevent_default();
-            let login_node = login_node_ref.get().unwrap();
-            let password_node = password_node_ref.get().unwrap();
-
-            async_handler(login_node.value(), password_node.value());
-
-            // заблокировать поток пока не получу id (отправить логин и пароль на регистрацию)
-            // в случае ошибки установить сигнал ошибки в Some и прерваться
-            let user_id = "10".to_string();
-
-            // заблокировать поток пока не получу sess_id (отправить id и пароль на авторизацию)
-            // в случае ошибки установить сигнал ошибки в Some и прерваться
-            let sess_id = "777".to_string();
-
-            let session = Session {
-                id: sess_id,
-                user_id,
-            };
-            
-            set_session.set(Some(session));
-
-            // установить сигнал ошибки в None, если он Some
-            ();
-
-            // Возврат
-            let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
+            authorize.dispatch(());
         }
     };
 
@@ -83,12 +77,7 @@ pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView 
                 >"Зарегистрироваться"
                 </Button>
 
-                // <FormErrMsg/>
-
-                // {move || match authentic.get() {
-                //     None => {}.into_view(),
-                //     Some(data) => view! { <div>{data.error}</div> }.into_view()
-                // }}
+                <FormErrMsg err_signal=auth_error></FormErrMsg>
             </form>
         </div>
     }
