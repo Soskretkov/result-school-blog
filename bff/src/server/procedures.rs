@@ -18,7 +18,6 @@ pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> 
             let mut new_sessions = user.sessions;
             let session_id = new_sessions.add_rnd_session();
             api_utils::update_user_sessions(&user.id, &new_sessions).await;
-            // let session_id = "some_id".to_string(); 
             Ok(session_id)
         }
     }
