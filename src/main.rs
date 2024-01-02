@@ -13,9 +13,6 @@ fn main() {
     leptos::mount_to_body(App);
 }
 
-// Условности:
-// 1) Нет валидации авторизации, нет disabled на кнопку
-// 2) Нет асинхронных запросов у авторизации, регистрации, users
 #[component]
 pub fn App() -> impl IntoView {
     let (session, set_session) = create_signal::<Option<Session>>(None);

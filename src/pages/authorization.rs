@@ -14,63 +14,36 @@ pub fn Authorization(set_session: WriteSignal<Option<Session>>) -> impl IntoView
     }
 
     let (auth_error, set_auth_error) = create_signal::<Option<String>>(None);
-
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();
 
     let on_submit = {
-        let authorize = create_action(move |input: &(String, String)| {
-            let login = input.0.clone();
-            let password = input.1.clone();
-            let set_session = set_session.clone();
-            let set_auth_error = set_auth_error.clone();
+        let authorize = create_action(move |_: &()| {
+            let login = login_node_ref.get().unwrap().value();
+            let password = password_node_ref.get().unwrap().value();
 
             async move {
                 match server::fetch_id_by_login(&login).await {
-                    // Some(user_id) => {
                     Some(user_id) => match server::authorize(&user_id, &password).await {
                         Ok(sess_id) => {
-                            logging::log!("{}", sess_id);
-
-                            let new_sess = Session {
+                            set_session.set(Some(Session {
                                 id: sess_id,
                                 user_id,
-                            };
-
-
-                            set_session.set(Some(new_sess));
+                            }));
 
                             // Возврат
                             let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
                         }
-                        Err(err_msg) => {
-                            set_auth_error.set(Some(err_msg));
-                        }
+                        Err(err_msg) => set_auth_error.set(Some(err_msg)),
                     },
-                    None => {
-                        set_auth_error.set(Some("Пользователя не существует".to_string()));
-                    }
+                    None => set_auth_error.set(Some("Пользователь не существует".to_string())),
                 };
             }
         });
 
         move |ev: SubmitEvent| {
             ev.prevent_default();
-
-            let login = login_node_ref.get().unwrap().value();
-            let password = password_node_ref.get().unwrap().value();
-
-            authorize.dispatch((login, password));
-
-            // let new_sess = Session {
-            //     id: sess_id,
-            //     user_id,
-            // };
-
-            // set_session.set(Some(new_sess));
-
-            // Возврат
-            // let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
+            authorize.dispatch(());
         }
     };
 
@@ -96,7 +69,7 @@ pub fn Authorization(set_session: WriteSignal<Option<Session>>) -> impl IntoView
                 >"Войти"
                 </Button>
 
-                // <FormErrMsg/>
+                <FormErrMsg err_signal=auth_error></FormErrMsg>
 
                 <A href="/register" class="mt-5 text-[18px] text-center text-black">"Регистрация"</A>
             </form>
