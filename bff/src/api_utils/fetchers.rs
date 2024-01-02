@@ -36,7 +36,7 @@ async fn fetch_by_url<T>(url: &str) -> Vec<T>
 where
     T: DeserializeOwned,
 {
-    // logging::log!("{}", url);
+    logging::log!("{}", url);
 
     reqwest::get(url)
         .await

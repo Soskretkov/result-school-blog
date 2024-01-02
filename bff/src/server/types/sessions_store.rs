@@ -4,6 +4,7 @@ use uuid::Uuid;
 
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
+#[serde(transparent)]
 pub struct SessionsStore {
     pub data: HashSet<String>,
 }

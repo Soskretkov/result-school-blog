@@ -18,7 +18,7 @@ pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> 
             let mut new_sessions = user.sessions;
             let session_id = new_sessions.add_rnd_session();
             api_utils::update_user_sessions(&user.id, &new_sessions).await;
-
+            // let session_id = "some_id".to_string(); 
             Ok(session_id)
         }
     }
@@ -69,9 +69,9 @@ pub async fn logout(session: &Session) -> Result<(), ()> {
     Ok(())
 }
 
-async fn _is_valid_session(session: &Session) -> bool {
-    api_utils::find_user_by_kv("id", &session.user_id)
-        .await
-        .filter(|user: &DbUser| user.sessions.is_exist(&session.id))
-        .is_some()
-}
+// async fn _is_valid_session(session: &Session) -> bool {
+//     api_utils::find_user_by_kv("id", &session.user_id)
+//         .await
+//         .filter(|user: &DbUser| user.sessions.is_exist(&session.id))
+//         .is_some()
+// }

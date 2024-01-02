@@ -6,7 +6,7 @@
             "password": "qwerty123",
             "registered_at": "2050-09-22",
             "role_id": 2,
-            "session_id": [1, 2]
+            "sessions": ["1", "2"]
         }
     ],
     "roles": [
