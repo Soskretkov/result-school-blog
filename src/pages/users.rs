@@ -7,48 +7,36 @@ use tbody_row::TbodyRow;
 
 #[component]
 pub fn Users() -> impl IntoView {
-    // выяснить клонирование
-    let user_info = &mut use_context::<GlobContext>().unwrap().user_info;
+    let glob_ctx = use_context::<GlobContext>().unwrap();
 
-    // logging::log!("до переименования: {:?}", user_info.user_data().unwrap().login);
-    // logging::log!(
-    //     "до обновления: {:?}",
-    //     use_context::<GlobContext>()
-    //         .unwrap()
-    //         .user_info
-    //         .user_data()
-    //         .unwrap()
-    //         .login
-    // );
+    // Пользователь не авторизован, перенаправляем откуда пришел
+    if glob_ctx.user_info.user_data().is_none() {
+        logging::log!("тут");
+        // let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
+        let navigate = leptos_router::use_navigate();
+        navigate("/", Default::default());
+    }
 
-    // Пользователь не авторизован, перенаправляем на авторизацию
-    // if user_info.user_data().is_none() {
-    //     let navigate = leptos_router::use_navigate();
-    //     navigate("/login", Default::default());
-    // }
-
-    // обновить информацию по пользователю
-    // user_info.refetch();
-
-    // let users_res = create_resource(
-    //     || (),
-    //     move |_| async {
-    //         // server::fetch_all_users(&use_context::<GlobContext>().unwrap().session.get().unwrap())
-    //         //     .await
-    //         //     .unwrap()
-    //     },
-    // );
+    logging::log!("тут не должно быть");
 
     // let roles_res = create_resource(
     //     || (),
-    //     |_| async {
-    //         server::fetch_all_roles(&use_context::<GlobContext>().unwrap().session.get().unwrap())
-    //             .await
-    //             .unwrap()
+    //     move |_| {
+    //         let sess = glob_ctx.session.get().unwrap();
+    //         async move { server::fetch_all_roles(&sess).await.unwrap() }
     //     },
     // );
 
-    // Ресурсы также предоставляют refetch()метод, который позволяет вручную перезагрузить данные.
+    // let users_res = create_resource(
+    //     || (),
+    //     move |_| {
+    //         let sess = glob_ctx.session.get().unwrap();
+    //         async move { server::fetch_all_users(&sess).await.unwrap() }
+    //     },
+    // );
+
+    let user_info = glob_ctx.user_info;
+
     view! {
         <div class="flex items-center flex-col w-[570px] mx-auto">
             <H2>"Пользователи"</H2>
@@ -83,10 +71,10 @@ pub fn Users() -> impl IntoView {
                             //     }
                             // />
                         </Suspense>
-                    }                    
+                    }
                 }
             </tbody>
             </table>
         </div>
-    }
+    }.into_view()
 }

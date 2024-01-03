@@ -34,8 +34,22 @@ pub fn App() -> impl IntoView {
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
                         <Route path="/login" view=move || view!{<Authorization set_session={set_session}/>}/>
                         <Route path="/register" view=move || view!{<Registration set_session={set_session}/>}/>
-                        <Route path="/users" view=|| view!{<Users/>}/>
-                        <Route path="/post" view=move || view!{<Test/>}/>
+
+                        <Route path="/users" view=move || {
+                            view! {
+                                <Show
+                                    when=move|| session.with(Option::is_some)
+                                    fallback=|| view!{<div>"Ошибка"</div>}
+                                >
+                                    <Outlet/>
+                                </Show>
+                            }
+                        }>
+                            <Route path="" view=|| view!{<Users/>}/>
+                        </Route>
+
+                        // <Route path="/users" view=|| view!{<Users/>}/>
+                        <Route path="/post" view=|| view!{<Test/>}/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>
                         <Route path="/*" view=|| view!{<div>"Ошибка"</div>}/>
                     </Routes>
