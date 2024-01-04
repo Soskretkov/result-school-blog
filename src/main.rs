@@ -4,7 +4,7 @@ mod components;
 mod pages;
 mod types;
 use bff::server::Session;
-use components::{Footer, Header};
+use components::{Footer, Header, AccessDenied};
 use leptos_router::*;
 use pages::{Authorization, Registration, Test, Users};
 use types::{GlobContext, UserInfo};
@@ -13,6 +13,7 @@ fn main() {
     leptos::mount_to_body(App);
 }
 
+// ProtectedPage{view, can_access} + HOC PageGuard
 #[component]
 pub fn App() -> impl IntoView {
     let (session, set_session) = create_signal::<Option<Session>>(None);
@@ -35,21 +36,21 @@ pub fn App() -> impl IntoView {
                         <Route path="/login" view=move || view!{<Authorization set_session={set_session}/>}/>
                         <Route path="/register" view=move || view!{<Registration set_session={set_session}/>}/>
 
-                        <Route path="/users" view=move || {
-                            view! {
-                                <Show
-                                    when=move|| session.with(Option::is_some)
-                                    fallback=|| view!{<div>"Ошибка"</div>}
-                                >
-                                    <Outlet/>
-                                </Show>
-                            }
-                        }>
-                            <Route path="" view=|| view!{<Users/>}/>
-                        </Route>
+                        // <Route path="/users" view=move || {
+                        //     view! {
+                        //         <Show
+                        //             when=move|| session.with(Option::is_some)
+                        //             fallback=|| view!{<div>"Ошибка"</div>}
+                        //         >
+                        //             <Outlet/>
+                        //         </Show>
+                        //     }
+                        // }>
+                        //     <Route path="" view=|| view!{<Users/>}/>
+                        // </Route>
 
-                        // <Route path="/users" view=|| view!{<Users/>}/>
-                        <Route path="/post" view=|| view!{<Test/>}/>
+                        <Route path="/users" view=Users/>
+                        <Route path="/post" view=Test/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>
                         <Route path="/*" view=|| view!{<div>"Ошибка"</div>}/>
                     </Routes>

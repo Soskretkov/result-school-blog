@@ -1,23 +1,41 @@
 use super::components::H2;
+use crate::components::PageNoFound;
 use leptos::*;
 mod tbody_row;
 use crate::bff::server;
 use crate::types::{GlobContext, UserInfo};
+use leptos_router::*;
 use tbody_row::TbodyRow;
 
-#[component]
 pub fn Users() -> impl IntoView {
+    {
+        let sess = use_context::<GlobContext>().unwrap().session;
+
+        if sess.with(Option::is_some) {
+            view! {
+                <Route path="" view=|| view!{<UsersUnprotectedContent/>}/>
+            }
+        } else {
+            view! {
+                <Route path="" view=||view!{<div>"Ошибка"</div>}/>
+            }
+        }
+    }
+}
+
+#[component]
+pub fn UsersUnprotectedContent() -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
 
     // Пользователь не авторизован, перенаправляем откуда пришел
     if glob_ctx.user_info.user_data().is_none() {
-        logging::log!("тут");
+        // logging::log!("тут");
         // let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
         let navigate = leptos_router::use_navigate();
         navigate("/", Default::default());
     }
 
-    logging::log!("тут не должно быть");
+    // logging::log!("тут не должно быть");
 
     // let roles_res = create_resource(
     //     || (),
