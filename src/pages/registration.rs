@@ -8,10 +8,13 @@ use leptos::{ev::SubmitEvent, html::Input, *};
 pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
 
-    // Пользователь уже авторизован, перенаправляем на главную
+    // Пользователь уже авторизован, перенаправляем
     // Предполагается что невалидные куки отсееваются на старте приложухи
     if glob_ctx.session.with(Option::is_some) {
-        let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
+        let navigate = leptos_router::use_navigate();
+        navigate("/", Default::default());
+        return {}.into_view();
+        // let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
     }
 
     let (auth_error, set_auth_error) = create_signal::<Option<String>>(None);
@@ -80,5 +83,5 @@ pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView 
                 <FormErrMsg err_signal=auth_error></FormErrMsg>
             </form>
         </div>
-    }
+    }.into_view()
 }

@@ -6,5 +6,5 @@ mod test;
 
 pub use authorization::Authorization;
 pub use registration::Registration;
-pub use users::Users;
+pub use users::UsersPage;
 pub use test::Test;

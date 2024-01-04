@@ -4,9 +4,9 @@ mod components;
 mod pages;
 mod types;
 use bff::server::Session;
-use components::{Footer, Header, AccessDenied};
+use components::{Footer, Header, PageGuard};
 use leptos_router::*;
-use pages::{Authorization, Registration, Test, Users};
+use pages::{Authorization, Registration, Test, UsersPage};
 use types::{GlobContext, UserInfo};
 
 fn main() {
@@ -49,7 +49,8 @@ pub fn App() -> impl IntoView {
                         //     <Route path="" view=|| view!{<Users/>}/>
                         // </Route>
 
-                        <Route path="/users" view=Users/>
+                        // <Route path="/users" view=Users/>
+                        <Route path="/users" view=move || view!{<PageGuard page=UsersPage/>}/>
                         <Route path="/post" view=Test/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>
                         <Route path="/*" view=|| view!{<div>"Ошибка"</div>}/>

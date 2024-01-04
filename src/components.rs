@@ -3,11 +3,11 @@ mod footer;
 mod icon;
 mod input;
 mod button;
-mod access_denied;
+pub mod page_guard;
 
 pub use header::Header;
 pub use footer::Footer;
 pub use icon::Icon;
 pub use input::Input;
 pub use button::Button;
-pub use access_denied::AccessDenied;
+pub use page_guard::PageGuard;

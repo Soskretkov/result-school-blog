@@ -1,49 +1,28 @@
 use super::components::H2;
-use crate::components::PageNoFound;
+use crate::components::page_guard::Protected;
 use leptos::*;
 mod tbody_row;
 use crate::bff::server;
 use crate::types::{GlobContext, UserInfo};
-use leptos_router::*;
 use tbody_row::TbodyRow;
 
-pub fn Users() -> impl IntoView {
-    {
-        let sess = use_context::<GlobContext>().unwrap().session;
+pub struct UsersPage;
 
-        if sess.with(Option::is_some) {
-            view! {
-                <Route path="" view=|| view!{<UsersUnprotectedContent/>}/>
-            }
-        } else {
-            view! {
-                <Route path="" view=||view!{<div>"Ошибка"</div>}/>
-            }
+impl Protected for UsersPage {
+    fn view(&self) -> View {
+        view! {
+            <Users/>
         }
+    }
+
+    fn can_access(&self) -> bool {
+        true
     }
 }
 
 #[component]
-pub fn UsersUnprotectedContent() -> impl IntoView {
+fn Users() -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
-
-    // Пользователь не авторизован, перенаправляем откуда пришел
-    if glob_ctx.user_info.user_data().is_none() {
-        // logging::log!("тут");
-        // let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
-        let navigate = leptos_router::use_navigate();
-        navigate("/", Default::default());
-    }
-
-    // logging::log!("тут не должно быть");
-
-    // let roles_res = create_resource(
-    //     || (),
-    //     move |_| {
-    //         let sess = glob_ctx.session.get().unwrap();
-    //         async move { server::fetch_all_roles(&sess).await.unwrap() }
-    //     },
-    // );
 
     // let users_res = create_resource(
     //     || (),
