@@ -5,6 +5,14 @@
       "login": "anton",
       "password": "qwerty123",
       "registered_at": "2050-09-22",
+      "role_id": 0,
+      "sessions": []
+    },
+    {
+      "id": "n967870x",
+      "login": "max",
+      "password": "qwerty123",
+      "registered_at": "2026-09-22",
       "role_id": 2,
       "sessions": []
     }

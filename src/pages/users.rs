@@ -43,6 +43,14 @@ fn Users() -> impl IntoView {
         },
     );
 
+    let roles_res = create_resource(
+        || (),
+        move |_| {
+            let sess = glob_ctx.session.get().unwrap();
+            async move { server::fetch_all_roles(&sess).await.unwrap() }
+        },
+    );
+
     view! {
         <div class="flex items-center flex-col w-[570px] mx-auto">
             <H2>"Пользователи"</H2>
@@ -64,10 +72,11 @@ fn Users() -> impl IntoView {
                                 <For
                                     each=move || users_res.get().unwrap_or(Vec::new())
                                     key=|user| user.id.clone()
-                                    children=move |user| {
+                                    children=move |user| {                                            
                                         view! {
                                             <TbodyRow
                                                 user={user}
+                                                users_res={users_res}
                                             />
                                         }
                                     }
