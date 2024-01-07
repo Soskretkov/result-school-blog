@@ -34,7 +34,7 @@ impl UserInfo {
 
     pub fn is_loaded(&self) -> bool {
         self.resurce
-            .with(move |ui| ui.as_ref().map(|f| f.is_some()).unwrap_or(false))
+            .with(move |ui| ui.as_ref().map(Option::is_some).unwrap_or(false))
     }
 
     pub fn user_data(&self) -> Option<UserData> {

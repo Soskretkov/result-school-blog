@@ -4,6 +4,7 @@ use leptos::*;
 mod tbody_row;
 use crate::bff::server;
 use crate::types::{GlobContext, UserInfo};
+use crate::utils::isSyncServerClientRoles;
 use tbody_row::TbodyRow;
 
 pub struct UsersPage;
@@ -16,6 +17,16 @@ impl Protected for UsersPage {
     }
 
     fn can_access(&self) -> bool {
+        let (can_access, set_access) = create_signal(false);
+        let glob_ctx = use_context::<GlobContext>().unwrap().user_info.is_loaded();
+
+        let action = create_action(move |_: &()| async move {
+            let is_sync_roles = isSyncServerClientRoles().await;
+            set_access.set(is_sync_roles);
+        });
+
+        //синхронизация
+        //роль
         true
     }
 }
@@ -24,15 +35,13 @@ impl Protected for UsersPage {
 fn Users() -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
 
-    // let users_res = create_resource(
-    //     || (),
-    //     move |_| {
-    //         let sess = glob_ctx.session.get().unwrap();
-    //         async move { server::fetch_all_users(&sess).await.unwrap() }
-    //     },
-    // );
-
-    let user_info = glob_ctx.user_info;
+    let users_res = create_resource(
+        || (),
+        move |_| {
+            let sess = glob_ctx.session.get().unwrap();
+            async move { server::fetch_all_users(&sess).await.unwrap() }
+        },
+    );
 
     view! {
         <div class="flex items-center flex-col w-[570px] mx-auto">
@@ -47,31 +56,28 @@ fn Users() -> impl IntoView {
                     </tr>
                 </thead>
                 <tbody>
-                {move ||
-                    view! {
-                        <Suspense
-                            fallback=move || view! { <p class="text-center">"Loading..."</p> }
-                        >
-                            // debug
-                            <div>{|| use_context::<GlobContext>().unwrap().user_info.user_data().unwrap().login}</div>
-
-                            // <For
-                            //     each=move || users_res.get().unwrap_or(Vec::new())
-                            //     key=|user| user.id.clone()
-                            //     children=move |user| {
-                            //         view! {
-                            //             <TbodyRow
-                            //                 user={user}
-                            //                 roles={roles_res}
-                            //             />
-                            //         }
-                            //     }
-                            // />
-                        </Suspense>
+                    {move ||
+                        view! {
+                            <Suspense
+                                fallback=move || view! { <p class="text-center">"Loading..."</p> }
+                            >
+                                <For
+                                    each=move || users_res.get().unwrap_or(Vec::new())
+                                    key=|user| user.id.clone()
+                                    children=move |user| {
+                                        view! {
+                                            <TbodyRow
+                                                user={user}
+                                            />
+                                        }
+                                    }
+                                />
+                            </Suspense>
+                        }
                     }
-                }
-            </tbody>
+                </tbody>
             </table>
         </div>
-    }.into_view()
+    }
+    .into_view()
 }
