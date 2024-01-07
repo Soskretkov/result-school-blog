@@ -1,10 +1,11 @@
-use crate::bff::server::User;
+mod role_select;
+use role_select::RoleSelect;
+use crate::bff::server::{User,Role};
 use crate::components::Icon;
-use crate::types::RoleName;
 use leptos::*;
 
 #[component]
-pub fn TbodyRow(user: User, users_res: Resource<(), Vec<User>>) -> impl IntoView {
+pub fn TbodyRow(user: User, roles_res: Resource<(), Vec<Role>>) -> impl IntoView {
     // удалить в бд, запросить пользователей, обновить ресурс или сигнал
     let on_click = |_: ev::MouseEvent| unimplemented!();
 
@@ -15,7 +16,7 @@ pub fn TbodyRow(user: User, users_res: Resource<(), Vec<User>>) -> impl IntoView
         <td class="flex w-[150px] px-2.5">
             <RoleSelect
                 user_role_id={user.role_id}
-                users_res={users_res}
+                roles_res={roles_res}
             ></RoleSelect>
             <Icon
                 on:click=on_click
@@ -31,24 +32,5 @@ pub fn TbodyRow(user: User, users_res: Resource<(), Vec<User>>) -> impl IntoView
             />
         </td>
     </tr>
-    }
-}
-
-#[component]
-pub fn RoleSelect(user_role_id: u8, users_res: Resource<(), Vec<User>>) -> impl IntoView {
-    let option = |role_name: RoleName| {
-        view! {
-            <option value=role_name.as_u8() selected={user_role_id == role_name.as_u8()}>
-                {role_name.as_str()}
-            </option>
-        }
-    };
-
-    view! {
-        <select value={user_role_id}>
-            { option(RoleName::Administrator) }
-            { option(RoleName::Moderator) }
-            { option(RoleName::Reader) }
-        </select>
     }
 }

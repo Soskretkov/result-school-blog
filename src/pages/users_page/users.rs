@@ -1,38 +1,14 @@
-use super::components::H2;
-use crate::components::page_guard::Protected;
-use leptos::*;
+
 mod tbody_row;
-use crate::bff::server;
-use crate::types::{GlobContext, UserInfo};
-use crate::utils::isSyncServerClientRoles;
 use tbody_row::TbodyRow;
+use super::super::components::H2;
+use crate::bff::server;
+use leptos::*;
+use crate::types::{GlobContext};
 
-pub struct UsersPage;
-
-impl Protected for UsersPage {
-    fn view(&self) -> View {
-        view! {
-            <Users/>
-        }
-    }
-
-    fn can_access(&self) -> bool {
-        let (can_access, set_access) = create_signal(false);
-        let glob_ctx = use_context::<GlobContext>().unwrap().user_info.is_loaded();
-
-        let action = create_action(move |_: &()| async move {
-            let is_sync_roles = isSyncServerClientRoles().await;
-            set_access.set(is_sync_roles);
-        });
-
-        //синхронизация
-        //роль
-        true
-    }
-}
 
 #[component]
-fn Users() -> impl IntoView {
+pub fn Users() -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
 
     let users_res = create_resource(
@@ -76,7 +52,7 @@ fn Users() -> impl IntoView {
                                         view! {
                                             <TbodyRow
                                                 user={user}
-                                                users_res={users_res}
+                                                roles_res={roles_res}
                                             />
                                         }
                                     }

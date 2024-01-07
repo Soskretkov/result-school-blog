@@ -7,7 +7,7 @@ mod utils;
 use bff::server::Session;
 use components::{Footer, Header, PageGuard};
 use leptos_router::*;
-use pages::{Authorization, Registration, Test, UsersPage};
+use pages::{Authorization, Registration, UsersPage};
 use types::{GlobContext, UserInfo};
 
 fn main() {
@@ -52,7 +52,7 @@ pub fn App() -> impl IntoView {
 
                         // <Route path="/users" view=Users/>
                         <Route path="/users" view=move || view!{<PageGuard page=UsersPage/>}/>
-                        <Route path="/post" view=Test/>
+                        <Route path="/post" view=|| view!{<div>"Статьи"</div>}/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>
                         <Route path="/*" view=|| view!{<div>"Ошибка"</div>}/>
                     </Routes>

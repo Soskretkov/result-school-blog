@@ -1,7 +1,6 @@
 mod protected;
 use super::types::export_types::User;
 use crate::api_utils;
-pub use api_utils::test;
 use crate::server::types::export_types::Session;
 pub use protected::*;
 

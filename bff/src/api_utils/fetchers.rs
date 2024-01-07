@@ -3,10 +3,6 @@ use serde::de::DeserializeOwned;
 use super::URL;
 use leptos::*;
 
-pub async fn test() -> String {
-    "Успешный тест async fn".to_string()
-}
-
 pub async fn all_users<T>() -> Vec<T>
 where
     T: DeserializeOwned,
