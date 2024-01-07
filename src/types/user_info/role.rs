@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum RoleName {
     Administrator,
     Moderator,
@@ -35,6 +35,13 @@ impl RoleName {
     }
 
     pub fn can_remove_comment(&self) -> bool {
+        match self {
+            RoleName::Administrator | RoleName::Moderator => true,
+            _ => false,
+        }
+    }
+
+    pub fn can_view_users(&self) -> bool {
         match self {
             RoleName::Administrator | RoleName::Moderator => true,
             _ => false,
