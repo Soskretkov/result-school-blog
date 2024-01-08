@@ -41,7 +41,15 @@ impl RoleName {
         }
     }
 
+    // использование: бек - сверяет право на извлечение, фронт - возможность попасть на страницу
     pub fn can_view_users(&self) -> bool {
+        match self {
+            RoleName::Administrator | RoleName::Moderator => true,
+            _ => false,
+        }
+    }
+
+    pub fn can_view_roles(&self) -> bool {
         match self {
             RoleName::Administrator | RoleName::Moderator => true,
             _ => false,
