@@ -1,4 +1,4 @@
-use super::role::RoleName;
+use super::role_name::RoleName;
 use bff::server::User;
 
 
