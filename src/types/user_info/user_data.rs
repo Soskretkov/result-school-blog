@@ -1,6 +1,5 @@
-use super::role_name::RoleName;
+use bff::server::{RoleName};
 use bff::server::User;
-
 
 #[derive(Debug, Clone)]
 pub struct UserData {
