@@ -1,4 +1,4 @@
-use super::types::db_types::User as DbUser;
+use super::types::db_types::{RoleName, User as DbUser};
 use super::types::export_types::Session;
 use super::types::SessionsStore;
 use super::utils;
@@ -45,7 +45,7 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         login,
         password,
         registered_at: utils::get_current_date(),
-        role_id: 2,
+        role_id: RoleName::Reader,
         sessions: SessionsStore::new(),
     };
 

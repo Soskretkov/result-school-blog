@@ -23,7 +23,7 @@ pub fn App() -> impl IntoView {
     provide_context(GlobContext {
         location,
         session,
-        user_info: UserInfo::new(session, location), // Header, Users
+        user_info: UserInfo::new(session, location), // подписчики: Header
     });
 
     view! {

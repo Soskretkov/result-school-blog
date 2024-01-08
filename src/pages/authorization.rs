@@ -18,8 +18,6 @@ pub fn Authorization(set_session: WriteSignal<Option<Session>>) -> impl IntoView
         // let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
     }
 
-    logging::log!("тут");
-
     let (auth_error, set_auth_error) = create_signal::<Option<String>>(None);
     let login_node_ref = create_node_ref::<Input>();
     let password_node_ref = create_node_ref::<Input>();

@@ -1,11 +1,9 @@
-mod user_data;
-use bff::server::{Session};
+use bff::server::{Session, User};
 use leptos::*;
-pub use user_data::UserData;
 
 #[derive(Debug, Clone)]
 pub struct UserInfo {
-    resurce: Resource<(Option<Session>, String), Option<UserData>>,
+    resurce: Resource<(Option<Session>, String), Option<User>>,
 }
 
 impl UserInfo {
@@ -16,8 +14,7 @@ impl UserInfo {
                 logging::log!("user_info.rs: async данные пользователя");
                 match wrpd_session {
                     Some(ref sess) => bff::server::fetch_self_user_info(sess)
-                        .await
-                        .map(|user| UserData::new(user)),
+                        .await,
                     None => None,
                 }
             },
@@ -35,7 +32,7 @@ impl UserInfo {
             .with(move |ui| ui.as_ref().map(Option::is_some).unwrap_or(false))
     }
 
-    pub fn user_data(&self) -> Option<UserData> {
+    pub fn user_data(&self) -> Option<User> {
         self.resurce.get().and_then(|user_info| user_info)
     }
 

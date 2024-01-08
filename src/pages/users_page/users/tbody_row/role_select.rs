@@ -1,11 +1,11 @@
-use crate::bff::server::Role;
+use crate::bff::server::{RoleName, Role};
 use leptos::*;
 
 #[component]
-pub fn RoleSelect(user_role_id: u8, roles_res: Resource<(), Vec<Role>>) -> impl IntoView {
+pub fn RoleSelect(user_role_id: RoleName, roles_res: Resource<(), Vec<Role>>) -> impl IntoView {
     let option = move |role: Role| {
         view! {
-            <option value=role.id selected={user_role_id == role.id}>
+            <option value=role.id.as_u8() selected={user_role_id == role.id}>
                 {role.name}
             </option>
         }
