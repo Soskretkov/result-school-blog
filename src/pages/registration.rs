@@ -1,7 +1,7 @@
 use super::components::{FormErrMsg, H2};
 use crate::components::{Button, Input};
+use crate::server::{self, Session};
 use crate::types::GlobContext;
-use bff::server::{self, Session};
 use leptos::{ev::SubmitEvent, html::Input, *};
 
 #[component]
@@ -83,5 +83,6 @@ pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView 
                 <FormErrMsg err_signal=auth_error></FormErrMsg>
             </form>
         </div>
-    }.into_view()
+    }
+    .into_view()
 }

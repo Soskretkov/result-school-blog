@@ -1,36 +1,35 @@
-use bff;
 use leptos::*;
 mod components;
 mod pages;
+mod server;
 mod types;
 mod utils;
-use bff::server::Session;
 use components::{Footer, Header, PageGuard};
 use leptos_router::*;
 use pages::{Authorization, Registration, UsersPage};
+use server::Session;
 use types::{GlobContext, UserInfo};
 
 fn main() {
     leptos::mount_to_body(App);
 }
 
-// ProtectedPage{view, can_access} + HOC PageGuard
 #[component]
 pub fn App() -> impl IntoView {
     let (session, set_session) = create_signal::<Option<Session>>(None);
     let (location, set_location) = create_signal("/".to_string());
 
     provide_context(GlobContext {
-        location,
-        session,
-        user_info: UserInfo::new(session, location), // подписчики: Header
+        location,                                    // Footer (weather.rs)
+        session,                                     // Authorization, Registration
+        user_info: UserInfo::new(session, location), // Header
     });
 
     view! {
         <Router>
             { update_location_on_navigation(set_location) }
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
-                <Header set_session={set_session}/> // btn. "выход" сбросывает rw_session на None
+                <Header set_session={set_session}/> // btn. "выход" сбрасывает rw_session на None
                 <main class="mt-[120px]">
                     <Routes>
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>

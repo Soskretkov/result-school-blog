@@ -1,7 +1,6 @@
-use crate::bff::server;
+use crate::server::{self, Session};
 use crate::components::{Button, Icon};
-use crate::types::{GlobContext, UserInfo};
-use crate::Session;
+use crate::types::{GlobContext};
 use leptos::*;
 use leptos_router::*;
 
@@ -11,8 +10,8 @@ pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
     let logout_action = create_action(move |wr_session: &WriteSignal<Option<Session>>| {
         let wr_session_cloned = wr_session.clone();
         async move {
-            if let Some(session) = use_context::<GlobContext>().unwrap().session.get() {
-                if server::logout(&session).await.is_ok() {
+            if use_context::<GlobContext>().unwrap().session.with(Option::is_some) {
+                if server::logout().await.is_ok() {
                     wr_session_cloned.update(|rf| *rf = None);
                 }
             }

@@ -1,4 +1,4 @@
-use crate::bff::server::{RoleName, Role};
+use crate::server::{Role, RoleName};
 use leptos::*;
 
 #[component]

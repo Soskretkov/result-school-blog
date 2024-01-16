@@ -17,7 +17,7 @@ pub async fn fetch_all_roles(session: &Session) -> Result<Vec<Role>, String> {
     Ok(api_utils::all_roles().await)
 }
 
-pub async fn fetch_user_by_id(session: &Session, id_to_find: &str) -> Result<Option<User>, String> {
+pub async fn fetch_user(session: &Session, id_to_find: &str) -> Result<Option<User>, String> {
     TimeoutFuture::new(1_000).await;
     let check_perm = |user: &DbUser| user.role_id.can_view_users();
     get_user_with_permission(session, check_perm).await?;

@@ -1,7 +1,7 @@
 use crate::components::page_guard::Protected;
 use leptos::*;
 mod users;
-use crate::types::{GlobContext};
+use crate::types::GlobContext;
 use crate::utils::isSyncServerClientRoles;
 use users::Users;
 

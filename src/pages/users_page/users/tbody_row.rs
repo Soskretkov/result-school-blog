@@ -1,8 +1,8 @@
 mod role_select;
-use role_select::RoleSelect;
-use crate::bff::server::{User,Role};
 use crate::components::Icon;
+use crate::server::{Role, User};
 use leptos::*;
+use role_select::RoleSelect;
 
 #[component]
 pub fn TbodyRow(user: User, roles_res: Resource<(), Vec<Role>>) -> impl IntoView {

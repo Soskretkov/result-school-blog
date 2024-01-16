@@ -1,30 +1,19 @@
-
 mod tbody_row;
-use tbody_row::TbodyRow;
 use super::super::components::H2;
-use crate::bff::server;
+use crate::server;
 use leptos::*;
-use crate::types::{GlobContext};
-
+use tbody_row::TbodyRow;
 
 #[component]
 pub fn Users() -> impl IntoView {
-    let glob_ctx = use_context::<GlobContext>().unwrap();
-
     let users_res = create_resource(
         || (),
-        move |_| {
-            let sess = glob_ctx.session.get().unwrap();
-            async move { server::fetch_all_users(&sess).await.unwrap() }
-        },
+        move |_| async move { server::fetch_all_users().await.unwrap() },
     );
 
     let roles_res = create_resource(
         || (),
-        move |_| {
-            let sess = glob_ctx.session.get().unwrap();
-            async move { server::fetch_all_roles(&sess).await.unwrap() }
-        },
+        move |_| async move { server::fetch_all_roles().await.unwrap() },
     );
 
     view! {
@@ -48,7 +37,7 @@ pub fn Users() -> impl IntoView {
                                 <For
                                     each=move || users_res.get().unwrap_or(Vec::new())
                                     key=|user| user.id.clone()
-                                    children=move |user| {                                            
+                                    children=move |user| {
                                         view! {
                                             <TbodyRow
                                                 user={user}

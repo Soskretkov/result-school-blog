@@ -1,7 +1,7 @@
 use super::components::{FormErrMsg, H2};
 use crate::components::{Button, Input};
+use crate::server::{self, Session};
 use crate::types::GlobContext;
-use bff::server::{self, Session};
 use leptos::{ev::SubmitEvent, html::Input, *};
 use leptos_router::*;
 
@@ -9,7 +9,7 @@ use leptos_router::*;
 pub fn Authorization(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
 
-    // Пользователь уже авторизован, перенаправляем 
+    // Пользователь уже авторизован, перенаправляем
     // Предполагается что невалидные куки отсееваются на старте приложухи
     if glob_ctx.session.with(Option::is_some) {
         let navigate = leptos_router::use_navigate();

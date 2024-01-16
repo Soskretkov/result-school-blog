@@ -1,4 +1,4 @@
-use bff::server::{Session, User};
+use bff::server::{self, Session, User};
 use leptos::*;
 
 #[derive(Debug, Clone)]
@@ -13,8 +13,7 @@ impl UserInfo {
             move |(wrpd_session, _)| async move {            
                 logging::log!("user_info.rs: async данные пользователя");
                 match wrpd_session {
-                    Some(ref sess) => bff::server::fetch_self_user_info(sess)
-                        .await,
+                    Some(ref sess) => server::fetch_user(&sess, &sess.user_id).await.unwrap(),
                     None => None,
                 }
             },
