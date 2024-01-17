@@ -6,7 +6,7 @@ mod types;
 mod utils;
 use components::{Footer, Header, PageGuard};
 use leptos_router::*;
-use pages::{Authorization, Registration, UsersPage};
+use pages::{Authorization, Registration, Users};
 use server::Session;
 use types::{GlobContext, UserInfo};
 
@@ -20,8 +20,8 @@ pub fn App() -> impl IntoView {
     let (location, set_location) = create_signal("/".to_string());
 
     provide_context(GlobContext {
-        location,                                    // Footer (weather.rs)
-        session,                                     // Authorization, Registration
+        location,                                    // Footer (weather.rs), UserInfo
+        session,                                     // Authorization, Registration, UserInfo
         user_info: UserInfo::new(session, location), // Header
     });
 
@@ -49,8 +49,7 @@ pub fn App() -> impl IntoView {
                         //     <Route path="" view=|| view!{<Users/>}/>
                         // </Route>
 
-                        // <Route path="/users" view=Users/>
-                        <Route path="/users" view=move || view!{<PageGuard page=UsersPage/>}/>
+                        <Route path="/users" view=Users />
                         <Route path="/post" view=|| view!{<div>"Статьи"</div>}/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>
                         <Route path="/*" view=|| view!{<div>"Ошибка"</div>}/>

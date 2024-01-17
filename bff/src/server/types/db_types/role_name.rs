@@ -51,8 +51,7 @@ impl RoleName {
 
     pub fn can_view_roles(&self) -> bool {
         match self {
-            RoleName::Administrator | RoleName::Moderator => true,
-            _ => false,
+            _ => true, // любой у кого есть сессия
         }
     }
 }

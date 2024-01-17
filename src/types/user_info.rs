@@ -8,13 +8,28 @@ pub struct UserInfo {
 
 impl UserInfo {
     pub fn new(session: ReadSignal<Option<Session>>, location: ReadSignal<String>) -> Self {
+        let (changed_location, set_changed_location) = create_signal::<String>(location.get_untracked());
+
         let user_info = create_local_resource(
-            move || (session.get(), location.get()),
-            move |(wrpd_session, _)| async move {            
-                logging::log!("user_info.rs: async данные пользователя");
+            move || {
+                // если нет сессии, обновление локации не происходит
+                if session.with(Option::is_some) {
+                    set_changed_location.set(location.get());
+                };
+                (session.get(), changed_location.get())
+            },
+            move |(wrpd_session, _)| async move {
                 match wrpd_session {
-                    Some(ref sess) => server::fetch_user(&sess, &sess.user_id).await.unwrap(),
-                    None => None,
+                    Some(ref sess) => {
+                        logging::log!("user_info.rs: async данные пользователя");
+                        server::fetch_user(&sess, &sess.user_id).await.unwrap()
+                    }
+                    None => {
+                        logging::log!(
+                            "user_info.rs: отклонено обновление пользователя (нет сессии)"
+                        );
+                        None
+                    }
                 }
             },
         );

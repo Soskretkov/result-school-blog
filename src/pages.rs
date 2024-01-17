@@ -1,8 +1,9 @@
 mod authorization;
 mod registration;
-mod users_page;
 mod components;
+mod users;
+mod users_page;
 
 pub use authorization::Authorization;
 pub use registration::Registration;
-pub use users_page::UsersPage;
+pub use users::Users;

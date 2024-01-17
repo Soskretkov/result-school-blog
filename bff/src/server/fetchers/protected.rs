@@ -4,14 +4,14 @@ use crate::server::types::export_types::{Role, Session, User};
 use gloo_timers::future::TimeoutFuture;
 
 pub async fn fetch_all_users(session: &Session) -> Result<Vec<User>, String> {
-    TimeoutFuture::new(1_000).await;
+    TimeoutFuture::new(2_000).await;
     let check_perm = |user: &DbUser| user.role_id.can_view_users();
     get_user_with_permission(session, check_perm).await?;
     Ok(api_utils::all_users().await)
 }
 
 pub async fn fetch_all_roles(session: &Session) -> Result<Vec<Role>, String> {
-    TimeoutFuture::new(2_000).await;
+    TimeoutFuture::new(1_000).await;
     let check_perm = |user: &DbUser| user.role_id.can_view_roles();
     get_user_with_permission(session, check_perm).await?;
     Ok(api_utils::all_roles().await)

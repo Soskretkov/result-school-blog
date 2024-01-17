@@ -20,14 +20,14 @@ pub async fn fetch_id_by_login(login: &str) -> Option<String> {
     server::fetch_id_by_login(login).await
 }
 
-pub async fn fetch_all_users() -> Result<Vec<User>, String> {
-    let sess = use_context::<GlobContext>().unwrap().session.get().unwrap();
-    server::fetch_all_users(&sess).await
-}
-
 pub async fn fetch_all_roles() -> Result<Vec<Role>, String> {
     let sess = use_context::<GlobContext>().unwrap().session.get().unwrap();
     server::fetch_all_roles(&sess).await
+}
+
+pub async fn fetch_all_users() -> Result<Vec<User>, String> {
+    let sess = use_context::<GlobContext>().unwrap().session.get().unwrap();
+    server::fetch_all_users(&sess).await
 }
 
 pub async fn fetch_user(id_to_find: &str) -> Result<Option<User>, String> {
