@@ -5,7 +5,7 @@ use leptos::*;
 use role_select::RoleSelect;
 
 #[component]
-pub fn TbodyRow(user: User, roles_res: Resource<(), Vec<Role>>) -> impl IntoView {
+pub fn TbodyRow(user: User, roles_res: Vec<Role>) -> impl IntoView {
     // удалить в бд, запросить пользователей, обновить ресурс или сигнал
     let on_click = |_: ev::MouseEvent| unimplemented!();
 

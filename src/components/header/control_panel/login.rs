@@ -23,7 +23,7 @@ pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
     };
 
     view! {
-        <Suspense
+        <Transition
             fallback=move || {
                 logging::log!("Header (logging.rs): Suspense fallback (нет UserInfo)");
                 view! {
@@ -55,6 +55,6 @@ pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
                     },
                 }
             }
-        </Suspense>
+        </Transition>
     }
 }

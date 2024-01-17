@@ -30,7 +30,7 @@ pub fn App() -> impl IntoView {
             { update_location_on_navigation(set_location) }
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
                 <Header set_session={set_session}/> // btn. "выход" сбрасывает rw_session на None
-                <main class="mt-[120px]">
+                <main class="pt-[120px]">
                     <Routes>
                         <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
                         <Route path="/login" view=move || view!{<Authorization set_session={set_session}/>}/>
