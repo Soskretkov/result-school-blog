@@ -3,6 +3,7 @@ use crate::components::page_guard::Protected;
 use crate::types::GlobContext;
 use leptos::*;
 
+#[derive(Copy, Clone)]
 pub struct UsersPage;
 
 impl Protected for UsersPage {
@@ -10,6 +11,7 @@ impl Protected for UsersPage {
         view! {
             <Users/>
         }
+
     }
 
     fn can_access(&self) -> bool {

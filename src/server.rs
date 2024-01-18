@@ -12,7 +12,7 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 }
 
 pub async fn logout() -> Result<(), ()> {
-    let sess = use_context::<GlobContext>().unwrap().session.get().unwrap();
+    let sess = use_context::<GlobContext>().unwrap().session.get_untracked().unwrap();
     server::logout(&sess).await
 }
 
@@ -21,16 +21,16 @@ pub async fn fetch_id_by_login(login: &str) -> Option<String> {
 }
 
 pub async fn fetch_all_roles() -> Result<Vec<Role>, String> {
-    let sess = use_context::<GlobContext>().unwrap().session.get().unwrap();
+    let sess = use_context::<GlobContext>().unwrap().session.get_untracked().unwrap();
     server::fetch_all_roles(&sess).await
 }
 
 pub async fn fetch_all_users() -> Result<Vec<User>, String> {
-    let sess = use_context::<GlobContext>().unwrap().session.get().unwrap();
+    let sess = use_context::<GlobContext>().unwrap().session.get_untracked().unwrap();
     server::fetch_all_users(&sess).await
 }
 
 pub async fn fetch_user(id_to_find: &str) -> Result<Option<User>, String> {
-    let sess = use_context::<GlobContext>().unwrap().session.get().unwrap();
+    let sess = use_context::<GlobContext>().unwrap().session.get_untracked().unwrap();
     server::fetch_user(&sess, id_to_find).await
 }
