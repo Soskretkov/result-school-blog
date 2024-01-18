@@ -1,7 +1,7 @@
 use bff::server::{self as bff_server, Session, User};
 use leptos::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct UserInfo {
     resurce: Resource<(Option<Session>, String), Option<User>>,
 }

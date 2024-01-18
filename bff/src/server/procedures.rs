@@ -4,6 +4,7 @@ use super::types::SessionsStore;
 use super::utils;
 use crate::api_utils;
 use uuid::Uuid;
+use leptos::*;
 
 // исключительно для случая когда нет куки
 // почему подход выше работает: при смене пароля массив сессий обнуляется
@@ -55,6 +56,7 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 }
 
 pub async fn logout(session: &Session) -> Result<(), ()> {
+    logging::log!("bff_procedures.rs: async данные пользователя (нужен id для logout)");
     let user: DbUser = api_utils::find_user_by_kv("id", &session.user_id)
         .await
         .unwrap();

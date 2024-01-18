@@ -1,8 +1,12 @@
 use crate::server::{Role, RoleName};
+use crate::types::GlobContext;
 use leptos::*;
 
 #[component]
-pub fn RoleSelect(user_role_id: RoleName, roles_res: Vec<Role>) -> impl IntoView {
+pub fn RoleSelect(user_role_id: RoleName) -> impl IntoView {
+    let glob_ctx = use_context::<GlobContext>().unwrap();
+    let roles_vec = glob_ctx.roles.value().get_untracked().unwrap().unwrap();
+
     // возможна оптимизация чтобы не создавать элемент по числу пользователей
     let option = move |role: Role| {
         view! {
@@ -14,7 +18,7 @@ pub fn RoleSelect(user_role_id: RoleName, roles_res: Vec<Role>) -> impl IntoView
 
     view! {
         <select>
-        {roles_res
+        {roles_vec
             .into_iter()
             .map(|role| option(role))
             .collect_view()}

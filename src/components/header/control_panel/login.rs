@@ -10,7 +10,7 @@ pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
     let logout_action = create_action(move |wr_session: &WriteSignal<Option<Session>>| {
         let wr_session_cloned = wr_session.clone();
         async move {
-            if use_context::<GlobContext>().unwrap().session.with(Option::is_some) {
+            if use_context::<GlobContext>().unwrap().session.with_untracked(Option::is_some) {
                 if server::logout().await.is_ok() {
                     wr_session_cloned.update(|rf| *rf = None);
                 }

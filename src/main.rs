@@ -4,9 +4,9 @@ mod pages;
 mod server;
 mod types;
 mod utils;
-use components::{Footer, Header, PageGuard};
+use components::{Footer, Header};
 use leptos_router::*;
-use pages::{Authorization, Registration, Users, UsersPage};
+use pages::{Authorization, Registration, Users};
 use server::Session;
 use types::{GlobContext, UserInfo};
 
@@ -50,8 +50,7 @@ pub fn App() -> impl IntoView {
                         //     <Route path="" view=|| view!{<Users/>}/>
                         // </Route>
 
-                        // <Route path="/users" view=Users />
-                        <Route path="/users" view=move || view!{<PageGuard page={UsersPage}/>}/>
+                        <Route path="/users" view=Users />
                         <Route path="/post" view=|| view!{<div>"Статьи"</div>}/>
                         <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>
                         <Route path="/*" view=|| view!{<div>"Ошибка"</div>}/>

@@ -1,11 +1,11 @@
 mod role_select;
 use crate::components::Icon;
-use crate::server::{Role, User};
+use crate::server::{User};
 use leptos::*;
 use role_select::RoleSelect;
 
 #[component]
-pub fn TbodyRow(user: User, roles_res: Vec<Role>) -> impl IntoView {
+pub fn TbodyRow(user: User) -> impl IntoView {
     // удалить в бд, запросить пользователей, обновить ресурс или сигнал
     let on_click = |_: ev::MouseEvent| unimplemented!();
 
@@ -16,7 +16,6 @@ pub fn TbodyRow(user: User, roles_res: Vec<Role>) -> impl IntoView {
         <td class="flex w-[150px] px-2.5">
             <RoleSelect
                 user_role_id={user.role_id}
-                roles_res={roles_res}
             ></RoleSelect>
             <Icon
                 on:click=on_click
