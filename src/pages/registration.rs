@@ -10,7 +10,7 @@ pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView 
 
     // Пользователь уже авторизован, перенаправляем
     // Предполагается что невалидные куки отсееваются на старте приложухи
-    if glob_ctx.session.with(Option::is_some) {
+    if glob_ctx.session.with_untracked(Option::is_some) {
         let navigate = leptos_router::use_navigate();
         navigate("/", Default::default());
         return {}.into_view();

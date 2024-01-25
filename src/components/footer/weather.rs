@@ -1,14 +1,17 @@
-use crate::types::GlobContext;
 use chrono::{Datelike, Local};
 use gloo_timers::future::TimeoutFuture;
 use leptos::*;
 use serde::Deserialize;
 use serde_json;
+use leptos_router::*;
+
 
 #[component]
 pub fn Weather() -> impl IntoView {
     let weather_resurce = create_local_resource(
-        || use_context::<GlobContext>().unwrap().location.get(),
+        || {
+            use_location().pathname.get()
+        },
         |_| {
             logging::log!("Footer (weather.rs): async погода");
             get_weather()

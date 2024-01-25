@@ -1,5 +1,6 @@
 use bff::server::{self as bff_server, Session, User};
 use leptos::*;
+use leptos_router::*;
 
 #[derive(Debug, Clone, Copy)]
 pub struct UserInfo {
@@ -7,8 +8,10 @@ pub struct UserInfo {
 }
 
 impl UserInfo {
-    pub fn new(session: ReadSignal<Option<Session>>, location: ReadSignal<String>) -> Self {
-        let (changed_location, set_changed_location) = create_signal::<String>(location.get_untracked());
+    pub fn new(session: ReadSignal<Option<Session>>) -> Self {
+        let location = use_location().pathname;
+        let (changed_location, set_changed_location) =
+            create_signal::<String>(location.get_untracked());
 
         let user_info = create_local_resource(
             move || {
@@ -18,17 +21,20 @@ impl UserInfo {
                 };
                 (session.get(), changed_location.get())
             },
-            move |(wrpd_session, _)| async move {
-                match wrpd_session {
-                    Some(ref sess) => {
-                        logging::log!("user_info.rs: async данные пользователя");
-                        bff_server::fetch_user(&sess, &sess.user_id).await.unwrap()
-                    }
-                    None => {
-                        logging::log!(
-                            "user_info.rs: отклонено обновление пользователя (нет сессии)"
-                        );
-                        None
+            move |(wrpd_session, _)| {
+                // logging::log!("user_info.rs: перед запуском async данные пользователя");
+                async move {
+                    match wrpd_session {
+                        Some(ref sess) => {
+                            logging::log!("user_info.rs: async данные пользователя");
+                            bff_server::fetch_user(&sess, &sess.user_id).await.unwrap()
+                        }
+                        None => {
+                            logging::log!(
+                                "user_info.rs: отклонено обновление пользователя (нет сессии)"
+                            );
+                            None
+                        }
                     }
                 }
             },

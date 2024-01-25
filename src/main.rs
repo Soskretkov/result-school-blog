@@ -17,26 +17,27 @@ fn main() {
 #[component]
 pub fn App() -> impl IntoView {
     let (session, set_session) = create_signal::<Option<Session>>(None);
-    let (location, set_location) = create_signal("/".to_string());
-
-    provide_context(GlobContext {
-        location,                                    // Footer (weather.rs), UserInfo
-        session,                                     // Authorization, Registration, UserInfo
-        user_info: UserInfo::new(session, location), // Header
-        roles: create_action(move |_: &()| async move { server::fetch_all_roles().await }),
-    });
 
     view! {
         <Router>
-            { update_location_on_navigation(set_location) }
+            {provide_context(GlobContext {
+                session,                           // Authorization, Registration, struct UserInfo
+                user_info: UserInfo::new(session), // Header, Users
+                roles: create_action(move |_: &()| async move { server::fetch_all_roles().await }),
+            });}
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
                 <Header set_session={set_session}/> // btn. "выход" сбрасывает rw_session на None
                 <main class="pt-[120px]">
                     <Routes>
-                        <Route path="/" view=|| view!{<div>"Главная страница"</div>}/>
-                        <Route path="/login" view=move || view!{<Authorization set_session={set_session}/>}/>
-                        <Route path="/register" view=move || view!{<Registration set_session={set_session}/>}/>
-
+                        <Route path="/" view=move || {
+                            view!{<div>"Главная страница"</div>}
+                        }/>
+                        <Route path="/login" view=move || {
+                            view!{<Authorization set_session={set_session}/>}
+                        }/>
+                        <Route path="/register" view=move || {
+                            view!{<Registration set_session={set_session}/>}
+                        }/>
                         // <Route path="/users" view=move || {
                         //     view! {
                         //         <Show
@@ -50,10 +51,18 @@ pub fn App() -> impl IntoView {
                         //     <Route path="" view=|| view!{<Users/>}/>
                         // </Route>
 
-                        <Route path="/users" view=Users />
-                        <Route path="/post" view=|| view!{<div>"Статьи"</div>}/>
-                        <Route path="/post/:postId" view=|| view!{<div>"Статья"</div>}/>
-                        <Route path="/*" view=|| view!{<div>"Ошибка"</div>}/>
+                        <Route path="/users" view=move || {
+                            Users
+                        }/>
+                        <Route path="/post" view=move || {
+                            view!{<div>"Статьи"</div>}
+                        }/>
+                        <Route path="/post/:postId" view=move || {
+                            view!{<div>"Статья"</div>}
+                        }/>
+                        <Route path="/*" view=move || {
+                            view!{<div>"Ошибка"</div>}
+                        }/>
                     </Routes>
                 </main>
                 <Footer/>
@@ -62,17 +71,17 @@ pub fn App() -> impl IntoView {
     }
 }
 
-fn update_location_on_navigation(set_location: WriteSignal<String>) -> impl Fn() {
-    let current_path = use_location().pathname;
-    let (is_app_start, set_is_app_start) = create_signal(true);
+// fn update_location_on_navigation(set_location: WriteSignal<String>) -> impl Fn() {
+//     let current_path = use_location().pathname;
+//     let (is_app_start, set_is_app_start) = create_signal(true);
 
-    move || {
-        if !is_app_start.get() {
-            logging::log!("Переход на страницу: {}", current_path.get());
-            set_location.set(current_path.get());
-        } else {
-            current_path.track();
-            set_is_app_start.set(false);
-        }
-    }
-}
+//     move || {
+//         if !is_app_start.get() {
+//             logging::log!("Переход на страницу: {}", current_path.get());
+//             set_location.set(current_path.get());
+//         } else {
+//             current_path.track();
+//             set_is_app_start.set(false);
+//         }
+//     }
+// }
