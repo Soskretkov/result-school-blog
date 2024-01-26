@@ -28,40 +28,13 @@ pub fn App() -> impl IntoView {
                 <Header set_session={set_session}/> // btn. "выход" сбрасывает rw_session на None
                 <main class="pt-[120px]">
                     <Routes>
-                        <Route path="/" view=move || {
-                            view!{<div>"Главная страница"</div>}
-                        }/>
-                        <Route path="/login" view=move || {
-                            view!{<Authorization set_session={set_session}/>}
-                        }/>
-                        <Route path="/register" view=move || {
-                            view!{<Registration set_session={set_session}/>}
-                        }/>
-                        // <Route path="/users" view=move || {
-                        //     view! {
-                        //         <Show
-                        //             when=move|| session.with(Option::is_some)
-                        //             fallback=|| view!{<div>"Ошибка"</div>}
-                        //         >
-                        //             <Outlet/>
-                        //         </Show>
-                        //     }
-                        // }>
-                        //     <Route path="" view=|| view!{<Users/>}/>
-                        // </Route>
-
-                        <Route path="/users" view=move || {
-                            Users
-                        }/>
-                        <Route path="/post" view=move || {
-                            view!{<div>"Статьи"</div>}
-                        }/>
-                        <Route path="/post/:postId" view=move || {
-                            view!{<div>"Статья"</div>}
-                        }/>
-                        <Route path="/*" view=move || {
-                            view!{<div>"Ошибка"</div>}
-                        }/>
+                        <Route path="/" view=move || { view!{<div>"Главная страница"</div>} }/>
+                        <Route path="/login" view=move || { view!{<Authorization set_session={set_session}/>} }/>
+                        <Route path="/register" view=move || { view!{<Registration set_session={set_session}/>} }/>
+                        <Route path="/users" view=move || { Users }/>
+                        <Route path="/post" view=move || { view!{<div>"Статьи"</div>} }/>
+                        <Route path="/post/:postId" view=move || { view!{<div>"Статья"</div>} }/>
+                        <Route path="/*" view=move || { view!{<div>"Ошибка"</div>} }/>
                     </Routes>
                 </main>
                 <Footer/>
@@ -69,18 +42,3 @@ pub fn App() -> impl IntoView {
         </Router>
     }
 }
-
-// fn update_location_on_navigation(set_location: WriteSignal<String>) -> impl Fn() {
-//     let current_path = use_location().pathname;
-//     let (is_app_start, set_is_app_start) = create_signal(true);
-
-//     move || {
-//         if !is_app_start.get() {
-//             logging::log!("Переход на страницу: {}", current_path.get());
-//             set_location.set(current_path.get());
-//         } else {
-//             current_path.track();
-//             set_is_app_start.set(false);
-//         }
-//     }
-// }

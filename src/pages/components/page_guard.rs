@@ -17,7 +17,6 @@ pub fn PageGuard(children: ChildrenFn) -> impl IntoView {
     view! {
         <Suspense
             fallback=|| () // пользователь грузится
-            clone:children
         >{
             move || {
                 let glob_ctx = use_context::<GlobContext>().unwrap();

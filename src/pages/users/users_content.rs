@@ -7,6 +7,7 @@ use tbody_row::TbodyRow;
 
 #[component]
 pub fn UsersContent() -> impl IntoView {
+    logging::log!("users.rs: монтируется");
     let glob_ctx = use_context::<GlobContext>().unwrap();
 
     let users_res = create_resource(

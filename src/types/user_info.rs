@@ -9,17 +9,17 @@ pub struct UserInfo {
 
 impl UserInfo {
     pub fn new(session: ReadSignal<Option<Session>>) -> Self {
-        let location = use_location().pathname;
-        let (changed_location, set_changed_location) =
-            create_signal::<String>(location.get_untracked());
+        let current_path = use_location().pathname;
+        let (location, set_location) =
+            create_signal::<String>(current_path.get_untracked());
 
         let user_info = create_local_resource(
             move || {
                 // если нет сессии, обновление локации не происходит
                 if session.with(Option::is_some) {
-                    set_changed_location.set(location.get());
+                    set_location.set(current_path.get());
                 };
-                (session.get(), changed_location.get())
+                (session.get(), location.get())
             },
             move |(wrpd_session, _)| {
                 // logging::log!("user_info.rs: перед запуском async данные пользователя");
