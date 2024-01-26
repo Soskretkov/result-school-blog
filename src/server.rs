@@ -1,6 +1,6 @@
 use super::GlobContext;
 use bff::server;
-pub use bff::server::*;
+pub use bff::server::{Role, RoleName, Session, User};
 use leptos::*;
 
 pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
@@ -12,8 +12,7 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 }
 
 pub async fn logout() -> Result<(), ()> {
-    let sess = use_context::<GlobContext>().unwrap().session.get_untracked().unwrap();
-    server::logout(&sess).await
+    server::logout(&get_session()).await
 }
 
 pub async fn fetch_id_by_login(login: &str) -> Option<String> {
@@ -21,16 +20,21 @@ pub async fn fetch_id_by_login(login: &str) -> Option<String> {
 }
 
 pub async fn fetch_all_roles() -> Result<Vec<Role>, String> {
-    let sess = use_context::<GlobContext>().unwrap().session.get_untracked().unwrap();
-    server::fetch_all_roles(&sess).await
+    server::fetch_all_roles(&get_session()).await
 }
 
 pub async fn fetch_all_users() -> Result<Vec<User>, String> {
-    let sess = use_context::<GlobContext>().unwrap().session.get_untracked().unwrap();
-    server::fetch_all_users(&sess).await
+    server::fetch_all_users(&get_session()).await
 }
 
 pub async fn fetch_user(id_to_find: &str) -> Result<Option<User>, String> {
-    let sess = use_context::<GlobContext>().unwrap().session.get_untracked().unwrap();
-    server::fetch_user(&sess, id_to_find).await
+    server::fetch_user(&get_session(), id_to_find).await
+}
+
+fn get_session() -> Session {
+    use_context::<GlobContext>()
+    .unwrap()
+    .session
+    .get_untracked()
+    .unwrap()
 }
