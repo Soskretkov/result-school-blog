@@ -1,10 +1,9 @@
-use super::UserInfo;
-use crate::server::{Role, Session};
+use super::AuthedUser;
+use crate::server::{Role};
 use leptos::*;
 
 #[derive(Clone)]
 pub struct GlobContext {
-    pub session: ReadSignal<Option<Session>>,
-    pub user_info: UserInfo,
+    pub authed_user: ReadSignal<Option<AuthedUser>>,
     pub roles: Action<(), Result<Vec<Role>, String>>,
 }

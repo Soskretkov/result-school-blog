@@ -1,25 +1,29 @@
-use crate::server::{self, Session};
 use crate::components::{Button, Icon};
-use crate::types::{GlobContext};
+use crate::server::{self};
+use crate::types::{AuthedUser, GlobContext};
 use leptos::*;
 use leptos_router::*;
 
 #[component]
-pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
+pub fn Login(set_authed_user: WriteSignal<Option<AuthedUser>>) -> impl IntoView {
     // выход из учетной записи в гостевое представление
-    let logout_action = create_action(move |wr_session: &WriteSignal<Option<Session>>| {
-        let wr_session_cloned = wr_session.clone();
+    let logout_action = create_action(move |wr_authed_user: &WriteSignal<Option<AuthedUser>>| {
+        let wr_authed_user_cloned = wr_authed_user.clone();
         async move {
-            if use_context::<GlobContext>().unwrap().session.with_untracked(Option::is_some) {
+            if use_context::<GlobContext>()
+                .unwrap()
+                .authed_user
+                .with_untracked(Option::is_some)
+            {
                 if server::logout().await.is_ok() {
-                    wr_session_cloned.update(|rf| *rf = None);
+                    wr_authed_user_cloned.update(|rf| *rf = None);
                 }
             }
         }
     });
 
     let on_click = move |_: ev::MouseEvent| {
-        logout_action.dispatch(set_session);
+        logout_action.dispatch(set_authed_user);
     };
 
     view! {

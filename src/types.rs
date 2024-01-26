@@ -1,5 +1,5 @@
-mod user_info;
+mod authed_user;
 mod others;
 
 pub use others::*;
-pub use user_info::*;
+pub use authed_user::AuthedUser;

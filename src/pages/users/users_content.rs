@@ -76,7 +76,14 @@ pub fn UsersContent() -> impl IntoView {
 }
 
 fn can_access() -> bool {
-    match use_context::<GlobContext>().unwrap().user_info.user_data() {
+    match use_context::<GlobContext>()
+        .unwrap()
+        .authed_user
+        .get_untracked()
+        .unwrap()
+        .user_resource
+        .get_data()
+    {
         Some(user) => {
             let role = user.role_id;
             role.can_view_users() && role.can_view_roles()

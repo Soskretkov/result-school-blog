@@ -1,17 +1,17 @@
 mod control_panel;
 mod logo;
-use crate::server::Session;
+use crate::types::AuthedUser;
 use control_panel::ControlPanel;
 use leptos::*;
 use logo::Logo;
 
 #[component]
-pub fn Header(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
+pub fn Header(set_authed_user: WriteSignal<Option<AuthedUser>>) -> impl IntoView {
     view! {
         <header class="flex justify-between bg-white h-[120px] w-[1000px] py-5 px-10 shadow-md fixed top-0">
             <Logo/>
             <Description/>
-            <ControlPanel set_session={set_session}/>
+            <ControlPanel set_authed_user={set_authed_user}/>
         </header>
     }
 }
@@ -20,11 +20,11 @@ pub fn Header(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
 fn Description() -> impl IntoView {
     view! {
         <div class="italic">
-            Веб-технологии
+            "Веб-технологии"
             <br/>
-            Написание кода
+            "Написание кода"
             <br/>
-            Разбор ошибок
+            "Разбор ошибок"
         </div>
     }
 }
