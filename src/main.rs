@@ -17,7 +17,6 @@ fn main() {
 #[component]
 pub fn App() -> impl IntoView {
     let (session, set_session) = create_signal::<Option<Session>>(None);
-
     view! {
         <Router>
             {provide_context(GlobContext {
