@@ -2,12 +2,12 @@ use bff::server::{self as bff_server, Session, User};
 use leptos::*;
 
 #[derive(Debug, Clone)]
-pub struct AuthedUser {
+pub struct Auth {
     pub session: Session,
     pub user_resource: UserResource,
 }
 
-impl AuthedUser {
+impl Auth {
     pub fn new(session: Session) -> Self {
         Self {
             session,

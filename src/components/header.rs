@@ -1,17 +1,17 @@
 mod control_panel;
 mod logo;
-use crate::types::AuthedUser;
+use crate::types::Auth;
 use control_panel::ControlPanel;
 use leptos::*;
 use logo::Logo;
 
 #[component]
-pub fn Header(set_authed_user: WriteSignal<Option<AuthedUser>>) -> impl IntoView {
+pub fn Header(set_auth: WriteSignal<Option<Auth>>) -> impl IntoView {
     view! {
         <header class="flex justify-between bg-white h-[120px] w-[1000px] py-5 px-10 shadow-md fixed top-0">
             <Logo/>
             <Description/>
-            <ControlPanel set_authed_user={set_authed_user}/>
+            <ControlPanel set_auth={set_auth}/>
         </header>
     }
 }

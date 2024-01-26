@@ -1,22 +1,22 @@
 use crate::components::{Button, Icon};
 use crate::server::{self};
-use crate::types::{AuthedUser, GlobContext};
+use crate::types::{Auth, GlobContext};
 use leptos::*;
 use leptos_router::*;
 
 #[component]
-pub fn Login(set_authed_user: WriteSignal<Option<AuthedUser>>) -> impl IntoView {
+pub fn Login(set_authed_user: WriteSignal<Option<Auth>>) -> impl IntoView {
     // выход из учетной записи в гостевое представление
-    let logout_action = create_action(move |wr_authed_user: &WriteSignal<Option<AuthedUser>>| {
-        let wr_authed_user_cloned = wr_authed_user.clone();
+    let logout_action = create_action(move |wr_auth: &WriteSignal<Option<Auth>>| {
+        let wr_auth_cloned = wr_auth.clone();
         async move {
             if use_context::<GlobContext>()
                 .unwrap()
-                .authed_user
+                .auth
                 .with_untracked(Option::is_some)
             {
                 if server::logout().await.is_ok() {
-                    wr_authed_user_cloned.update(|rf| *rf = None);
+                    wr_auth_cloned.update(|rf| *rf = None);
                 }
             }
         }

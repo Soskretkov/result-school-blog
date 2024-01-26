@@ -78,7 +78,7 @@ pub fn UsersContent() -> impl IntoView {
 fn can_access() -> bool {
     match use_context::<GlobContext>()
         .unwrap()
-        .authed_user
+        .auth
         .get_untracked()
         .unwrap()
         .user_resource

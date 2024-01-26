@@ -34,7 +34,7 @@ pub async fn fetch_user(id_to_find: &str) -> Result<Option<User>, String> {
 fn get_session() -> Session {
     use_context::<GlobContext>()
         .unwrap()
-        .authed_user
+        .auth
         .get_untracked()
         .unwrap()
         .session
