@@ -20,6 +20,8 @@ pub fn Login(set_authed_user: WriteSignal<Option<Auth>>) -> impl IntoView {
         .dispatch(());
     };
 
+    // похожая логика в PageGuard
+    // внешний view чтобы отслеживался .get()
     view! {
         {move || match glob_ctx.auth.get() {
             Some(auth) => {
@@ -30,7 +32,7 @@ pub fn Login(set_authed_user: WriteSignal<Option<Auth>>) -> impl IntoView {
                             view!{<LoginButton/>}
                         }
                     >{
-                        // нечто похожее у PageGuard
+                        // в учебном примере тоже вкладывается в замыкание
                         move || auth.user_resource.get().map(|user| {
                             view! {
                                 <div class="flex h-8">
@@ -43,7 +45,6 @@ pub fn Login(set_authed_user: WriteSignal<Option<Auth>>) -> impl IntoView {
                         })
                     }</Transition>
                 }
-                .into_view()
             }
             None => view!{<LoginButton/>},
         }}
