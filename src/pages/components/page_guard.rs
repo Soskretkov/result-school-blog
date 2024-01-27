@@ -1,3 +1,5 @@
+// назначение компонента: гарантировать children обновленного пользователя и роли
+// похожий код в Header (login.rs)
 use super::PageErrMsg;
 use crate::types::GlobContext;
 use crate::utils::is_sync_server_client_roles;
@@ -6,47 +8,50 @@ use leptos::*;
 #[component]
 pub fn PageGuard(children: ChildrenFn) -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
+    let roles_pending_signal = glob_ctx.roles.pending();
+    let children = store_value(children); // https://book.leptos.dev/interlude_projecting_children.html#solution
 
-    // https://book.leptos.dev/interlude_projecting_children.html#solution
-    let children = store_value(children);
-
-    // похожая логика в Header (login.rs)
-    // внешний view чтобы отслеживался .get()
-    view! {
+    view! { // внешний view чтобы отслеживался .get()
         {move || match glob_ctx.auth.get() {
             Some(auth) => {
+                let user_loading_signal = auth.user_resource.loading();
+                
+                // if !user_loading_signal.get_untracked() {
+                //     auth.user_resource.refetch();
+                // } else {
+                //     logging::log!("PageGuard: оптимизация при авторизации на защищаемой странице");
+                // }
+
+                if !roles_pending_signal.get_untracked() { glob_ctx.roles.dispatch(()); }
+
                 view! {
-                    <Transition
-                        fallback=|| () // пользователь грузится
+                    <Show
+                        when=move || !(roles_pending_signal.get() || user_loading_signal.get())
+                        fallback=|| {
+                            logging::log!("PageGuard: Show fallback: async ещё загружает данные");
+                        }
                     >{
-                        // в учебном примере тоже вкладывается в замыкание
-                        move || auth.user_resource.get().map(|user| {
-                            glob_ctx.roles.dispatch(()); // обновляем роли (требуется сессия)
-                            view! {
-                                <Suspense
-                                    fallback=|| () // роли грузятся
-                                >{
-                                    move || {
-                                        match glob_ctx.roles.value().get() {
-                                            Some(Ok(_)) => view! {
-                                                {children.with_value(|children| children())}
-                                            }.into_view(),
-                                            Some(Err(e)) => view! {<PageErrMsg err_msg={e}/>},
-                                            None => {
-                                                logging::log!("PageGuard: неизвестная ошибка");
-                                                view! {
-                                                    <PageErrMsg err_msg="Неизвестная ошибка".to_string()/>
-                                                }
-                                            },
-                                        }
+                        match is_sync_server_client_roles() {
+                            true => match glob_ctx.roles.value().get_untracked() {
+                                Some(Ok(_)) => {
+                                    children.with_value(|children| children()).into_view()
+                                },
+                                Some(Err(e)) => view! {<PageErrMsg err_msg={e}/>},
+                                None => {
+                                    logging::log!("PageGuard: неизвестная ошибка");
+                                    view! {
+                                        <PageErrMsg err_msg="Неизвестная ошибка".to_string()/>
                                     }
-                                }</Suspense>
-                            }
-                        })
-                    }</Transition>
+                                },
+                            },
+                            false => view! {
+                                <PageErrMsg err_msg="Страница временно недоступна".to_string()/>
+                            },
+                        }
+                    }</Show>
                 }
-            }
-            None => view!{<PageErrMsg err_msg="Пользователь не авторизован".to_string()/>},
+            },
+            None => view!{<PageErrMsg err_msg="Пользователь не авторизован".to_string()/>}.into_view(),
         }}
     }
 }

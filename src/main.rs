@@ -16,16 +16,14 @@ fn main() {
 #[component]
 pub fn App() -> impl IntoView {
     let (auth, set_auth) = create_signal::<Option<Auth>>(None);
-
-    provide_context(GlobContext {
-        // session: Authorization, Registration, struct UserInfo
-        // user_data: Header, PageGuard, Users
-        auth: auth,
-        roles: create_action(move |_: &()| async move { server::fetch_all_roles().await }),
-    });
-
     view! {
         <Router>
+            {provide_context(GlobContext {
+                // session: Authorization, Registration, struct UserInfo
+                // user_data: Header, PageGuard, Users
+                auth: auth,
+                roles: create_action(move |_: &()| async move { server::fetch_all_roles().await }),
+            });}
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
                 <Header set_auth={set_auth}/> // btn. "выход" сбрасывает authed_user на None
                 <main class="pt-[120px]">

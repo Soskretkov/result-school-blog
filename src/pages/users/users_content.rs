@@ -7,7 +7,6 @@ use tbody_row::TbodyRow;
 
 #[component]
 pub fn UsersContent() -> impl IntoView {
-    logging::log!("users.rs: монтируется");
     let glob_ctx = use_context::<GlobContext>().unwrap();
 
     let users_res = create_resource(
@@ -35,7 +34,7 @@ pub fn UsersContent() -> impl IntoView {
                     let err_msg = match (users_res.get(), glob_ctx.roles.value().get()) {
                         (Some(Err(e)), _) => e,
                         (_, Some(Err(e))) => e,
-                        _ => "".to_string(),
+                        _ => "Неизвестная ошибка".to_string(),
                     };
 
                     view! {
