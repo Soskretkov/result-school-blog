@@ -6,59 +6,55 @@ use leptos_router::*;
 
 #[component]
 pub fn Login(set_authed_user: WriteSignal<Option<Auth>>) -> impl IntoView {
+    let glob_ctx = use_context::<GlobContext>().unwrap();
+
     // выход из учетной записи в гостевое представление
-    let logout_action = create_action(move |wr_auth: &WriteSignal<Option<Auth>>| {
-        let wr_auth_cloned = wr_auth.clone();
-        async move {
-            if use_context::<GlobContext>()
-                .unwrap()
-                .auth
-                .with_untracked(Option::is_some)
-            {
+    let on_click = move |_: ev::MouseEvent| {
+        create_action(move |_| async move {
+            if glob_ctx.auth.with_untracked(Option::is_some) {
                 if server::logout().await.is_ok() {
-                    wr_auth_cloned.update(|rf| *rf = None);
+                    set_authed_user.update(|rf| *rf = None);
                 }
             }
-        }
-    });
-
-    let on_click = move |_: ev::MouseEvent| {
-        logout_action.dispatch(set_authed_user);
+        })
+        .dispatch(());
     };
 
     view! {
-        <Transition
-            fallback=move || {
-                logging::log!("Header (logging.rs): Suspense fallback (нет UserInfo)");
+        {move || match glob_ctx.auth.get() {
+            Some(auth) => {
                 view! {
-                    <A href="/login" class="w-full no-underline h-8">
-                        <Button>"Войти"</Button>
-                    </A>
-                }
-            }
-        >
-            {
-                // нечто похожее на странице users
-                move || match use_context::<GlobContext>().unwrap().user_info.user_data() {
-                    Some(info) => {
-                        view! {
-                            <div class="flex h-8">
-                                <div class="mt-[2px] text-[18px] font-bold">{info.login.clone()}</div>
-                                <button on:click=on_click class="bg-inherit ml-2.5 px-0 py-0 border-none cursor-pointer">
-                                    <Icon id="fa-sign-out" class="text-[24px]"/>
-                                </button>
-                            </div>
+                    <Transition
+                        fallback=move || {
+                            logging::log!("Header (logging.rs): Suspense fallback (нет UserResource)");
+                            view!{<LoginButton/>}
                         }
-                        .into_view()
-                    }
-
-                    None => view! {
-                        <A href="/login" class="w-full no-underline h-8">
-                            <Button>Войти</Button>
-                        </A>
-                    },
+                    >{
+                        // нечто похожее у PageGuard
+                        move || auth.user_resource.get().map(|user| {
+                            view! {
+                                <div class="flex h-8">
+                                    <div class="mt-[2px] text-[18px] font-bold">{user.login.clone()}</div>
+                                    <button on:click=on_click class="bg-inherit ml-2.5 px-0 py-0 border-none cursor-pointer">
+                                        <Icon id="fa-sign-out" class="text-[24px]"/>
+                                    </button>
+                                </div>
+                            }
+                        })
+                    }</Transition>
                 }
+                .into_view()
             }
-        </Transition>
+            None => view!{<LoginButton/>},
+        }}
+    }
+}
+
+#[component]
+pub fn LoginButton() -> impl IntoView {
+    view! {
+        <A href="/login" class="w-full no-underline h-8">
+            <Button>"Войти"</Button>
+        </A>
     }
 }

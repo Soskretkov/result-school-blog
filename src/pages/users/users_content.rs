@@ -25,7 +25,6 @@ pub fn UsersContent() -> impl IntoView {
         >
             <Show
                 when=move || {
-                    // glob_ctx.user_info.track();
                     can_access()
                     &&
                     users_res.with(|x| x.as_ref().map(Result::is_ok)).unwrap_or(false)
@@ -80,9 +79,7 @@ fn can_access() -> bool {
         .unwrap()
         .auth
         .get_untracked()
-        .unwrap()
-        .user_resource
-        .get_data()
+        .and_then(|auth| auth.user_resource.get())
     {
         Some(user) => {
             let role = user.role_id;

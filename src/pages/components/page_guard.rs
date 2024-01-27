@@ -20,9 +20,9 @@ pub fn PageGuard(children: ChildrenFn) -> impl IntoView {
         >{
             move || {
                 let glob_ctx = use_context::<GlobContext>().unwrap();
-                match glob_ctx.user_info.user_data() {
+                match glob_ctx.auth.get().unwrap().user_resource.get() {
                     Some(_) => {
-                        logging::log!("page_guard.rs: данные пользователя загружены - {}", glob_ctx.user_info.is_loaded());
+                        logging::log!("page_guard.rs: данные пользователя загружены - {}",  glob_ctx.auth.get().unwrap().user_resource.with(move |user| user.is_some()));
                         glob_ctx.roles.dispatch(()); // получаем роли (требуется сессия)
                         view! {
                             <Suspense
