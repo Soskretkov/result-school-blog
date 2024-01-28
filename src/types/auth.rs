@@ -20,8 +20,8 @@ impl Auth {
                     logging::log!("user_info.rs: async данные пользователя");
                     bff_server::fetch_user(&session_clone, &session_clone.user_id)
                         .await
-                        .expect("auth.rs: паника1")
-                        .expect("auth.rs: паника2")
+                        .unwrap()
+                        .unwrap()
                 }
             },
         );

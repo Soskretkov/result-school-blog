@@ -2,17 +2,17 @@
   "users": [
     {
       "id": "a967510a",
-      "login": "anton",
+      "login": "admin",
       "password": "qwerty123",
-      "registered_at": "2050-09-22",
+      "registered_at": "2026-09-22",
       "role_id": 0,
       "sessions": []
     },
     {
-      "id": "n967870x",
-      "login": "max",
+      "id": "s756902f",
+      "login": "guest",
       "password": "qwerty123",
-      "registered_at": "2026-09-22",
+      "registered_at": "2050-01-22",
       "role_id": 2,
       "sessions": []
     }
