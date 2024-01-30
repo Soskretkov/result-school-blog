@@ -14,6 +14,7 @@ impl Auth {
         let user_resource = create_local_resource(
             move || use_location().pathname.get(),
             move |_| {
+                use_location().pathname.track();
                 // logging::log!("user_info.rs: перед запуском async данные пользователя");
                 let session_clone = session_clone.clone();
                 async move {

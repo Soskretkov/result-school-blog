@@ -1,18 +1,16 @@
 use chrono::{Datelike, Local};
 use gloo_timers::future::TimeoutFuture;
 use leptos::*;
+use leptos_router::*;
 use serde::Deserialize;
 use serde_json;
-use leptos_router::*;
-
 
 #[component]
 pub fn Weather() -> impl IntoView {
     let weather_resurce = create_local_resource(
-        || {
-            use_location().pathname.get()
-        },
+        || use_location().pathname.get(),
         |_| {
+            use_location().pathname.track(); // в первом аргументе не работает
             logging::log!("Footer (weather.rs): async погода");
             get_weather()
         },
