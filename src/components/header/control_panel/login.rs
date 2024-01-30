@@ -1,30 +1,36 @@
 use crate::components::{Button, Icon};
+use crate::server::Session;
 use crate::server::{self};
-use crate::types::{Auth, GlobContext};
+use crate::types::GlobContext;
 use leptos::*;
 use leptos_router::*;
 
 #[component]
-pub fn Login(set_authed_user: WriteSignal<Option<Auth>>) -> impl IntoView {
+pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
 
     // выход из учетной записи в гостевое представление
-    let on_click = move |_: ev::MouseEvent| {
-        create_action(move |_| async move {
-            if glob_ctx.auth.with_untracked(Option::is_some) {
-                if server::logout().await.is_ok() {
-                    set_authed_user.update(|rf| *rf = None);
-                }
+    let logout_action = create_action(move |_| async move {
+        if use_context::<GlobContext>()
+            .unwrap()
+            .session
+            .with_untracked(Option::is_some)
+        {
+            if server::logout().await.is_ok() {
+                set_session.update(|rf| *rf = None);
             }
-        })
-        .dispatch(());
+        }
+    });
+
+    let on_click = move |_: ev::MouseEvent| {
+        logout_action.dispatch(set_session);
     };
 
     // похожая логика в PageGuard
-    // внешний view чтобы отслеживался .get()
+    // внешний view чтобы отслеживался .with()
     view! {
-        {move || match glob_ctx.auth.get() {
-            Some(auth) => {
+        {move || match glob_ctx.session.with(Option::is_some) {
+            true => {
                 view! {
                     <Transition
                         fallback=move || {
@@ -33,7 +39,7 @@ pub fn Login(set_authed_user: WriteSignal<Option<Auth>>) -> impl IntoView {
                         }
                     >{
                         // в учебном примере тоже вкладывается в замыкание
-                        move || auth.user_resource.get().map(|user| {
+                        move || glob_ctx.user_resource.get().and_then(|wr_user| wr_user.map(|user| {
                             view! {
                                 <div class="flex h-8">
                                     <div class="mt-[2px] text-[18px] font-bold">{user.login.clone()}</div>
@@ -42,11 +48,11 @@ pub fn Login(set_authed_user: WriteSignal<Option<Auth>>) -> impl IntoView {
                                     </button>
                                 </div>
                             }
-                        })
+                        }))
                     }</Transition>
                 }
             }
-            None => view!{<LoginButton/>},
+            false => view!{<LoginButton/>},
         }}
     }
 }

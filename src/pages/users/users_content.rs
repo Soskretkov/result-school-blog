@@ -76,9 +76,9 @@ pub fn UsersContent() -> impl IntoView {
 fn can_access() -> bool {
     match use_context::<GlobContext>()
         .unwrap()
-        .auth
-        .get_untracked()
-        .and_then(|auth| auth.user_resource.get())
+        .user_resource
+        .get()
+        .and_then(|wr_user| wr_user)
     {
         Some(user) => {
             let role = user.role_id;

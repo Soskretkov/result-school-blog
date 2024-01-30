@@ -8,19 +8,18 @@ use leptos::*;
 #[component]
 pub fn PageGuard(children: ChildrenFn) -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
+    let user_loading_signal = glob_ctx.user_resource.loading();
     let roles_pending_signal = glob_ctx.roles.pending();
     let children = store_value(children); // https://book.leptos.dev/interlude_projecting_children.html#solution
 
-    view! { // внешний view чтобы отслеживался .get()
-        {move || match glob_ctx.auth.get() {
-            Some(auth) => {
-                let user_loading_signal = auth.user_resource.loading();
-                
-                // if !user_loading_signal.get_untracked() {
-                //     auth.user_resource.refetch();
-                // } else {
-                //     logging::log!("PageGuard: оптимизация при авторизации на защищаемой странице");
-                // }
+    view! { // внешний view чтобы отслеживался .with()
+        {move || match glob_ctx.session.with(Option::is_some) {
+            true => {
+                if !user_loading_signal.get_untracked() {
+                    glob_ctx.user_resource.refetch();
+                } else {
+                    logging::log!("PageGuard: оптимизация при авторизации на защищаемой странице");
+                }
 
                 if !roles_pending_signal.get_untracked() { glob_ctx.roles.dispatch(()); }
 
@@ -51,7 +50,7 @@ pub fn PageGuard(children: ChildrenFn) -> impl IntoView {
                     }</Show>
                 }
             },
-            None => view!{<PageErrMsg err_msg="Пользователь не авторизован".to_string()/>}.into_view(),
+            false => view!{<PageErrMsg err_msg="Пользователь не авторизован".to_string()/>}.into_view(),
         }}
     }
 }

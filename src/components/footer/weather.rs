@@ -8,9 +8,9 @@ use serde_json;
 #[component]
 pub fn Weather() -> impl IntoView {
     let weather_resurce = create_local_resource(
-        || use_location().pathname.get(),
+        || (),
         |_| {
-            use_location().pathname.track(); // в первом аргументе не работает
+            use_location().pathname.track(); // в первом аргументе не работает после обновления (с get и без)
             logging::log!("Footer (weather.rs): async погода");
             get_weather()
         },
