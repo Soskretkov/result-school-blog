@@ -27,7 +27,7 @@ pub async fn fetch_all_users() -> Result<Vec<User>, String> {
     bff_server::fetch_all_users(&get_session()).await
 }
 
-pub async fn fetch_user(id_to_find: &str) -> Result<Option<User>, String> {
+pub async fn _fetch_user(id_to_find: &str) -> Result<Option<User>, String> {
     bff_server::fetch_user(&get_session(), id_to_find).await
 }
 
