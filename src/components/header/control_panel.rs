@@ -17,7 +17,7 @@ pub fn ControlPanel(set_session: WriteSignal<Option<Session>>) -> impl IntoView 
                 <Icon on:click= move |_| {let _ = history.back();}  id="fa-backward" class="cursor-pointer text-[24px] text-left"/>
 
                 <A href="/post" class="no-underline text-current">
-                    <Icon id="mx-[5px] fa-file-text-o" class="text-[24px] text-center"/>
+                    <Icon id="fa-file-text-o" class="text-[24px] text-center"/>
                 </A>
 
                 <A href="/users" class="no-underline text-current">

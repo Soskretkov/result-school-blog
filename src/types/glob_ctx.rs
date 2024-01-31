@@ -21,8 +21,8 @@ impl GlobContext {
     }
 
     fn create_user_resource(session: ReadSignal<Option<Session>>) -> Resource<(), Option<User>> {
-        let current_path = use_location().pathname;
-        let (location, set_location) = create_signal::<String>(current_path.get_untracked());
+        // let current_path = use_location().pathname;
+        // let (location, set_location) = create_signal::<String>(current_path.get_untracked());
 
         let user_resource = create_local_resource(
             move || {
@@ -35,10 +35,10 @@ impl GlobContext {
             },
             move |_| {
                 session.track();
-                location.track();
-                if session.with(Option::is_some) {
-                    set_location.set(current_path.get());
-                };
+                // location.track();
+                // if session.with(Option::is_some) {
+                //     set_location.set(current_path.get());
+                // };
 
                 // logging::log!("user_info.rs: перед запуском async данные пользователя");
                 async move {

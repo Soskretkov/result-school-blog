@@ -1,6 +1,6 @@
 // назначение компонента: гарантировать children обновленного пользователя и роли
 // похожий код в Header (login.rs)
-use super::PageErrMsg;
+use super::super::components::PageErrMsg;
 use crate::types::GlobContext;
 use crate::utils::is_sync_server_client_roles;
 use leptos::*;
@@ -18,7 +18,7 @@ pub fn PageGuard(children: ChildrenFn) -> impl IntoView {
                 if !user_loading_signal.get_untracked() {
                     glob_ctx.user_resource.refetch();
                 } else {
-                    logging::log!("PageGuard: оптимизация при авторизации на защищаемой странице");
+                    logging::log!("PageGuard: оптимизация при авторизации");
                 }
 
                 if !roles_pending_signal.get_untracked() { glob_ctx.roles.dispatch(()); }
@@ -34,6 +34,7 @@ pub fn PageGuard(children: ChildrenFn) -> impl IntoView {
                             true => match glob_ctx.roles.value().get_untracked() {
                                 Some(Ok(_)) => {
                                     children.with_value(|children| children()).into_view()
+                                    // children().into_view()
                                 },
                                 Some(Err(e)) => view! {<PageErrMsg err_msg={e}/>},
                                 None => {

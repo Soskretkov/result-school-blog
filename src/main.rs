@@ -6,7 +6,7 @@ mod types;
 mod utils;
 use components::{Footer, Header};
 use leptos_router::*;
-use pages::{Authorization, Registration, Users};
+use pages::{Authorization, Registration, Users, ErrorPage};
 use server::Session;
 use types::GlobContext;
 
@@ -31,7 +31,7 @@ pub fn App() -> impl IntoView {
                         <Route path="/users" view=move || { Users }/>
                         <Route path="/post" view=move || { view!{<div>"Статьи"</div>} }/>
                         <Route path="/post/:postId" view=move || { view!{<div>"Статья"</div>} }/>
-                        <Route path="/*" view=move || { view!{<div>"Ошибка"</div>} }/>
+                        <Route path="/*" view=move || { view!{ <ErrorPage err_msg={"Запрошенная страница не существует".to_string()}/>} }/>
                     </Routes>
                 </main>
                 <Footer/>

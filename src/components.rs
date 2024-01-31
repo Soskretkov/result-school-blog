@@ -1,11 +1,11 @@
-mod header;
+mod button;
 mod footer;
+mod header;
 mod icon;
 mod input;
-mod button;
 
-pub use header::Header;
+pub use button::Button;
 pub use footer::Footer;
+pub use header::Header;
 pub use icon::Icon;
 pub use input::Input;
-pub use button::Button;
