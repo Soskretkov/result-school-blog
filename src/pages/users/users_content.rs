@@ -1,5 +1,5 @@
 mod tbody_row;
-use super::super::components::{PageErrMsg, H2};
+use crate::components::{Content, PageErrMsg};
 use crate::server;
 use crate::types::GlobContext;
 use leptos::*;
@@ -8,7 +8,7 @@ use tbody_row::TbodyRow;
 #[component]
 pub fn UsersContent() -> impl IntoView {
     if !can_access() {
-        return view! { <PageErrMsg err_msg={"Недостаточно прав".to_string()}/> };
+        return view! { <PageErrMsg err_msg={"Недостаточно прав для просмотра страницы".to_string()}/> };
     }
 
     let users_res = create_resource(
@@ -25,8 +25,7 @@ pub fn UsersContent() -> impl IntoView {
             match wr_users {
                 Ok(users_vec) => {
                     view! {
-                        <div class="flex items-center flex-col w-[570px] mx-auto">
-                            <H2>"Пользователи"</H2>
+                        <Content header="Пользователи" class="w-[570px] mx-auto">
                             <table>
                                 <thead>
                                     <tr class="flex items-center">
@@ -45,7 +44,7 @@ pub fn UsersContent() -> impl IntoView {
                                         .collect_view()
                                 }</tbody>
                             </table>
-                        </div>
+                        </Content>
                     }.into_view()
                 }
                 Err(e) => view! { <PageErrMsg err_msg={e}/> },

@@ -1,5 +1,5 @@
-use super::components::{FormErrMsg, H2};
-use crate::components::{Button, Input};
+use super::components::FormErrMsg;
+use crate::components::{Button, Content, Input};
 use crate::server::{self, Session};
 use crate::types::GlobContext;
 use leptos::{ev::SubmitEvent, html::Input, *};
@@ -54,8 +54,7 @@ pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView 
     };
 
     view! {
-        <div class="flex items-center flex-col">
-            <H2>Регистрация</H2>
+        <Content header="Регистрация">
             <form on:submit = on_submit class="flex flex-col w-[260px]">
                 <Input
                     r#type="text"
@@ -83,7 +82,7 @@ pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView 
 
                 <FormErrMsg err_signal=auth_error></FormErrMsg>
             </form>
-        </div>
+        </Content>
     }
     .into_view()
 }

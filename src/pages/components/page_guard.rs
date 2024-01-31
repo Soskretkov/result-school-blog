@@ -1,6 +1,6 @@
 // назначение компонента: гарантировать children обновленного пользователя и роли
 // похожий код в Header (login.rs)
-use super::super::components::PageErrMsg;
+use crate::components::PageErrMsg;
 use crate::types::GlobContext;
 use crate::utils::is_sync_server_client_roles;
 use leptos::*;
