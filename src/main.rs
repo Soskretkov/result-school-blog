@@ -14,7 +14,6 @@ fn main() {
     leptos::mount_to_body(App);
 }
 
-// users_content.rs: упростить код
 #[component]
 pub fn App() -> impl IntoView {
     let (session, set_session) = create_signal::<Option<Session>>(None);
@@ -23,7 +22,7 @@ pub fn App() -> impl IntoView {
         <Router>
             { provide_context(GlobContext::new(session)) }
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
-                <Header set_session={set_session}/> // btn. "выход" сбрасывает authed_user на None
+                <Header set_session={set_session}/> // btn. "выход" сбрасывает session на None
                 <main class="pt-[120px]">
                     <Routes>
                         <Route path="/" view=move || { view!{<div>"Главная страница"</div>} }/>

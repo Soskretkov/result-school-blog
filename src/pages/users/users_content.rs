@@ -7,7 +7,9 @@ use tbody_row::TbodyRow;
 
 #[component]
 pub fn UsersContent() -> impl IntoView {
-    let glob_ctx = use_context::<GlobContext>().unwrap();
+    if !can_access() {
+        return view! { <PageErrMsg err_msg={"Недостаточно прав".to_string()}/> };
+    }
 
     let users_res = create_resource(
         || (),
@@ -17,60 +19,40 @@ pub fn UsersContent() -> impl IntoView {
         },
     );
 
+    // внешний view чтобы отслеживался .get()
     view! {
-        <Suspense
-            // если ресурсы грузятся ничего не показываем
-            fallback=|| ()
-        >
-            <Show
-                when=move || {
-                    can_access()
-                    &&
-                    users_res.with(|x| x.as_ref().map(Result::is_ok)).unwrap_or(false)
-                    &&
-                    glob_ctx.roles.value().with(|x| x.as_ref().map(Result::is_ok)).unwrap_or(false)
-                }
-                fallback=move || {
-                    let err_msg = match (users_res.get(), glob_ctx.roles.value().get()) {
-                        (Some(Err(e)), _) => e,
-                        (_, Some(Err(e))) => e,
-                        _ => "Неизвестная ошибка".to_string(),
-                    };
-
+        {move || users_res.get().map(|wr_users|
+            match wr_users {
+                Ok(users_vec) => {
                     view! {
-                        <PageErrMsg err_msg={err_msg}/>
-                    }
+                        <div class="flex items-center flex-col w-[570px] mx-auto">
+                            <H2>"Пользователи"</H2>
+                            <table>
+                                <thead>
+                                    <tr class="flex items-center">
+                                        <th class="w-[172px] px-2.5">"Логин"</th>
+                                        <th class="w-[213px] px-2.5">"Дата регистрации"</th>
+                                        <th class="w-[150px] px-2.5">"Роль"</th>
+                                        <th class="w-auto"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>{
+                                    users_vec
+                                        .into_iter()
+                                        .map(|user| {
+                                            view! { <TbodyRow user={user}/> }
+                                        })
+                                        .collect_view()
+                                }</tbody>
+                            </table>
+                        </div>
+                    }.into_view()
                 }
-            >
-                <div class="flex items-center flex-col w-[570px] mx-auto">
-                    <H2>"Пользователи"</H2>
-                    <table>
-                        <thead>
-                            <tr class="flex items-center">
-                                <th class="w-[172px] px-2.5">"Логин"</th>
-                                <th class="w-[213px] px-2.5">"Дата регистрации"</th>
-                                <th class="w-[150px] px-2.5">"Роль"</th>
-                                <th class="w-auto"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <For
-                                each=move || users_res.get().unwrap().unwrap_or(Vec::new())
-                                key=|user| user.id.clone()
-                                children=move |user| {
-                                    view! {
-                                        <TbodyRow
-                                            user={user}
-                                        />
-                                    }
-                                }
-                            />
-                        </tbody>
-                    </table>
-                </div>
-            </Show>
-        </Suspense>
+                Err(e) => view! { <PageErrMsg err_msg={e}/> },
+            }
+        )}
     }
+    .into_view()
 }
 
 fn can_access() -> bool {
