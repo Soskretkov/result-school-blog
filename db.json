@@ -6,7 +6,9 @@
       "password": "qwerty123",
       "registered_at": "2026-09-22",
       "role_id": 0,
-      "sessions": []
+      "sessions": [
+        "513bd3a2-fd7c-4aeb-a9de-dde59ddbed9f"
+      ]
     },
     {
       "id": "s756902f",

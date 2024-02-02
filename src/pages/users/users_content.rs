@@ -25,8 +25,8 @@ pub fn UsersContent() -> impl IntoView {
             match wr_users {
                 Ok(users_vec) => {
                     view! {
-                        <Content header="Пользователи" class="w-[570px] mx-auto">
-                            <table>
+                        <Content header="Пользователи">
+                            <table class="w-[570px] mx-auto text-18px]">
                                 <thead>
                                     <tr class="flex items-center">
                                         <th class="w-[172px] px-2.5">"Логин"</th>

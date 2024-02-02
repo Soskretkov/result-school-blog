@@ -16,7 +16,11 @@ fn main() {
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (session, set_session) = create_signal::<Option<Session>>(None);
+    let sess: Option<Session> = Some(Session {
+        id: "513bd3a2-fd7c-4aeb-a9de-dde59ddbed9f".to_string(),
+        user_id: "a967510a".to_string(),
+    });
+    let (session, set_session) = create_signal::<Option<Session>>(sess);
 
     view! {
         <Router>
