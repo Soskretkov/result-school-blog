@@ -10,17 +10,17 @@ pub fn TbodyRow(user: User) -> impl IntoView {
     let on_click = |_: ev::MouseEvent| unimplemented!();
 
     view! {
-        <tr class="flex">
+        <tr class="flex [&>*:not(:last-child)]:border [&>*:not(:last-child)]:border-black">
             <td class="w-[172px] px-2.5">{user.login.clone()}</td>
-            <td class="w-[213px] px-2.5">{user.registered_at.clone()}</td>
-            <td class="w-[150px] px-2.5 flex">
+            <td class="w-[170px] px-2.5">{user.registered_at.clone()}</td>
+            <td class="w-[193px] px-2.5 flex">
                 <RoleSelect
                     user_role_id={user.role_id}
                 ></RoleSelect>
                 <Icon
                     on:click=on_click
                     id="fa-floppy-o"
-                    class="cursor-pointer text-[24px] ml-2.5"
+                    class="cursor-pointer text-[24px]"
                 />
             </td>
             <td class="w-auto">

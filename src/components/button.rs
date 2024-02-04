@@ -11,7 +11,7 @@ pub fn Button(
 
 
 ) -> impl IntoView {
-    let class = "flex justify-center items-center text-[18px] h-8 cursor-pointer text-black";
+    let class = "flex border border-gray-600 bg-[buttonface] rounded-sm justify-center items-center text-[18px] h-8 cursor-pointer text-black";
 
     let class_list = format!("{class} {width}");
 
