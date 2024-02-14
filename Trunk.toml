@@ -2,3 +2,5 @@
 stage = "pre_build"
 command = "cmd.exe"
 command_arguments = ["/c", "cd js-packs/tailwind && npx tailwindcss -i input.css -o output.css"]
+
+watch = ["src", "bff/src"]

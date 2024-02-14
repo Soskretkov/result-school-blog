@@ -10,8 +10,8 @@ pub fn TbodyRow(user: User) -> impl IntoView {
     let on_click = |_: ev::MouseEvent| unimplemented!();
 
     view! {
-        <tr class="flex [&>*:not(:last-child)]:border [&>*:not(:last-child)]:border-black">
-            <td class="w-[172px] px-2.5">{user.login.clone()}</td>
+        <tr class="flex">
+            <td class="w-[170px] px-2.5">{user.login.clone()}</td>
             <td class="w-[170px] px-2.5">{user.registered_at.clone()}</td>
             <td class="w-[193px] px-2.5 flex">
                 <RoleSelect

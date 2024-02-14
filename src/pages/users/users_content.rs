@@ -26,16 +26,16 @@ pub fn UsersContent() -> impl IntoView {
                 Ok(users_vec) => {
                     view! {
                         <Content header="Пользователи">
-                            <table class="w-[570px] mx-auto text-18px]">
+                            <table class="w-[570px] mx-auto text-[18px]">
                                 <thead>
-                                    <tr class="flex items-center">
-                                        <th class="w-[172px] px-2.5">"Логин"</th>
-                                        <th class="w-[213px] px-2.5">"Дата регистрации"</th>
-                                        <th class="w-[150px] px-2.5">"Роль"</th>
+                                    <tr class="flex items-start">
+                                        <th class="w-[170px] px-2.5">"Логин"</th>
+                                        <th class="w-[170px] px-2.5">"Дата регистрации"</th>
+                                        <th class="w-[195px] px-2.5">"Роль"</th>
                                         <th class="w-auto"></th>
                                     </tr>
                                 </thead>
-                                <tbody>{
+                                <tbody class="[&>*>*:not(:last-child)]:border-t [&>*>*]:border-l [&>*:last-child>*:not(:last-child)]:border-b [&>*>*]:border-black">{
                                     users_vec
                                         .into_iter()
                                         .map(|user| {
