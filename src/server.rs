@@ -16,6 +16,12 @@ pub async fn logout() -> Result<(), String> {
     bff_server::logout(&get_session()).await
 }
 
+pub async fn update_user_role(user_id: &str, role_name: RoleName) -> Result<(), String> {
+    TimeoutFuture::new(1000).await;
+    logging::log!("server.rs: update_user_role (id: {}, role_name: {})", user_id, role_name.as_str());
+    bff_server::update_user_role(&get_session(), user_id, role_name).await
+}
+
 pub async fn fetch_id_by_login(login: &str) -> Result<Option<String>, String> {
     TimeoutFuture::new(1000).await;
     logging::log!("server.rs: fetch_id_by_login (логин: {})", login);

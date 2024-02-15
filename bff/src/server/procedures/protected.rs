@@ -2,7 +2,7 @@ use super::super::utils;
 use crate::store_utils;
 use crate::server::types::export_types::{RoleName, Session, User};
 
-async fn update_user_role(
+pub async fn update_user_role(
     session: &Session,
     user_id: &str,
     role_name: RoleName,
