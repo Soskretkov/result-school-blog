@@ -1,4 +1,4 @@
-use crate::db_utils;
+use crate::store_utils;
 use crate::server::types::export_types::{Session, User};
 use chrono::{TimeZone, Utc};
 use rand::{thread_rng, Rng};
@@ -8,7 +8,7 @@ pub async fn get_user_with_permission<F>(session: &Session, check_perm: F) -> Re
 where
     F: FnOnce(&User) -> bool,
 {
-    let user = db_utils::find_users_by_kv::<User>("id", &session.user_id)
+    let user = store_utils::find_users_by_kv::<User>("id", &session.user_id)
         .await?
         .ok_or_else(|| "Пользователь не существует".to_string())?;
 

@@ -1,7 +1,7 @@
 mod protected;
-use crate::db_utils;
+use crate::store_utils;
 pub use protected::*;
 
 pub async fn fetch_id_by_login(login: &str) -> Result<Option<String>, String> {
-    db_utils::find_users_by_kv("login", login).await
+    store_utils::find_users_by_kv("login", login).await
 }
