@@ -14,7 +14,7 @@ chrono = "0.4"
 rand = "0.8"
 uuid = { version = "1", features = ["v4"] }
 leptos = { version = "0.6", features = ["csr"] }
-gloo-timers = { version = "0.3.0", features = [
-    "futures",
-] }
+# gloo-timers = { version = "0.3.0", features = [
+#     "futures",
+# ] }
 

@@ -57,7 +57,6 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 }
 
 pub async fn logout(session: &Session) -> Result<(), String> {
-    logging::log!("bff_procedures.rs: async данные пользователя (logout)");
     let user: DbUser = store_utils::find_users_by_kv("id", &session.user_id)
         .await?
         .unwrap();

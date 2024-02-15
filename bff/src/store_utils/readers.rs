@@ -1,5 +1,4 @@
 use super::URL;
-use leptos::*;
 use reqwest;
 use serde::de::DeserializeOwned;
 
@@ -34,8 +33,7 @@ async fn fetch_by_url<T>(url: &str) -> Result<Vec<T>, String>
 where
     T: DeserializeOwned,
 {
-    logging::log!("{}", url);
-
+    // leptos::logging::log!("{}", url);
     reqwest::get(url)
         .await
         .map_err(|err| err.to_string())?

@@ -14,7 +14,6 @@ pub fn UsersContent() -> impl IntoView {
     let users_res = create_resource(
         || (),
         move |_| async move {
-            logging::log!("users.rs: async все пользователи");
             server::fetch_all_users().await
         },
     );

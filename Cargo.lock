@@ -129,7 +129,6 @@ name = "bff"
 version = "0.1.0"
 dependencies = [
  "chrono",
- "gloo-timers",
  "leptos",
  "rand",
  "reqwest",

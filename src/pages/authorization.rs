@@ -29,7 +29,7 @@ pub fn Authorization(set_session: WriteSignal<Option<Session>>) -> impl IntoView
 
             async move {
                 match server::fetch_id_by_login(&login).await {
-                    Some(user_id) => match server::authorize(&user_id, &password).await {
+                    Ok(Some(user_id)) => match server::authorize(&user_id, &password).await {
                         Ok(sess_id) => {
                             let sess = Session {
                                 id: sess_id,
@@ -42,7 +42,8 @@ pub fn Authorization(set_session: WriteSignal<Option<Session>>) -> impl IntoView
                         }
                         Err(err_msg) => set_auth_error.set(Some(err_msg)),
                     },
-                    None => set_auth_error.set(Some("Пользователь не существует".to_string())),
+                    Ok(None) => set_auth_error.set(Some("Пользователь не существует".to_string())),
+                    Err(e) => set_auth_error.set(Some(e)),
                 };
             }
         });
