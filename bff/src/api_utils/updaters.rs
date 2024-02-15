@@ -19,17 +19,16 @@ where
         .unwrap();
 }
 
-pub async fn update_user_sessions<T>(user_id: &str, sessions: &T)
+pub async fn update_user_field<T>(user_id: &str, field_name: &str, field_value: &T)
 where
     T: DeserializeOwned + Serialize,
 {
     let url = format!("{URL}/users/{}", user_id);
-    // logging::log!("{} (update_user_sessions)", url);
     let client = reqwest::Client::new();
 
     client
         .patch(url)
-        .json(&json!({ "sessions": sessions }))
+        .json(&json!({ field_name: field_value }))
         .send()
         .await
         .unwrap();

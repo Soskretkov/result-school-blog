@@ -21,7 +21,7 @@ pub async fn fetch_user(session: &Session, id_to_find: &str) -> Result<Option<Us
     TimeoutFuture::new(500).await;
     // не нужны привилегии чтобы запрашивать по себе
     if session.user_id == id_to_find {
-        return Ok(api_utils::find_user_by_kv::<User>("id", id_to_find).await);
+        return Ok(api_utils::find_users_by_kv::<User>("id", id_to_find).await);
     }
 
     let check_perm = |user: &User| user.role_id.can_view_users();
@@ -30,7 +30,7 @@ pub async fn fetch_user(session: &Session, id_to_find: &str) -> Result<Option<Us
     let res = if &user.id == id_to_find {
         Some(user)
     } else {
-        api_utils::find_user_by_kv("id", id_to_find).await
+        api_utils::find_users_by_kv("id", id_to_find).await
     };
 
     Ok(res)
@@ -41,7 +41,7 @@ async fn get_user_with_permission<F>(session: &Session, check_perm: F) -> Result
 where
     F: FnOnce(&User) -> bool,
 {
-    let user = api_utils::find_user_by_kv::<User>("id", &session.user_id)
+    let user = api_utils::find_users_by_kv::<User>("id", &session.user_id)
         .await
         .ok_or_else(|| "Пользователь не существует".to_string())?;
 

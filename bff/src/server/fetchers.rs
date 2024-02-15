@@ -4,7 +4,7 @@ use crate::api_utils;
 pub use protected::*;
 
 pub async fn fetch_id_by_login(login: &str) -> Option<String> {
-    api_utils::find_user_by_kv("login", login)
+    api_utils::find_users_by_kv("login", login)
         .await
         .map(|user: User| user.id)
 }

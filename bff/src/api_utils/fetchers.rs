@@ -19,7 +19,7 @@ where
     fetch_by_url(&url).await
 }
 
-pub async fn find_user_by_kv<T>(key: &str, value: &str) -> Option<T>
+pub async fn find_users_by_kv<T>(key: &str, value: &str) -> Option<T>
 where
     T: DeserializeOwned,
 {

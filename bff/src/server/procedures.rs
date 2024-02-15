@@ -10,7 +10,7 @@ use leptos::*;
 // почему подход выше работает: при смене пароля массив сессий обнуляется
 // почему id: при наличии учетки клиент так и так проясняет id чтобы образовать сессию
 pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
-    let wrapped_user: Option<DbUser> = api_utils::find_user_by_kv("id", user_id).await;
+    let wrapped_user: Option<DbUser> = api_utils::find_users_by_kv("id", user_id).await;
 
     match wrapped_user {
         None => Err("Пользователь не найден".into()),
@@ -18,14 +18,14 @@ pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> 
         Some(user) => {
             let mut new_sessions = user.sessions;
             let session_id = new_sessions.add_rnd_session();
-            api_utils::update_user_sessions(&user.id, &new_sessions).await;
+            api_utils::update_user_field(&user.id, "sessions", &new_sessions).await;
             Ok(session_id)
         }
     }
 }
 
 pub async fn register(login: String, password: String) -> Result<String, String> {
-    let wrapped_user: Option<DbUser> = api_utils::find_user_by_kv("login", &login).await;
+    let wrapped_user: Option<DbUser> = api_utils::find_users_by_kv("login", &login).await;
 
     if wrapped_user.is_some() {
         return Err("Логин уже занят".to_string());
@@ -57,7 +57,7 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 
 pub async fn logout(session: &Session) -> Result<(), ()> {
     logging::log!("bff_procedures.rs: async данные пользователя (logout)");
-    let user: DbUser = api_utils::find_user_by_kv("id", &session.user_id)
+    let user: DbUser = api_utils::find_users_by_kv("id", &session.user_id)
         .await
         .unwrap();
     let sessions = user.sessions;
@@ -66,7 +66,7 @@ pub async fn logout(session: &Session) -> Result<(), ()> {
     let new_sessions = sessions.del_session(&session.id);
 
     // Записать обновленые сессии через утилиту для json-server
-    api_utils::update_user_sessions(&user.id, &new_sessions).await;
+    api_utils::update_user_field(&user.id, "sessions", &new_sessions).await;
     Ok(())
 }
 
