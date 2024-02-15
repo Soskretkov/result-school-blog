@@ -1,8 +1,6 @@
-use serde::{Deserialize, Serialize};
 use crate::api_utils;
-use crate::server::types::db_types::{User as DbUser};
-
-
+use crate::server::types::db_types::User as DbUser;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct Session {
@@ -13,8 +11,8 @@ pub struct Session {
 impl Session {
     pub async fn is_exist(&self) -> bool {
         match api_utils::find_users_by_kv::<DbUser>("id", &self.user_id).await {
-            None => false,
-            Some(user) => user.sessions.is_exist(&self.id),
+            Ok(Some(user)) => user.sessions.is_exist(&self.id),
+            _ => false,
         }
     }
 }

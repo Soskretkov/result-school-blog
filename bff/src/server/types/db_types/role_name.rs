@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize, Serializer, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Copy)]
@@ -34,13 +34,6 @@ impl RoleName {
         }
     }
 
-    pub fn can_remove_comment(&self) -> bool {
-        match self {
-            RoleName::Administrator | RoleName::Moderator => true,
-            _ => false,
-        }
-    }
-
     // использование: бек - сверяет право на извлечение, фронт - возможность попасть на страницу
     pub fn can_view_users(&self) -> bool {
         match self {
@@ -52,6 +45,20 @@ impl RoleName {
     pub fn can_view_roles(&self) -> bool {
         match self {
             _ => true, // любой у кого есть сессия
+        }
+    }
+
+    pub fn can_update_roles(&self) -> bool {
+        match self {
+            RoleName::Administrator => true,
+            _ => false,
+        }
+    }
+
+    pub fn can_remove_comment(&self) -> bool {
+        match self {
+            RoleName::Administrator | RoleName::Moderator => true,
+            _ => false,
         }
     }
 }

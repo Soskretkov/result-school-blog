@@ -1,34 +1,36 @@
-use reqwest;
-use serde::de::DeserializeOwned;
 use super::URL;
 use leptos::*;
+use reqwest;
+use serde::de::DeserializeOwned;
 
-pub async fn all_users<T>() -> Vec<T>
+pub async fn all_users<T>() -> Result<Vec<T>, String>
 where
     T: DeserializeOwned,
 {
     let url = format!("{URL}/users");
-    fetch_by_url(&url).await
+    fetch_by_url(&url).await.map_err(|err| err.to_string())
 }
 
-pub async fn all_roles<T>() -> Vec<T>
+pub async fn all_roles<T>() -> Result<Vec<T>, String>
 where
     T: DeserializeOwned,
 {
     let url = format!("{URL}/roles");
-    fetch_by_url(&url).await
+    fetch_by_url(&url).await.map_err(|err| err.to_string())
 }
 
-pub async fn find_users_by_kv<T>(key: &str, value: &str) -> Option<T>
+pub async fn find_users_by_kv<T>(key: &str, value: &str) -> Result<Option<T>, String>
 where
     T: DeserializeOwned,
 {
     let url = format!("{URL}/users/?{key}={value}");
-    let relevant_users = fetch_by_url(&url).await;
-    relevant_users.into_iter().next()
+    fetch_by_url(&url)
+        .await
+        .map_err(|err| err.to_string())
+        .map(|x| x.into_iter().next())
 }
 
-async fn fetch_by_url<T>(url: &str) -> Vec<T>
+async fn fetch_by_url<T>(url: &str) -> Result<Vec<T>, String>
 where
     T: DeserializeOwned,
 {
@@ -36,8 +38,8 @@ where
 
     reqwest::get(url)
         .await
-        .unwrap()
+        .map_err(|err| err.to_string())?
         .json::<Vec<T>>()
         .await
-        .unwrap()
+        .map_err(|err| err.to_string())
 }

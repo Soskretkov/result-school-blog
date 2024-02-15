@@ -1,9 +1,10 @@
 use super::URL;
+use reqwest::Response;
 use serde::{de::DeserializeOwned, Serialize};
 use serde_json::json;
 // use leptos::*;
 
-pub async fn add_user<T>(new_user: &T)
+pub async fn add_user<T>(new_user: &T) -> Result<Response, String>
 where
     T: DeserializeOwned + Serialize,
 {
@@ -16,10 +17,14 @@ where
         .json(new_user) // установка тела запроса
         .send()
         .await
-        .unwrap();
+        .map_err(|err| err.to_string())
 }
 
-pub async fn update_user_field<T>(user_id: &str, field_name: &str, field_value: &T)
+pub async fn update_user_field<T>(
+    user_id: &str,
+    field_name: &str,
+    field_value: &T,
+) -> Result<Response, String>
 where
     T: DeserializeOwned + Serialize,
 {
@@ -31,5 +36,5 @@ where
         .json(&json!({ field_name: field_value }))
         .send()
         .await
-        .unwrap();
+        .map_err(|err| err.to_string())
 }

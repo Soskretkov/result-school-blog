@@ -1,12 +1,29 @@
-use rand::{Rng, thread_rng};
+use crate::api_utils;
+use crate::server::types::export_types::{Session, User};
 use chrono::{TimeZone, Utc};
+use rand::{thread_rng, Rng};
+
+// для получения пользователя и проверки его прав
+pub async fn get_user_with_permission<F>(session: &Session, check_perm: F) -> Result<User, String>
+where
+    F: FnOnce(&User) -> bool,
+{
+    let user = api_utils::find_users_by_kv::<User>("id", &session.user_id)
+        .await?
+        .ok_or_else(|| "Пользователь не существует".to_string())?;
+
+    if check_perm(&user) {
+        Ok(user)
+    } else {
+        Err("Недостаточно прав на операцию".to_string())
+    }
+}
 
 pub fn _create_rnd_float64() -> f64 {
     let mut rng = thread_rng(); // Получаем генератор случайных чисел
     let random_float: f64 = rng.gen();
     random_float
 }
-
 
 pub fn _get_rnd_date() -> String {
     let random_float: f64 = _create_rnd_float64();
@@ -31,7 +48,6 @@ pub fn _get_rnd_date() -> String {
 
 pub fn get_current_date() -> String {
     let now = Utc::now(); // Получаем текущее время
-    // now.format("%Y-%m-%d %H:%M").to_string()
+                          // now.format("%Y-%m-%d %H:%M").to_string()
     now.format("%Y-%m-%d").to_string()
 }
-
