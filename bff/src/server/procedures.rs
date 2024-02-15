@@ -1,9 +1,9 @@
 mod protected;
-use super::types::db_types::{RoleName, User as DbUser};
+use super::types::db_interaction_types::{RoleName, User as DbUser};
 use super::types::export_types::Session;
 use super::types::SessionsStore;
 use super::utils;
-use crate::api_utils;
+use crate::db_utils;
 use leptos::*;
 pub use protected::*;
 use uuid::Uuid;
@@ -12,20 +12,20 @@ use uuid::Uuid;
 // почему подход выше работает: при смене пароля массив сессий обнуляется
 // почему id: при наличии учетки клиент так и так проясняет id чтобы образовать сессию
 pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
-    match api_utils::find_users_by_kv::<DbUser>("id", user_id).await? {
+    match db_utils::find_users_by_kv::<DbUser>("id", user_id).await? {
         None => Err("Пользователь не найден".into()),
         Some(user) if user.password != password => Err("Пароль не верен".into()),
         Some(user) => {
             let mut new_sessions = user.sessions;
             let session_id = new_sessions.add_rnd_session();
-            api_utils::update_user_field(&user.id, "sessions", &new_sessions).await?;
+            db_utils::update_user_field(&user.id, "sessions", &new_sessions).await?;
             Ok(session_id)
         }
     }
 }
 
 pub async fn register(login: String, password: String) -> Result<String, String> {
-    if api_utils::find_users_by_kv::<DbUser>("login", &login)
+    if db_utils::find_users_by_kv::<DbUser>("login", &login)
         .await?
         .is_some()
     {
@@ -51,14 +51,14 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         sessions: SessionsStore::new(),
     };
 
-    api_utils::add_user(&new_user).await?;
+    db_utils::add_user(&new_user).await?;
 
     Ok(new_user.id)
 }
 
 pub async fn logout(session: &Session) -> Result<(), String> {
     logging::log!("bff_procedures.rs: async данные пользователя (logout)");
-    let user: DbUser = api_utils::find_users_by_kv("id", &session.user_id)
+    let user: DbUser = db_utils::find_users_by_kv("id", &session.user_id)
         .await?
         .unwrap();
     let sessions = user.sessions;
@@ -67,6 +67,6 @@ pub async fn logout(session: &Session) -> Result<(), String> {
     let new_sessions = sessions.del_session(&session.id);
 
     // Записать обновленые сессии через утилиту для json-server
-    api_utils::update_user_field(&user.id, "sessions", &new_sessions).await?;
+    db_utils::update_user_field(&user.id, "sessions", &new_sessions).await?;
     Ok(())
 }

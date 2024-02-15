@@ -1,4 +1,4 @@
-pub mod db_types;
+pub mod db_interaction_types;
 pub mod export_types;
 mod sessions_store;
 
