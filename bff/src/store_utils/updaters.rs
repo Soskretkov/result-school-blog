@@ -2,6 +2,7 @@ use super::URL;
 use reqwest::Response;
 use serde::{de::DeserializeOwned, Serialize};
 use serde_json::json;
+use std::fmt::Debug;
 
 pub async fn update_user_field<T>(
     user_id: &str,
@@ -9,7 +10,7 @@ pub async fn update_user_field<T>(
     field_value: &T,
 ) -> Result<Response, String>
 where
-    T: DeserializeOwned + Serialize,
+    T: DeserializeOwned + Serialize + Debug,
 {
     let url = format!("{URL}/users/{}", user_id);
     let client = reqwest::Client::new();
