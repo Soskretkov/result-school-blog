@@ -46,7 +46,7 @@ pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
                                 <div class="flex h-8">
                                     <div class="mt-[2px] text-[18px] font-bold">{user.login.clone()}</div>
                                     <button on:click=on_click class="bg-inherit ml-2.5 px-0 py-0 border-none cursor-pointer">
-                                        <Icon id="fa-sign-out" class="text-[24px]"/>
+                                        <Icon id="fa-sign-out" class="text-[24px]".to_string()/>
                                     </button>
                                 </div>
                             }

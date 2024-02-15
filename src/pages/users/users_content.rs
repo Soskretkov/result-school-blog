@@ -27,15 +27,15 @@ pub fn UsersContent() -> impl IntoView {
                     view! {
                         <Content header="Пользователи">
                             <table class="w-[570px] mx-auto text-[18px]">
-                                <thead>
-                                    <tr class="flex items-start">
-                                        <th class="w-[170px] px-2.5">"Логин"</th>
-                                        <th class="w-[170px] px-2.5">"Дата регистрации"</th>
-                                        <th class="w-[195px] px-2.5">"Роль"</th>
-                                        <th class="w-auto"></th>
+                                <thead  class="">
+                                    <tr class="flex items-start text-left [&>*:not(:last-child)]:px-2.5">
+                                        <th class="w-[170px] font-normal">"Логин"</th>
+                                        <th class="w-[170px] font-normal">"Дата регистрации"</th>
+                                        <th class="w-auto font-normal">"Роль"</th>
+                                        <th class="w-auto font-normal"></th>
                                     </tr>
                                 </thead>
-                                <tbody class="[&>*>*:not(:last-child)]:border-t [&>*>*]:border-l [&>*:last-child>*:not(:last-child)]:border-b [&>*>*]:border-black">{
+                                <tbody class="[&>*>*:not(:last-child)]:border-y [&>*>*:first-child]:border-l [&>*>*:last-child]:border-l [&>*>*]:border-black">{
                                     users_vec
                                         .into_iter()
                                         .map(|user| {

@@ -1,15 +1,15 @@
 use rand::{Rng, thread_rng};
 use chrono::{TimeZone, Utc};
 
-pub fn create_rnd_float64() -> f64 {
+pub fn _create_rnd_float64() -> f64 {
     let mut rng = thread_rng(); // Получаем генератор случайных чисел
     let random_float: f64 = rng.gen();
     random_float
 }
 
 
-pub fn get_rnd_date() -> String {
-    let random_float: f64 = create_rnd_float64();
+pub fn _get_rnd_date() -> String {
+    let random_float: f64 = _create_rnd_float64();
 
     let msecs = (random_float * 1000000000000.0 + 1999999999999.0) as i64;
 

@@ -15,7 +15,7 @@ impl SessionsStore {
         }
     }
 
-    pub fn iter(&self) -> impl Iterator<Item = &String> {
+    pub fn _iter(&self) -> impl Iterator<Item = &String> {
         self.data.iter()
     }
 
