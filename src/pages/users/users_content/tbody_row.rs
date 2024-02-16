@@ -11,8 +11,8 @@ pub fn TbodyRow(user: User) -> impl IntoView {
     // удалить в бд, запросить пользователей, обновить ресурс или сигнал
     let on_click = |_: ev::MouseEvent| unimplemented!();
 
-    let (is_changed_role_id, set_is_changed_role_id) = create_signal(false);
-    let memoized = create_memo(move |_| is_changed_role_id.get());
+    let (is_changed_role, set_is_changed_role) = create_signal(false);
+    let memoized = create_memo(move |_| is_changed_role.get());
 
     view! {
         <tr class="flex mt-2.5 ">
@@ -20,9 +20,8 @@ pub fn TbodyRow(user: User) -> impl IntoView {
             <td class="w-[170px] px-2.5 flex items-center">{user.registered_at.clone()}</td>
             <td class="w-auto flex items-center justify-between">
                 <RoleSelect
-                    selected_role_id=user.role_id
-                    set_is_changed_role_id = set_is_changed_role_id
-                    class="ml-[5px]"
+                selected_role_type=user.role_id
+                    set_is_changed_role = set_is_changed_role
                 />
                 {move || view! {
                     <SaveIcon is_selected = memoized.get() />

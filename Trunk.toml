@@ -1,6 +1,16 @@
+#https://github.com/trunk-rs/trunk/blob/main/Trunk.toml
+
 [[hooks]]
 stage = "pre_build"
 command = "cmd.exe"
 command_arguments = ["/c", "cd js-packs/tailwind && npx tailwindcss -i input.css -o output.css"]
 
+
+[watch]
 watch = ["src", "bff/src"]
+#ignore = ["js-packs"]
+
+
+[clean]
+# Optionally perform a cargo clean.
+cargo = false

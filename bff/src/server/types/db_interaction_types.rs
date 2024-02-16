@@ -1,5 +1,5 @@
 mod role_name;
-pub use role_name::RoleName;
+pub use role_name::RoleType;
 use serde::{Deserialize, Serialize};
 use super::sessions_store::SessionsStore;
 
@@ -9,12 +9,12 @@ pub struct User {
     pub login: String,
     pub password: String,
     pub registered_at: String,
-    pub role_id: RoleName,
+    pub role_id: RoleType,
     pub sessions: SessionsStore,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Role {
-    pub id: RoleName,
+    pub id: RoleType,
     pub name: String,
 }

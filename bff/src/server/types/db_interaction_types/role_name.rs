@@ -2,34 +2,34 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Copy)]
-pub enum RoleName {
+pub enum RoleType {
     Administrator,
     Moderator,
     Reader,
 }
 
-impl RoleName {
+impl RoleType {
     pub fn as_str(&self) -> &'static str {
         match self {
-            RoleName::Administrator => "Администратор",
-            RoleName::Moderator => "Модератор",
-            RoleName::Reader => "Читатель",
+            RoleType::Administrator => "Администратор",
+            RoleType::Moderator => "Модератор",
+            RoleType::Reader => "Читатель",
         }
     }
 
     pub fn as_u8(&self) -> u8 {
         match self {
-            RoleName::Administrator => 0,
-            RoleName::Moderator => 1,
-            RoleName::Reader => 2,
+            RoleType::Administrator => 0,
+            RoleType::Moderator => 1,
+            RoleType::Reader => 2,
         }
     }
 
     pub fn from_id(id: u8) -> Option<Self> {
         match id {
-            0 => Some(RoleName::Administrator),
-            1 => Some(RoleName::Moderator),
-            2 => Some(RoleName::Reader),
+            0 => Some(RoleType::Administrator),
+            1 => Some(RoleType::Moderator),
+            2 => Some(RoleType::Reader),
             _ => None,
         }
     }
@@ -37,7 +37,7 @@ impl RoleName {
     // использование: бек - сверяет право на извлечение, фронт - возможность попасть на страницу
     pub fn can_view_users(&self) -> bool {
         match self {
-            RoleName::Administrator | RoleName::Moderator => true,
+            RoleType::Administrator | RoleType::Moderator => true,
             _ => false,
         }
     }
@@ -50,26 +50,26 @@ impl RoleName {
 
     pub fn can_update_roles(&self) -> bool {
         match self {
-            RoleName::Administrator => true,
+            RoleType::Administrator => true,
             _ => false,
         }
     }
 
     pub fn can_remove_comment(&self) -> bool {
         match self {
-            RoleName::Administrator | RoleName::Moderator => true,
+            RoleType::Administrator | RoleType::Moderator => true,
             _ => false,
         }
     }
 }
 
-impl fmt::Display for RoleName {
+impl fmt::Display for RoleType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.as_str())
     }
 }
 
-impl Serialize for RoleName {
+impl Serialize for RoleType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -78,13 +78,13 @@ impl Serialize for RoleName {
     }
 }
 
-impl<'de> Deserialize<'de> for RoleName {
+impl<'de> Deserialize<'de> for RoleType {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
-        /* Десериализация числа: в первую очередь, deserializer берет данные из JSON и преобразует их в число типа u8. В этом процессе он еще не знает ничего о RoleName. Он просто выводит тип раст u8. */
+        /* Десериализация числа: в первую очередь, deserializer берет данные из JSON и преобразует их в число типа u8. В этом процессе он еще не знает ничего о RoleType. Он просто выводит тип раст u8. */
         let id = u8::deserialize(deserializer)?;
-        RoleName::from_id(id).ok_or_else(|| serde::de::Error::custom("Invalid role id"))
+        RoleType::from_id(id).ok_or_else(|| serde::de::Error::custom("Invalid role id"))
     }
 }

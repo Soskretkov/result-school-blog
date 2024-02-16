@@ -1,11 +1,11 @@
 use super::super::utils;
 use crate::store_utils;
-use crate::server::types::export_types::{RoleName, Session, User};
+use crate::server::types::export_types::{RoleType, Session, User};
 
 pub async fn update_user_role(
     session: &Session,
     user_id: &str,
-    role_name: RoleName,
+    role_name: RoleType,
 ) -> Result<(), String> {
     let check_perm = |user: &User| user.role_id.can_update_roles();
     utils::get_user_with_permission(session, check_perm).await?;

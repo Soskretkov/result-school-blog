@@ -35,7 +35,7 @@ async fn fetch_by_url<T>(url: &str) -> Result<Vec<T>, String>
 where
     T: DeserializeOwned + Debug,
 {
-    leptos::logging::log!("{}", url);
+    // leptos::logging::log!("{}", url);
     reqwest::get(url)
         .await
         .map_err(|err| err.to_string())?
