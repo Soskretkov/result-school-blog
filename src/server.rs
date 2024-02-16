@@ -22,7 +22,7 @@ pub async fn logout() -> Result<(), String> {
 pub async fn update_user_role(user_id: &str, role_name: RoleType) -> Result<(), String> {
     TimeoutFuture::new(1000).await;
     logging::log!(
-        r#"server.rs: update_user_role ({} назначена роль "{}")"#,
+        r#"server.rs: update_user_role (id {} назначена роль "{}")"#,
         user_id,
         role_name.as_str()
     );
