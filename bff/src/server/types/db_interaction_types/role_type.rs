@@ -25,7 +25,7 @@ impl RoleType {
         }
     }
 
-    pub fn from_id(id: u8) -> Option<Self> {
+    pub fn from_u8(id: u8) -> Option<Self> {
         match id {
             0 => Some(RoleType::Administrator),
             1 => Some(RoleType::Moderator),
@@ -85,6 +85,6 @@ impl<'de> Deserialize<'de> for RoleType {
     {
         /* Десериализация числа: в первую очередь, deserializer берет данные из JSON и преобразует их в число типа u8. В этом процессе он еще не знает ничего о RoleType. Он просто выводит тип раст u8. */
         let id = u8::deserialize(deserializer)?;
-        RoleType::from_id(id).ok_or_else(|| serde::de::Error::custom("Invalid role id"))
+        RoleType::from_u8(id).ok_or_else(|| serde::de::Error::custom("Invalid role id"))
     }
 }

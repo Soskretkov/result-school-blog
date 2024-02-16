@@ -1,5 +1,5 @@
-mod role_name;
-pub use role_name::RoleType;
+mod role_type;
+pub use role_type::RoleType;
 use serde::{Deserialize, Serialize};
 use super::sessions_store::SessionsStore;
 
