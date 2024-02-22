@@ -44,7 +44,10 @@ impl GlobContext {
                 async move {
                     match session.get_untracked() {
                         Some(ref sess) => {
-                            logging::log!("glob_ctx.rs: async данные пользователя {}", sess.user_id);
+                            logging::log!(
+                                "glob_ctx.rs: async данные пользователя {}",
+                                sess.user_id
+                            );
                             bff_server::fetch_user(&sess, &sess.user_id).await.unwrap()
                         }
                         None => {

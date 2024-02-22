@@ -19,6 +19,11 @@ pub async fn logout() -> Result<(), String> {
     bff_server::logout(&get_session()).await
 }
 
+pub async fn remove_user(id_to_delete: &str) -> Result<(), String> {
+    logging::log!("server.rs: remove_user");
+    bff_server::remove_user(&get_session(), id_to_delete).await
+}
+
 pub async fn update_user_role(user_id: &str, role_name: RoleType) -> Result<(), String> {
     TimeoutFuture::new(1000).await;
     logging::log!(

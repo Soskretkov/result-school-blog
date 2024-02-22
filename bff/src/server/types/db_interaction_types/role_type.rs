@@ -55,6 +55,13 @@ impl RoleType {
         }
     }
 
+    pub fn can_remove_users(&self) -> bool {
+        match self {
+            RoleType::Administrator => true,
+            _ => false,
+        }
+    }
+
     pub fn can_remove_comment(&self) -> bool {
         match self {
             RoleType::Administrator | RoleType::Moderator => true,

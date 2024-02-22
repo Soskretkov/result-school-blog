@@ -1,5 +1,5 @@
-use crate::store_utils;
 use crate::server::types::export_types::{Session, User};
+use crate::store_utils;
 use chrono::{TimeZone, Utc};
 use rand::{thread_rng, Rng};
 
@@ -9,7 +9,8 @@ where
     F: FnOnce(&User) -> bool,
 {
     let user = store_utils::find_users_by_kv::<User>("id", &session.user_id)
-        .await?
+        .await
+        .map(|users_vec| users_vec.into_iter().next())?
         .ok_or_else(|| "Пользователь не существует".to_string())?;
 
     if check_perm(&user) {

@@ -2,6 +2,7 @@ mod role_select;
 mod save_icon;
 use crate::components::Icon;
 use crate::server::{self, RoleType, User};
+use crate::utils;
 use leptos::*;
 use role_select::RoleSelect;
 use save_icon::SaveIcon;
@@ -16,20 +17,23 @@ pub fn TbodyRow(user: User) -> impl IntoView {
             let user_id = arg.0.clone();
             let user_new_role_type = arg.1;
             let set_role_type = arg.2;
-            
+
             async move {
-                if server::update_user_role(&user_id, user_new_role_type)
-                    .await
-                    .is_ok()
-                {
-                    set_role_type.set(user_new_role_type);
+                if utils::is_sync_server_client_roles() {
+                    if server::update_user_role(&user_id, user_new_role_type)
+                        .await
+                        .is_ok()
+                    {
+                        set_role_type.set(user_new_role_type);
+                    }
                 }
             }
         });
-        
+
         move |_: ev::MouseEvent| {
-        save_action.dispatch((user.id.clone(), new_role_type.get(), set_role_type));
-    }};
+            save_action.dispatch((user.id.clone(), new_role_type.get(), set_role_type));
+        }
+    };
 
     // удалить в бд, запросить пользователей, обновить ресурс или сигнал
     let on_delete = |_: ev::MouseEvent| unimplemented!();

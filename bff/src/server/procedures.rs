@@ -11,7 +11,7 @@ use uuid::Uuid;
 // почему подход выше работает: при смене пароля массив сессий обнуляется
 // почему id: при наличии учетки клиент так и так проясняет id чтобы образовать сессию
 pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
-    match store_utils::find_users_by_kv::<DbUser>("id", user_id).await? {
+    match store_utils::find_first_user_by_kv::<DbUser>("id", user_id).await? {
         None => Err("Пользователь не найден".into()),
         Some(user) if user.password != password => Err("Пароль не верен".into()),
         Some(user) => {
@@ -24,7 +24,7 @@ pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> 
 }
 
 pub async fn register(login: String, password: String) -> Result<String, String> {
-    if store_utils::find_users_by_kv::<DbUser>("login", &login)
+    if store_utils::find_first_user_by_kv::<DbUser>("login", &login)
         .await?
         .is_some()
     {
@@ -56,9 +56,10 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 }
 
 pub async fn logout(session: &Session) -> Result<(), String> {
-    let user: DbUser = store_utils::find_users_by_kv("id", &session.user_id)
-        .await?
-        .unwrap();
+    let user: DbUser = store_utils::find_first_user_by_kv("id", &session.user_id)
+        .await
+        .map(|users_vec| users_vec.into_iter().next())?
+        .ok_or_else(|| "Пользователь не существует".to_string())?;
     let sessions = user.sessions;
 
     // Удалить нужную сессию и образовать обновленное хранилище сессий
