@@ -13,10 +13,12 @@ pub fn UsersContent() -> impl IntoView {
 
     let users_res = create_resource(
         || (),
-        move |_| async move {
-            server::fetch_all_users().await
-        },
+        move |_| async move { server::fetch_all_users().await },
     );
+
+    let on_delete = |_: ev::MouseEvent| {
+        logging::log!("удаление");
+    };
 
     // внешний view чтобы отслеживался .get()
     view! {
@@ -38,7 +40,12 @@ pub fn UsersContent() -> impl IntoView {
                                     users_vec
                                         .into_iter()
                                         .map(|user| {
-                                            view! { <TbodyRow user={user}/> }
+                                            view! {
+                                                <TbodyRow 
+                                                    user={user}
+                                                    on_delete=on_delete
+                                                /> 
+                                            }
                                         })
                                         .collect_view()
                                 }</tbody>
