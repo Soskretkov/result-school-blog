@@ -8,9 +8,9 @@ use role_select::RoleSelect;
 use save_icon::SaveIcon;
 
 #[component]
-pub fn TbodyRow<F>(user: User, on_delete: F) -> impl IntoView 
+pub fn TbodyRow<F>(user: User, on_delete: F) -> impl IntoView
 where
-    F: Fn(ev::MouseEvent) + 'static
+    F: Fn(ev::MouseEvent) + 'static,
 {
     let (role_type, set_role_type) = create_signal(user.role_id);
     let (new_role_type, set_new_role_type) = create_signal(user.role_id);

@@ -1,9 +1,9 @@
-mod tbody_row;
+mod table_body;
 use crate::components::{Content, PageErrMsg};
-use crate::server;
+use crate::server::{self};
 use crate::types::GlobContext;
 use leptos::*;
-use tbody_row::TbodyRow;
+use table_body::TableBody;
 
 #[component]
 pub fn UsersContent() -> impl IntoView {
@@ -15,10 +15,6 @@ pub fn UsersContent() -> impl IntoView {
         || (),
         move |_| async move { server::fetch_all_users().await },
     );
-
-    let on_delete = |_: ev::MouseEvent| {
-        logging::log!("удаление");
-    };
 
     // внешний view чтобы отслеживался .get()
     view! {
@@ -36,19 +32,7 @@ pub fn UsersContent() -> impl IntoView {
                                         <th class="w-auto font-normal"></th>
                                     </tr>
                                 </thead>
-                                <tbody class="[&>*>*:not(:last-child)]:border-y [&>*>*:first-child]:border-l [&>*>*:last-child]:border-l [&>*>*]:border-black">{
-                                    users_vec
-                                        .into_iter()
-                                        .map(|user| {
-                                            view! {
-                                                <TbodyRow 
-                                                    user={user}
-                                                    on_delete=on_delete
-                                                /> 
-                                            }
-                                        })
-                                        .collect_view()
-                                }</tbody>
+                                <TableBody users_vec=users_vec />
                             </table>
                         </Content>
                     }.into_view()
