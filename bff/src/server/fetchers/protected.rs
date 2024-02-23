@@ -1,17 +1,17 @@
 use super::super::utils;
 use crate::server::types::export_types::{Role, Session, User};
-use crate::store_utils;
+use crate::store;
 
 pub async fn fetch_all_users(session: &Session) -> Result<Vec<User>, String> {
     let check_perm = |user: &User| user.role_id.can_view_users();
     utils::get_user_with_permission(session, check_perm).await?;
-    store_utils::all_users().await
+    store::fetch::<Vec<User>>("users").await
 }
 
 pub async fn fetch_all_roles(session: &Session) -> Result<Vec<Role>, String> {
     let check_perm = |user: &User| user.role_id.can_view_roles();
     utils::get_user_with_permission(session, check_perm).await?;
-    store_utils::all_roles().await
+    store::fetch::<Vec<Role>>("roles").await
 }
 
 pub async fn fetch_user(session: &Session, id_to_find: &str) -> Result<Option<User>, String> {
@@ -21,5 +21,7 @@ pub async fn fetch_user(session: &Session, id_to_find: &str) -> Result<Option<Us
         utils::get_user_with_permission(session, check_perm).await?;
     }
 
-    store_utils::user(id_to_find).await
+    let path_suffix = format!("users/{id_to_find}");
+
+    store::fetch::<Option<User>>(&path_suffix).await
 }

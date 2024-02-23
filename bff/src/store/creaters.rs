@@ -1,23 +1,18 @@
 use super::URL;
 use reqwest::Response;
 use serde::{de::DeserializeOwned, Serialize};
-use serde_json::json;
 use std::fmt::Debug;
 
-pub async fn update_user_field<T>(
-    user_id: &str,
-    field_name: &str,
-    field_value: &T,
-) -> Result<Response, String>
+pub async fn add<T>(path_suffix: &str, new_data: &T) -> Result<Response, String>
 where
     T: DeserializeOwned + Serialize + Debug,
 {
-    let url = format!("{URL}/users/{}", user_id);
+    let url = format!("{URL}/{path_suffix}");
     let client = reqwest::Client::new();
 
     client
-        .patch(url)
-        .json(&json!({ field_name: field_value }))
+        .post(url)
+        .json(new_data) // установка тела запроса
         .send()
         .await
         .map_err(|err| err.to_string())

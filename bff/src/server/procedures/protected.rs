@@ -1,6 +1,6 @@
 use super::super::utils;
 use crate::server::types::export_types::{RoleType, Session, User};
-use crate::store_utils;
+use crate::store;
 
 pub async fn update_user_role(
     session: &Session,
@@ -9,7 +9,8 @@ pub async fn update_user_role(
 ) -> Result<(), String> {
     let check_perm = |user: &User| user.role_id.can_update_roles();
     utils::get_user_with_permission(session, check_perm).await?;
-    store_utils::update_user_field(user_id, "role_id", &role_name).await?;
+    let path_suffix = format!("users/{user_id}");
+    store::update_field(&path_suffix, "role_id", &role_name).await?;
     Ok(())
 }
 
@@ -20,5 +21,6 @@ pub async fn remove_user(session: &Session, id_to_delete: &str) -> Result<(), St
         utils::get_user_with_permission(session, check_perm).await?;
     }
 
-    store_utils::delete_user(id_to_delete).await
+    let path_suffix = format!("users/{}", id_to_delete);
+    store::delete(&path_suffix).await
 }

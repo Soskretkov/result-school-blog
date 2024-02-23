@@ -3,7 +3,7 @@ use super::types::db_interaction_types::{RoleType, User as DbUser};
 use super::types::export_types::Session;
 use super::types::SessionsStore;
 use super::utils;
-use crate::store_utils;
+use crate::store;
 pub use protected::*;
 use uuid::Uuid;
 
@@ -11,20 +11,23 @@ use uuid::Uuid;
 // почему подход выше работает: при смене пароля массив сессий обнуляется
 // почему id: при наличии учетки клиент так и так проясняет id чтобы образовать сессию
 pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
-    match store_utils::user::<DbUser>(user_id).await? {
+    let path_suffix = format!("users/{user_id}");
+    match store::fetch::<Option<DbUser>>(&path_suffix).await? {
         None => Err("Пользователь не найден".into()),
         Some(user) if user.password != password => Err("Пароль не верен".into()),
         Some(user) => {
             let mut new_sessions = user.sessions;
             let session_id = new_sessions.add_rnd_session();
-            store_utils::update_user_field(&user.id, "sessions", &new_sessions).await?;
+            let path_suffix = format!("users/{}", user.id);
+            store::update_field(&path_suffix, "sessions", &new_sessions).await?;
             Ok(session_id)
         }
     }
 }
 
 pub async fn register(login: String, password: String) -> Result<String, String> {
-    if store_utils::find_user_by_kv::<DbUser>("login", &login)
+    let path_suffix = format!("users/?login={}", &login);
+    if store::fetch::<Vec<DbUser>>(&path_suffix)
         .await?
         .into_iter()
         .next()
@@ -52,13 +55,14 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         sessions: SessionsStore::new(),
     };
 
-    store_utils::add_user(&new_user).await?;
+    store::add("users", &new_user).await?;
 
     Ok(new_user.id)
 }
 
 pub async fn logout(session: &Session) -> Result<(), String> {
-    let user: DbUser = store_utils::user(&session.user_id)
+    let path_suffix = format!("users/{}", session.user_id);
+    let user: DbUser = store::fetch::<Option<DbUser>>(&path_suffix)
         .await
         .map(|users_vec| users_vec.into_iter().next())?
         .ok_or_else(|| "Пользователь не существует".to_string())?;
@@ -68,6 +72,7 @@ pub async fn logout(session: &Session) -> Result<(), String> {
     let new_sessions = sessions.del_session(&session.id);
 
     // Записать обновленые сессии через утилиту для json-server
-    store_utils::update_user_field(&user.id, "sessions", &new_sessions).await?;
+    let path_suffix = format!("users/{}", user.id);
+    store::update_field(&path_suffix, "sessions", &new_sessions).await?;
     Ok(())
 }

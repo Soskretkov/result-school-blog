@@ -1,5 +1,5 @@
 use crate::server::types::export_types::{Session, User};
-use crate::store_utils;
+use crate::store;
 use chrono::{TimeZone, Utc};
 use rand::{thread_rng, Rng};
 
@@ -8,7 +8,8 @@ pub async fn get_user_with_permission<F>(session: &Session, check_perm: F) -> Re
 where
     F: FnOnce(&User) -> bool,
 {
-    let user = store_utils::user::<User>(&session.user_id)
+    let path_suffix = format!("users/{}", session.user_id);
+    let user = store::fetch::<Option<User>>(&path_suffix)
         .await?
         .ok_or_else(|| "Пользователь не существует".to_string())?;
 
