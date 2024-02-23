@@ -1,8 +1,8 @@
 use super::URL;
 use reqwest;
 
-pub async fn delete_users_by_kv(key: &str, value: &str) -> Result<(), String> {
-    let url = format!("{URL}/users/?{key}={value}");
+pub async fn delete_user(id: &str) -> Result<(), String> {
+    let url = format!("{URL}/users/{id}");
     let client = reqwest::Client::new();
 
     match client.delete(url).send().await {

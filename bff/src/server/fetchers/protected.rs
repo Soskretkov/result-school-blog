@@ -21,5 +21,5 @@ pub async fn fetch_user(session: &Session, id_to_find: &str) -> Result<Option<Us
         utils::get_user_with_permission(session, check_perm).await?;
     }
 
-    store_utils::find_first_user_by_kv("id", id_to_find).await
+    store_utils::user(id_to_find).await
 }

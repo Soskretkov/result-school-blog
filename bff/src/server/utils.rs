@@ -8,9 +8,8 @@ pub async fn get_user_with_permission<F>(session: &Session, check_perm: F) -> Re
 where
     F: FnOnce(&User) -> bool,
 {
-    let user = store_utils::find_users_by_kv::<User>("id", &session.user_id)
-        .await
-        .map(|users_vec| users_vec.into_iter().next())?
+    let user = store_utils::user::<User>(&session.user_id)
+        .await?
         .ok_or_else(|| "Пользователь не существует".to_string())?;
 
     if check_perm(&user) {

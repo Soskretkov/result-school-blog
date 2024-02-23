@@ -10,7 +10,7 @@ pub struct Session {
 
 impl Session {
     pub async fn is_exist(&self) -> bool {
-        match store_utils::find_first_user_by_kv::<DbUser>("id", &self.user_id).await {
+        match store_utils::user::<DbUser>(&self.user_id).await {
             Ok(Some(user)) => user.sessions.is_exist(&self.id),
             _ => false,
         }

@@ -20,5 +20,5 @@ pub async fn remove_user(session: &Session, id_to_delete: &str) -> Result<(), St
         utils::get_user_with_permission(session, check_perm).await?;
     }
 
-    store_utils::delete_users_by_kv("id", id_to_delete).await
+    store_utils::delete_user(id_to_delete).await
 }
