@@ -2,10 +2,11 @@ use super::Content;
 use leptos::*;
 
 #[component]
-pub fn PageErrMsg(err_msg: String) -> impl IntoView {
+pub fn PageErrMsg(children: ChildrenFn) -> impl IntoView {
+    let children = store_value(children);
     view! {
         <Content header={"Ошибка"} >
-            <div>{err_msg}</div>
+            {children.with_value(|children| children())}
         </Content>
     }
 }

@@ -34,24 +34,25 @@ pub fn PageGuard(children: ChildrenFn) -> impl IntoView {
                             true => match glob_ctx.roles.value().get_untracked() {
                                 Some(Ok(_)) => {
                                     children.with_value(|children| children()).into_view()
-                                    // children().into_view()
                                 },
-                                Some(Err(e)) => view! {<PageErrMsg err_msg={e}/>},
+                                Some(Err(e)) => {
+                                    view! {<PageErrMsg>{e.to_owned()}</PageErrMsg>}
+                                }
                                 None => {
                                     logging::log!("PageGuard: неизвестная ошибка");
                                     view! {
-                                        <PageErrMsg err_msg="Неизвестная ошибка".to_string()/>
+                                        <PageErrMsg>"Неизвестная ошибка"</PageErrMsg>
                                     }
                                 },
                             },
                             false => view! {
-                                <PageErrMsg err_msg="Страница временно недоступна".to_string()/>
+                                <PageErrMsg>"Страница временно недоступна"</PageErrMsg>
                             },
                         }
                     }</Show>
                 }
             },
-            false => view!{<PageErrMsg err_msg="Пользователь не авторизован".to_string()/>}.into_view(),
+            false => view!{<PageErrMsg>"Пользователь не авторизован"</PageErrMsg>},
         }}
     }
 }

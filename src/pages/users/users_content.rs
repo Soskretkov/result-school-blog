@@ -8,7 +8,7 @@ use table_body::TableBody;
 #[component]
 pub fn UsersContent() -> impl IntoView {
     if !can_access() {
-        return view! { <PageErrMsg err_msg={"Недостаточно прав для просмотра страницы".to_string()}/> };
+        return view! { <PageErrMsg>"Недостаточно прав для просмотра страницы"</PageErrMsg>};
     }
 
     let users_res = create_resource(
@@ -37,7 +37,9 @@ pub fn UsersContent() -> impl IntoView {
                         </Content>
                     }.into_view()
                 }
-                Err(e) => view! { <PageErrMsg err_msg={e}/> },
+                Err(e) => {
+                    view! {<PageErrMsg>{e.clone()}</PageErrMsg>}
+                },
             }
         )}
     }

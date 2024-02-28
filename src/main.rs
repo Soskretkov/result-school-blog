@@ -35,7 +35,7 @@ pub fn App() -> impl IntoView {
                         <Route path="/users" view=move || { Users }/>
                         <Route path="/post" view=move || { view!{<div>"Новая статья"</div>} }/>
                         <Route path="/post/:id" view=move || { view!{<Post/>} }/>
-                        <Route path="/*" view=move || { view!{ <PageErrMsg err_msg={"Запрошенная страница не существует".to_string()}/>} }/>
+                        <Route path="/*" view=move || { view!{ <PageErrMsg>"Запрошенная страница не существует"</PageErrMsg>}}/>
                     </Routes>
                 </main>
                 <Footer/>
