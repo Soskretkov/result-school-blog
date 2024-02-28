@@ -1,6 +1,6 @@
 use super::GlobContext;
 use bff::server as bff_server;
-pub use bff::server::{Role, RoleType, Session, User};
+pub use bff::server::{Post, Role, RoleType, Session, User};
 use gloo_timers::future::TimeoutFuture;
 use leptos::*;
 
@@ -40,22 +40,28 @@ pub async fn fetch_id_by_login(login: &str) -> Result<Option<String>, String> {
     bff_server::fetch_id_by_login(login).await
 }
 
-pub async fn fetch_all_roles() -> Result<Vec<Role>, String> {
-    TimeoutFuture::new(1000).await;
-    logging::log!("server.rs: fetch_all_roles");
-    bff_server::fetch_all_roles(&get_session()).await
-}
-
 pub async fn fetch_all_users() -> Result<Vec<User>, String> {
     TimeoutFuture::new(1000).await;
     logging::log!("server.rs: fetch_all_users");
     bff_server::fetch_all_users(&get_session()).await
 }
 
-pub async fn _fetch_user(id_to_find: &str) -> Result<Option<User>, String> {
+pub async fn _fetch_user(id: &str) -> Result<Option<User>, String> {
     TimeoutFuture::new(1000).await;
-    logging::log!("server.rs: fetch_user (id: {})", id_to_find);
-    bff_server::fetch_user(&get_session(), id_to_find).await
+    logging::log!("server.rs: fetch_user (id: {})", id);
+    bff_server::fetch_user(&get_session(), id).await
+}
+
+pub async fn fetch_all_roles() -> Result<Vec<Role>, String> {
+    TimeoutFuture::new(1000).await;
+    logging::log!("server.rs: fetch_all_roles");
+    bff_server::fetch_all_roles(&get_session()).await
+}
+
+pub async fn fetch_post(id: &str) -> Result<Post, String> {
+    TimeoutFuture::new(1000).await;
+    logging::log!("server.rs: fetch_post (id: {})", id);
+    bff_server::fetch_post(id).await
 }
 
 fn get_session() -> Session {

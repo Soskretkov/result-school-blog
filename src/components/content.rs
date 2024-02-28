@@ -1,3 +1,4 @@
+use super::H2;
 use leptos::*;
 
 #[component]
@@ -17,12 +18,5 @@ pub fn Content(
             <H2>{header}</H2>
             {children()}
         </div>
-    }
-}
-
-#[component]
-fn H2(children: Children) -> impl IntoView {
-    view! {
-        <h2 class="font-bold text-2xl my-10">{children().nodes}</h2>
     }
 }

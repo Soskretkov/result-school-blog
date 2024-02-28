@@ -22,8 +22,8 @@ pub struct Role {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Post {
     pub id: String,
-    title: String,
-    image_url: String,
-    content: String,
-    published_at: String,
+    pub title: String,
+    pub image_url: String,
+    pub content: String,
+    pub published_at: String,
 }
