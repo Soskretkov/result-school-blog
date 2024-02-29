@@ -1,7 +1,12 @@
 use leptos::*;
 
 #[component]
-pub fn Icon(id: &'static str, #[prop(optional)] class: String) -> impl IntoView {
+pub fn Icon<T: Into<String> + std::default::Default + std::fmt::Display>(
+    /// font-awesome id
+    id: &'static str,
+    /// в формате тайлвинд
+    #[prop(optional)] class: T
+) -> impl IntoView {
     let preset_classes = "";
     let class_list = format!("{preset_classes} {class}");
 

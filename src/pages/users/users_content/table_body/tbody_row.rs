@@ -58,7 +58,7 @@ where
                 <Icon
                     on:click=on_delete
                     id="fa-trash-o"
-                    class="cursor-pointer text-[24px] ml-2.5 {}".into()
+                    class="cursor-pointer text-[24px] ml-2.5 {}"
                 />
             </td>
         </tr>
