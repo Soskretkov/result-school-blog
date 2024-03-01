@@ -34,7 +34,7 @@ pub fn Post() -> impl IntoView {
                                         <Icon id="fa-trash-o" class="text-[21px]"/>
                                     </div>
                                 </div>
-                                <div>{&post.content}</div>
+                                <div class="text-[18px]">{&post.content}</div>
                             </div>
                             <Comments/>
                         }
