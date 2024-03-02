@@ -6,6 +6,6 @@ use crate::server::RoleType;
 pub struct User {
     pub id: String,
     pub login: String,
-    pub registered_at: String,
     pub role_id: RoleType,
+    pub created_at: String,
 }

@@ -27,7 +27,7 @@ pub fn Post() -> impl IntoView {
                                 <div class="flex justify-between mt-[-20px] mb-5">
                                     <div class="flex"> // published_at у автора
                                         <Icon id="fa-calendar-o" class="relative top-[-1px] text-[18px] mr-[7px]"/>
-                                        <div class = "text-[18px]">{&post.published_at}</div>
+                                        <div class = "text-[18px]">{&post.created_at}</div>
                                     </div>
                                     <div class="flex"> // buttons у автора
                                         <Icon id="fa-pencil-square-o" class="text-[21px] mr-[10px]"/>

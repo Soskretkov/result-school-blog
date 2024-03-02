@@ -1,29 +1,18 @@
 mod protected;
-use super::types::db_interaction_types::{RoleType, User as DbUser};
+use super::types::db_interaction_types::{RoleType, User, UserPayload};
 use super::types::export_types::Session;
 use super::types::SessionsStore;
 use super::utils;
 use crate::store;
-use leptos::leptos_dom::logging;
 pub use protected::*;
-use serde::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct NewUser {
-    pub login: String,
-    pub password: String,
-    pub registered_at: String,
-    pub role_id: RoleType,
-    pub sessions: SessionsStore,
-}
 
 pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
     let path_suffix = format!("users/{user_id}");
-    match store::fetch::<Option<DbUser>>(&path_suffix).await? {
+    match store::fetch::<Option<User>>(&path_suffix).await? {
         None => Err("Пользователь не найден".into()),
-        Some(user) if user.password != password => Err("Пароль не верен".into()),
+        Some(user) if user.payload.password != password => Err("Пароль не верен".into()),
         Some(user) => {
-            let mut new_sessions = user.sessions;
+            let mut new_sessions = user.payload.sessions;
             let session_id = new_sessions.add_rnd_session();
             let path_suffix = format!("users/{}", user.id);
             store::update_field(&path_suffix, "sessions", &new_sessions).await?;
@@ -34,7 +23,7 @@ pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> 
 
 pub async fn register(login: String, password: String) -> Result<String, String> {
     let path_suffix = format!("users/?login={}", &login);
-    if store::fetch::<Vec<DbUser>>(&path_suffix)
+    if store::fetch::<Vec<UserPayload>>(&path_suffix)
         .await?
         .into_iter()
         .next()
@@ -43,29 +32,27 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         return Err("Логин уже занят".to_string());
     }
 
-    let new_user = NewUser {
+    let user_payload = UserPayload {
         login,
         password,
-        registered_at: utils::get_current_date(),
+        created_at: utils::get_current_date(),
         role_id: RoleType::Reader,
         sessions: SessionsStore::new(),
     };
 
-    let resp = store::add("users", &new_user).await?;
+    let resp = store::add("users", &user_payload).await?;
+    let added_user: User = resp.json::<User>().await.map_err(|e| e.to_string())?;
 
-    leptos::logging::log!("{:?}", resp);
-    let added_db_user: DbUser = resp.json::<DbUser>().await.map_err(|e| e.to_string())?;
-
-    Ok(added_db_user.id.to_string())
+    Ok(added_user.id.to_string())
 }
 
 pub async fn logout(session: &Session) -> Result<(), String> {
     let path_suffix = format!("users/{}", session.user_id);
-    let user: DbUser = store::fetch::<Option<DbUser>>(&path_suffix)
+    let user: User = store::fetch::<Option<User>>(&path_suffix)
         .await
         .map(|users_vec| users_vec.into_iter().next())?
         .ok_or_else(|| "Пользователь не существует".to_string())?;
-    let sessions = user.sessions;
+    let sessions = user.payload.sessions;
 
     // Удалить нужную сессию и образовать обновленное хранилище сессий
     let new_sessions = sessions.del_session(&session.id);
@@ -73,5 +60,11 @@ pub async fn logout(session: &Session) -> Result<(), String> {
     // Записать обновленые сессии через утилиту для json-server
     let path_suffix = format!("users/{}", user.id);
     store::update_field(&path_suffix, "sessions", &new_sessions).await?;
+    Ok(())
+}
+
+pub async fn add_comment(session: &Session) -> Result<(), String> {
+    let path_suffix = format!("users/{}", session.user_id);
+
     Ok(())
 }

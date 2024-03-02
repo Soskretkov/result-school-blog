@@ -1,4 +1,4 @@
-use crate::server::types::db_interaction_types::User as DbUser;
+use crate::server::types::db_interaction_types::UserPayload;
 use crate::store;
 use serde::{Deserialize, Serialize};
 
@@ -11,8 +11,8 @@ pub struct Session {
 impl Session {
     pub async fn is_exist(&self) -> bool {
         let path_suffix = format!("users/{}", self.user_id);
-        match store::fetch::<Option<DbUser>>(&path_suffix).await {
-            Ok(Some(user)) => user.sessions.is_exist(&self.id),
+        match store::fetch::<Option<UserPayload>>(&path_suffix).await {
+            Ok(Some(user_data)) => user_data.sessions.is_exist(&self.id),
             _ => false,
         }
     }

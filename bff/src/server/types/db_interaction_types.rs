@@ -3,14 +3,22 @@ use super::sessions_store::SessionsStore;
 pub use role_type::RoleType;
 use serde::{Deserialize, Serialize};
 
+// данные, которые не генерируются на уровне бд
+// (created_at будет исключен отсюда по этой причине в будущем)
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct UserPayload {
+    pub login: String,
+    pub password: String,
+    pub role_id: RoleType,
+    pub sessions: SessionsStore,
+    pub created_at: String,
+}
+
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct User {
     pub id: String,
-    pub login: String,
-    pub password: String,
-    pub registered_at: String,
-    pub role_id: RoleType,
-    pub sessions: SessionsStore,
+    #[serde(flatten)]
+    pub payload: UserPayload, // Использование UserData как компонента
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -25,5 +33,21 @@ pub struct Post {
     pub title: String,
     pub image_url: String,
     pub content: String,
-    pub published_at: String,
+    pub created_at: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct CommentPayload {
+    pub post_id: String,
+    pub user_id: String,
+    pub login_snapshot: String,
+    pub content: String,
+    pub created_at: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Comment {
+    pub id: String,
+    #[serde(flatten)]
+    pub data: CommentPayload,
 }

@@ -1,6 +1,6 @@
 use super::GlobContext;
 use bff::server as bff_server;
-pub use bff::server::{Post, Role, RoleType, Session, User};
+pub use bff::server::{Post, Role, RoleType, Session, User, Comment};
 use gloo_timers::future::TimeoutFuture;
 use leptos::*;
 
