@@ -1,4 +1,4 @@
-use crate::server::types::export_types::{Session, User};
+use crate::server::types::export::{Session, User};
 use crate::store;
 use chrono::{TimeZone, Utc};
 use rand::{thread_rng, Rng};

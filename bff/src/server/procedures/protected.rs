@@ -1,5 +1,5 @@
 use super::super::utils;
-use crate::server::types::export_types::{RoleType, Session, User};
+use crate::server::types::export::{RoleType, Session, User};
 use crate::store;
 
 pub async fn update_user_role(

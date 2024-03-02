@@ -1,5 +1,5 @@
 use super::super::utils;
-use crate::server::types::export_types::{Role, Session, User};
+use crate::server::types::export::{Role, Session, User};
 use crate::store;
 
 pub async fn fetch_all_users(session: &Session) -> Result<Vec<User>, String> {

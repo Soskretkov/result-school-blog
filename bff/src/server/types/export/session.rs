@@ -1,4 +1,4 @@
-use crate::server::types::db_interaction_types::UserPayload;
+use crate::server::types::db_interaction::UserPayload;
 use crate::store;
 use serde::{Deserialize, Serialize};
 

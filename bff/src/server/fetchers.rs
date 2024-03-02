@@ -1,6 +1,6 @@
 mod protected;
-use super::types::db_interaction_types::User;
-use crate::server::types::export_types::Post;
+use super::types::db_interaction::User;
+use crate::server::types::export::Post;
 use crate::store;
 pub use protected::*;
 

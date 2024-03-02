@@ -1,6 +1,6 @@
 mod protected;
-use super::types::db_interaction_types::{RoleType, User, UserPayload};
-use super::types::export_types::Session;
+use super::types::db_interaction::{Comment, CommentPayload, RoleType, User, UserPayload};
+use super::types::export::Session;
 use super::types::SessionsStore;
 use super::utils;
 use crate::store;
@@ -63,8 +63,28 @@ pub async fn logout(session: &Session) -> Result<(), String> {
     Ok(())
 }
 
-pub async fn add_comment(session: &Session) -> Result<(), String> {
-    let path_suffix = format!("users/{}", session.user_id);
+// fn не размещается в protected.rs пока права пользователя не важны
+pub async fn add_comment(
+    session: &Session,
+    post_id: String,
+    content: String,
+) -> Result<Comment, String> {
+    let user_id = session.user_id.clone();
+    let user_path_suffix = format!("users/{}", user_id);
 
-    Ok(())
+    let user_payload: UserPayload = store::fetch::<Option<UserPayload>>(&user_path_suffix)
+        .await
+        .map(|users_vec| users_vec.into_iter().next())?
+        .ok_or_else(|| "Пользователь не существует".to_string())?;
+
+    let comment_payload = CommentPayload {
+        post_id,
+        user_id,
+        login_snapshot: user_payload.login,
+        content,
+        created_at: utils::get_current_date(),
+    };
+
+    let resp = store::add("comments", &comment_payload).await?;
+    resp.json::<Comment>().await.map_err(|e| e.to_string())
 }
