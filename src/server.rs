@@ -1,6 +1,6 @@
 use super::GlobContext;
 use bff::server as bff_server;
-pub use bff::server::{Post, Role, RoleType, Session, User, Comment};
+pub use bff::server::{Comment, Post, Role, RoleType, Session, User};
 use gloo_timers::future::TimeoutFuture;
 use leptos::*;
 
@@ -17,6 +17,11 @@ pub async fn register(login: String, password: String) -> Result<String, String>
 pub async fn logout() -> Result<(), String> {
     logging::log!("server.rs: logout");
     bff_server::logout(&get_session()).await
+}
+
+pub async fn add_comment(post_id: String, content: String) -> Result<Comment, String> {
+    logging::log!("server.rs: add_comment");
+    bff_server::add_comment(&get_session(), post_id, content).await
 }
 
 pub async fn remove_user(id_to_delete: &str) -> Result<(), String> {
