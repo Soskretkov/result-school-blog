@@ -15,6 +15,10 @@ impl SessionsStore {
         }
     }
 
+    pub fn exists(&self, sess_id: &str) -> bool {
+        self.data.contains(sess_id)
+    }
+
     pub fn del_session(mut self, sess_id: &str) -> Self {
         self.data.remove(sess_id);
         self

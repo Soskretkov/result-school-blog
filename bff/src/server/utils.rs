@@ -1,23 +1,37 @@
-use crate::server::types::export::{Session, User};
+use crate::server::types::db_interaction::User;
+use crate::server::types::export::Session;
 use crate::store;
 use chrono::{TimeZone, Utc};
 use rand::{thread_rng, Rng};
 
-// для получения пользователя и проверки его прав
-pub async fn get_user_with_permission<F>(session: &Session, check_perm: F) -> Result<User, String>
-where
-    F: FnOnce(&User) -> bool,
-{
+// не делаю на session, иначе метод будет и у клиента (раскроет пароль)
+pub async fn verify_user_session(session: &Session) -> Result<User, String> {
     let path_suffix = format!("users/{}", session.user_id);
-    let user = store::fetch::<Option<User>>(&path_suffix)
+    let db_user = store::fetch::<Option<User>>(&path_suffix)
         .await?
         .ok_or_else(|| "Пользователь не существует".to_string())?;
 
-    if check_perm(&user) {
-        Ok(user)
-    } else {
-        Err("Недостаточно прав на операцию".to_string())
+    if !db_user.payload.sessions.exists(&session.id) {
+        return Err("Недействительная сессия".to_string());
     }
+
+    Ok(db_user)
+}
+
+pub async fn verify_session_with_permissions<F>(
+    session: &Session,
+    check_perm: F,
+) -> Result<User, String>
+where
+    F: FnOnce(&User) -> bool,
+{
+    let db_user = verify_user_session(session).await?;
+    // выход по ошибке если fn передана проверка, которая провалилась
+    if !check_perm(&db_user) {
+        return Err("Недостаточно прав на операцию".to_string());
+    }
+
+    Ok(db_user)
 }
 
 pub fn _create_rnd_float64() -> f64 {

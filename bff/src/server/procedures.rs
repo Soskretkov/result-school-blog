@@ -69,18 +69,12 @@ pub async fn add_comment(
     post_id: String,
     content: String,
 ) -> Result<Comment, String> {
-    let user_id = session.user_id.clone();
-    let user_path_suffix = format!("users/{}", user_id);
-
-    let user_payload: UserPayload = store::fetch::<Option<UserPayload>>(&user_path_suffix)
-        .await
-        .map(|users_vec| users_vec.into_iter().next())?
-        .ok_or_else(|| "Пользователь не существует".to_string())?;
+    let db_user = utils::verify_user_session(session).await?;
 
     let comment_payload = CommentPayload {
         post_id,
-        user_id,
-        login_snapshot: user_payload.login,
+        user_id: db_user.id,
+        login_snapshot: db_user.payload.login,
         content,
         created_at: utils::get_current_date(),
     };

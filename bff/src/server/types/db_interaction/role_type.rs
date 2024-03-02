@@ -81,7 +81,7 @@ impl Serialize for RoleType {
     where
         S: Serializer,
     {
-        self.as_str().serialize(serializer)
+        self.as_u8().to_string().serialize(serializer)
     }
 }
 
