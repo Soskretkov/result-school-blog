@@ -18,7 +18,7 @@ fn main() {
 pub fn App() -> impl IntoView {
     let sess: Option<Session> = Some(Session {
         id: "513bd3a2-fd7c-4aeb-a9de-dde59ddbed9f".to_string(),
-        user_id: "a967510a".to_string(),
+        user_id: "400e".to_string(),
     });
     let (session, set_session) = create_signal::<Option<Session>>(sess);
 

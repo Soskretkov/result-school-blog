@@ -4,12 +4,19 @@ use super::types::export_types::Session;
 use super::types::SessionsStore;
 use super::utils;
 use crate::store;
+use leptos::leptos_dom::logging;
 pub use protected::*;
-use uuid::Uuid;
+use serde::{Deserialize, Serialize};
 
-// исключительно для случая когда нет куки
-// почему подход выше работает: при смене пароля массив сессий обнуляется
-// почему id: при наличии учетки клиент так и так проясняет id чтобы образовать сессию
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct NewUser {
+    pub login: String,
+    pub password: String,
+    pub registered_at: String,
+    pub role_id: RoleType,
+    pub sessions: SessionsStore,
+}
+
 pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
     let path_suffix = format!("users/{user_id}");
     match store::fetch::<Option<DbUser>>(&path_suffix).await? {
@@ -36,18 +43,7 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         return Err("Логин уже занят".to_string());
     }
 
-    let user_id = Uuid::new_v4()
-        .to_string()
-        .chars()
-        .take(8)
-        .collect::<String>();
-
-    if user_id.len() < 8 {
-        panic!("UUID короче чем 8 символов");
-    }
-
-    let new_user = DbUser {
-        id: user_id,
+    let new_user = NewUser {
         login,
         password,
         registered_at: utils::get_current_date(),
@@ -55,9 +51,12 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         sessions: SessionsStore::new(),
     };
 
-    store::add("users", &new_user).await?;
+    let resp = store::add("users", &new_user).await?;
 
-    Ok(new_user.id)
+    leptos::logging::log!("{:?}", resp);
+    let added_db_user: DbUser = resp.json::<DbUser>().await.map_err(|e| e.to_string())?;
+
+    Ok(added_db_user.id.to_string())
 }
 
 pub async fn logout(session: &Session) -> Result<(), String> {

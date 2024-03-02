@@ -81,7 +81,7 @@ impl Serialize for RoleType {
     where
         S: Serializer,
     {
-        self.as_u8().serialize(serializer)
+        self.as_str().serialize(serializer)
     }
 }
 
@@ -90,8 +90,11 @@ impl<'de> Deserialize<'de> for RoleType {
     where
         D: Deserializer<'de>,
     {
-        /* Десериализация числа: в первую очередь, deserializer берет данные из JSON и преобразует их в число типа u8. В этом процессе он еще не знает ничего о RoleType. Он просто выводит тип раст u8. */
-        let id = u8::deserialize(deserializer)?;
+        // Десериализация строки
+        let s = String::deserialize(deserializer)?;
+        // Попытка преобразовать строку в u8
+        let id = s.parse::<u8>().map_err(serde::de::Error::custom)?;
+        // Получение RoleType из u8
         RoleType::from_u8(id).ok_or_else(|| serde::de::Error::custom("Invalid role id"))
     }
 }
