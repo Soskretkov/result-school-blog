@@ -15,17 +15,9 @@ impl SessionsStore {
         }
     }
 
-    pub fn _iter(&self) -> impl Iterator<Item = &String> {
-        self.data.iter()
-    }
-
-    pub fn del_session(mut self, sess_id: &str) -> Self{
+    pub fn del_session(mut self, sess_id: &str) -> Self {
         self.data.remove(sess_id);
         self
-    }
-
-    pub fn is_exist(&self, sess_id: &str) -> bool {
-        self.data.get(sess_id).is_some()
     }
 
     pub fn add_rnd_session(&mut self) -> String {
