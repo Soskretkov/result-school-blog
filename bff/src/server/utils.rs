@@ -1,5 +1,5 @@
 use crate::server::types::db_interaction::User;
-use crate::server::types::export::Session;
+use crate::server::types::Session;
 use crate::store;
 use chrono::{TimeZone, Utc};
 use rand::{thread_rng, Rng};

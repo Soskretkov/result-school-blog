@@ -40,21 +40,20 @@ pub fn Comments() -> impl IntoView {
 
 #[component]
 pub fn Comment(comment: Comment) -> impl IntoView {
-    let payload = comment.data;
     view! {
         <div class="flex">
             <div class="">
                 <div class="flex justify-between"> // information-panel class
                     <div class="flex"> // author class
                         <Icon id="fa-user-circle-o" class="text-[18px] mr-[7px]"/>
-                        {payload.login_snapshot}
+                        {comment.login_snapshot}
                     </div>
                     <div class="flex">
                         <Icon id="fa-calendar-o" class="top-[-1px] text-[18px] mr-[7px]"/>
-                        <div class = "">{payload.created_at}</div>
+                        <div class = "">{comment.created_at}</div>
                     </div>
                 </div>
-                <div class="">{payload.content}</div>
+                <div class="">{comment.content}</div>
             </div>
             <Icon id="fa-trash-o" class="text-[21px]"/>
         </div>

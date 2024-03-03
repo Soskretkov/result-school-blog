@@ -1,13 +1,5 @@
+use crate::server::types::db_interaction::{Comment, RoleType};
 use serde::{Deserialize, Serialize};
-
-// реэкспорт клиентскому коду общих типов для бекенда и фронтенда
-pub use crate::server::types::db_interaction::{Comment, Post, Role, RoleType};
-
-#[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
-pub struct Session {
-    pub id: String,
-    pub user_id: String,
-}
 
 #[derive(Deserialize, Serialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct User {
@@ -15,4 +7,14 @@ pub struct User {
     pub login: String,
     pub role_id: RoleType,
     pub created_at: String,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct Post {
+    pub id: String,
+    pub title: String,
+    pub image_url: String,
+    pub content: String,
+    pub created_at: String,
+    pub comments: Vec<Comment>,
 }

@@ -1,6 +1,7 @@
 use super::GlobContext;
 use bff::server as bff_server;
 pub use bff::server::{Comment, Post, Role, RoleType, Session, User};
+
 use gloo_timers::future::TimeoutFuture;
 use leptos::*;
 
@@ -51,7 +52,7 @@ pub async fn fetch_all_users() -> Result<Vec<User>, String> {
     bff_server::fetch_all_users(&get_session()).await
 }
 
-pub async fn _fetch_user(id: &str) -> Result<Option<User>, String> {
+pub async fn _fetch_user(id: &str) -> Result<User, String> {
     TimeoutFuture::new(1000).await;
     logging::log!("server.rs: fetch_user (id: {})", id);
     bff_server::fetch_user(&get_session(), id).await

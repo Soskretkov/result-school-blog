@@ -1,7 +1,6 @@
 mod protected;
 use super::types::db_interaction::{Comment, CommentPayload, RoleType, User, UserPayload};
-use super::types::export::Session;
-use super::types::SessionsStore;
+use super::types::{Session, SessionsStore};
 use super::utils;
 use crate::store;
 pub use protected::*;

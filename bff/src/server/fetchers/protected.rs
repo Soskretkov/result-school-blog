@@ -1,6 +1,7 @@
 use super::super::utils;
-use crate::server::types::db_interaction::User as DbUser;
-use crate::server::types::export::{Role, Session, User};
+use crate::server::types::db_interaction::{User as DbUser, Role};
+use crate::server::types::export::{User};
+use crate::server::types::{Session};
 use crate::store;
 
 pub async fn fetch_all_users(session: &Session) -> Result<Vec<User>, String> {
@@ -15,7 +16,7 @@ pub async fn fetch_all_roles(session: &Session) -> Result<Vec<Role>, String> {
     store::fetch::<Vec<Role>>("roles").await
 }
 
-pub async fn fetch_user(session: &Session, id_to_find: &str) -> Result<Option<User>, String> {
+pub async fn fetch_user(session: &Session, id_to_find: &str) -> Result<User, String> {
     let check_perm = |db_user: &DbUser| {
         (id_to_find == session.user_id) || db_user.payload.role_id.can_view_users()
     };
@@ -24,13 +25,13 @@ pub async fn fetch_user(session: &Session, id_to_find: &str) -> Result<Option<Us
 
     if id_to_find != session.user_id {
         let path_suffix = format!("users/{id_to_find}");
-        store::fetch::<Option<User>>(&path_suffix).await
+        store::fetch::<User>(&path_suffix).await
     } else {
-        return Ok(Some(User {
+        return Ok(User {
             id: db_user.id,
             login: db_user.payload.login,
             role_id: db_user.payload.role_id,
             created_at: db_user.payload.created_at,
-        }));
+        });
     }
 }

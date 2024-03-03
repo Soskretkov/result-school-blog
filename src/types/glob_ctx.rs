@@ -48,7 +48,7 @@ impl GlobContext {
                                 "glob_ctx.rs: async данные пользователя {}",
                                 sess.user_id
                             );
-                            bff_server::fetch_user(&sess, &sess.user_id).await.unwrap()
+                            bff_server::fetch_user(&sess, &sess.user_id).await.ok()
                         }
                         None => {
                             logging::log!(

@@ -1,8 +1,12 @@
 mod fetchers;
 mod procedures;
-mod utils;
 mod types;
+mod utils;
 
-pub use types::export::*;
 pub use fetchers::*;
 pub use procedures::*;
+
+// реэкспорт клиентскому коду общих типов для бекенда и фронтенда
+pub use crate::server::types::db_interaction::{Comment, Role, RoleType};
+pub use crate::server::types::export::{Post, User};
+pub use crate::server::types::Session;

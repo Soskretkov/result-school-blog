@@ -1,6 +1,6 @@
 use super::super::utils;
-use crate::server::types::db_interaction::User as DbUser;
-use crate::server::types::export::{RoleType, Session};
+use crate::server::types::db_interaction::{RoleType, User as DbUser};
+use crate::server::types::Session;
 use crate::store;
 
 pub async fn update_user_role(

@@ -28,12 +28,18 @@ pub struct Role {
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Post {
-    pub id: String,
+pub struct PostPayload {
     pub title: String,
     pub image_url: String,
     pub content: String,
     pub created_at: String,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct Post {
+    pub id: String,
+    #[serde(flatten)] // не реэкспортируем клиенту, поэтому можно и так
+    pub payload: PostPayload,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -48,6 +54,9 @@ pub struct CommentPayload {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Comment {
     pub id: String,
-    #[serde(flatten)]
-    pub data: CommentPayload,
+    pub post_id: String,
+    pub user_id: String,
+    pub login_snapshot: String,
+    pub content: String,
+    pub created_at: String,
 }
