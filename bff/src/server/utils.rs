@@ -1,3 +1,4 @@
+use crate::server::error::Error;
 use crate::server::types::db_interaction::User;
 use crate::server::types::Session;
 use crate::store;
@@ -5,14 +6,12 @@ use chrono::{TimeZone, Utc};
 use rand::{thread_rng, Rng};
 
 // не делаю на session, иначе метод будет и у клиента (раскроет пароль)
-pub async fn verify_user_session(session: &Session) -> Result<User, String> {
+pub async fn verify_user_session(session: &Session) -> Result<User, Error> {
     let path_suffix = format!("users/{}", session.user_id);
-    let db_user = store::fetch::<Option<User>>(&path_suffix)
-        .await?
-        .ok_or_else(|| "Пользователь не существует".to_string())?;
+    let db_user = store::fetch::<User>(&path_suffix).await?;
 
     if !db_user.payload.sessions.exists(&session.id) {
-        return Err("Недействительная сессия".to_string());
+        return Err(Error::InvalidSession);
     }
 
     Ok(db_user)
@@ -21,14 +20,14 @@ pub async fn verify_user_session(session: &Session) -> Result<User, String> {
 pub async fn verify_session_with_permissions<F>(
     session: &Session,
     check_perm: F,
-) -> Result<User, String>
+) -> Result<User, Error>
 where
     F: FnOnce(&User) -> bool,
 {
     let db_user = verify_user_session(session).await?;
     // выход по ошибке если fn передана проверка, которая провалилась
     if !check_perm(&db_user) {
-        return Err("Недостаточно прав на операцию".to_string());
+        return Err(Error::UserPermission);
     }
 
     Ok(db_user)

@@ -1,5 +1,6 @@
 use super::URL;
-use reqwest::Response;
+use crate::server::error::Error;
+use reqwest::{Response, StatusCode};
 use serde::{de::DeserializeOwned, Serialize};
 use serde_json::json;
 use std::fmt::Debug;
@@ -8,7 +9,7 @@ pub async fn update_field<T>(
     path_suffix: &str,
     field_name: &str,
     field_value: &T,
-) -> Result<Response, String>
+) -> Result<Response, Error>
 where
     T: DeserializeOwned + Serialize + Debug,
 {
@@ -20,5 +21,8 @@ where
         .json(&json!({ field_name: field_value }))
         .send()
         .await
-        .map_err(|err| err.to_string())
+        .map_err(|reqw_err| match reqw_err.status() {
+            Some(StatusCode::NOT_FOUND) => Error::DbEntryNotFound,
+            _ => Error::Reqwest(reqw_err),
+        })
 }

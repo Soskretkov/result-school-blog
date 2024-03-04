@@ -2,25 +2,26 @@ mod protected;
 use super::types::db_interaction::{Comment, CommentPayload, RoleType, User, UserPayload};
 use super::types::{Session, SessionsStore};
 use super::utils;
+use crate::server::error::Error;
 use crate::store;
 pub use protected::*;
 
-pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
+pub async fn authorize(user_id: &str, password: &str) -> Result<String, Error> {
     let path_suffix = format!("users/{user_id}");
-    match store::fetch::<Option<User>>(&path_suffix).await? {
-        None => Err("Пользователь не найден".into()),
-        Some(user) if user.payload.password != password => Err("Пароль не верен".into()),
-        Some(user) => {
-            let mut new_sessions = user.payload.sessions;
-            let session_id = new_sessions.add_rnd_session();
-            let path_suffix = format!("users/{}", user.id);
-            store::update_field(&path_suffix, "sessions", &new_sessions).await?;
-            Ok(session_id)
-        }
+    let db_user = store::fetch::<User>(&path_suffix).await?;
+
+    if db_user.payload.password != password {
+        return Err(Error::InvalidPassword);
     }
+
+    let mut new_sessions = db_user.payload.sessions;
+    let session_id = new_sessions.add_rnd_session();
+    let path_suffix = format!("users/{}", db_user.id);
+    store::update_field(&path_suffix, "sessions", &new_sessions).await?;
+    Ok(session_id)
 }
 
-pub async fn register(login: String, password: String) -> Result<String, String> {
+pub async fn register(login: String, password: String) -> Result<String, Error> {
     let path_suffix = format!("users/?login={}", &login);
     if store::fetch::<Vec<UserPayload>>(&path_suffix)
         .await?
@@ -28,7 +29,7 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         .next()
         .is_some()
     {
-        return Err("Логин уже занят".to_string());
+        return Err(Error::DbEntryNotUnique);
     }
 
     let user_payload = UserPayload {
@@ -38,26 +39,21 @@ pub async fn register(login: String, password: String) -> Result<String, String>
         role_id: RoleType::Reader,
         sessions: SessionsStore::new(),
     };
-
-    let resp = store::add("users", &user_payload).await?;
-    let added_user: User = resp.json::<User>().await.map_err(|e| e.to_string())?;
-
+    let added_user: User = store::add("users", &user_payload).await?;
     Ok(added_user.id.to_string())
 }
 
-pub async fn logout(session: &Session) -> Result<(), String> {
+pub async fn logout(session: &Session) -> Result<(), Error> {
     let path_suffix = format!("users/{}", session.user_id);
-    let user: User = store::fetch::<Option<User>>(&path_suffix)
-        .await
-        .map(|users_vec| users_vec.into_iter().next())?
-        .ok_or_else(|| "Пользователь не существует".to_string())?;
-    let sessions = user.payload.sessions;
+    let db_user = store::fetch::<User>(&path_suffix).await?;
+
+    let sessions = db_user.payload.sessions;
 
     // Удалить нужную сессию и образовать обновленное хранилище сессий
     let new_sessions = sessions.del_session(&session.id);
 
     // Записать обновленые сессии через утилиту для json-server
-    let path_suffix = format!("users/{}", user.id);
+    let path_suffix = format!("users/{}", db_user.id);
     store::update_field(&path_suffix, "sessions", &new_sessions).await?;
     Ok(())
 }
@@ -67,7 +63,7 @@ pub async fn add_comment(
     session: &Session,
     post_id: String,
     content: String,
-) -> Result<Comment, String> {
+) -> Result<Comment, Error> {
     let db_user = utils::verify_user_session(session).await?;
 
     let comment_payload = CommentPayload {
@@ -78,6 +74,5 @@ pub async fn add_comment(
         created_at: utils::get_current_date(),
     };
 
-    let resp = store::add("comments", &comment_payload).await?;
-    resp.json::<Comment>().await.map_err(|e| e.to_string())
+    store::add("comments", &comment_payload).await
 }

@@ -1,3 +1,4 @@
+pub mod error;
 mod fetchers;
 mod procedures;
 mod types;
