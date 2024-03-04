@@ -26,6 +26,5 @@ pub async fn remove_user(session: &Session, id_to_delete: &str) -> Result<(), Er
     }
 
     let path_suffix = format!("users/{}", id_to_delete);
-    store::delete(&path_suffix).await.map_err(Error::Reqwest)?;
-    Ok(())
+    store::delete(&path_suffix).await.map_err(Error::Reqwest)
 }

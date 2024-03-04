@@ -20,7 +20,7 @@ pub fn App() -> impl IntoView {
         id: "f2901591-466b-47cb-9b9b-45557e45e346".to_string(),
         user_id: "400e".to_string(),
     });
-    let (session, set_session) = create_signal::<Option<Session>>(sess);
+    let (session, set_session) = create_signal::<Option<Session>>(None);
 
     view! {
         <Router>
