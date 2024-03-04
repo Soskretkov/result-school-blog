@@ -12,7 +12,9 @@ pub async fn update_user_role(
     let check_perm = |db_user: &DbUser| db_user.payload.role_id.can_update_roles();
     utils::verify_session_with_permissions(session, check_perm).await?;
     let path_suffix = format!("users/{user_id}");
-    store::update_field(&path_suffix, "role_id", &role_name).await?;
+    store::update_field(&path_suffix, "role_id", &role_name)
+        .await
+        .map_err(Error::Reqwest)?;
     Ok(())
 }
 
@@ -24,6 +26,6 @@ pub async fn remove_user(session: &Session, id_to_delete: &str) -> Result<(), Er
     }
 
     let path_suffix = format!("users/{}", id_to_delete);
-    store::delete(&path_suffix).await?;
+    store::delete(&path_suffix).await.map_err(Error::Reqwest)?;
     Ok(())
 }

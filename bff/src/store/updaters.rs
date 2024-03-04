@@ -1,6 +1,5 @@
 use super::URL;
-use crate::server::error::Error;
-use reqwest::{Response, StatusCode};
+use reqwest::{Error, Response};
 use serde::{de::DeserializeOwned, Serialize};
 use serde_json::json;
 use std::fmt::Debug;
@@ -21,8 +20,4 @@ where
         .json(&json!({ field_name: field_value }))
         .send()
         .await
-        .map_err(|reqw_err| match reqw_err.status() {
-            Some(StatusCode::NOT_FOUND) => Error::DbEntryNotFound,
-            _ => Error::Reqwest(reqw_err),
-        })
 }

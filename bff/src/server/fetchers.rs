@@ -8,7 +8,8 @@ pub use protected::*;
 pub async fn fetch_id_by_login(login: &str) -> Result<String, Error> {
     let path_suffix = format!("users/?login={}", &login);
     store::fetch::<Vec<User>>(&path_suffix)
-        .await?
+        .await
+        .map_err(Error::Reqwest)?
         .into_iter()
         .next()
         .map(|user| user.id)
@@ -16,13 +17,18 @@ pub async fn fetch_id_by_login(login: &str) -> Result<String, Error> {
 }
 
 pub async fn fetch_post(post_id: &str) -> Result<Post, Error> {
-    let post_path_suffix = format!("posts/{post_id}");
-    let db_post = store::fetch::<DbPost>(&post_path_suffix)
-        .await?;
+    let post_path_suffix = format!("posts/?id={post_id}");
+    let db_post = store::fetch::<Vec<DbPost>>(&post_path_suffix)
+        .await
+        .map_err(Error::Reqwest)?
+        .into_iter()
+        .next()
+        .ok_or_else(|| Error::DbEntryNotFound)?;
 
     let comments_path_suffix = format!("comments/?post_id={}", post_id);
     let comments = store::fetch::<Vec<Comment>>(&comments_path_suffix)
-        .await?;
+        .await
+        .map_err(Error::Reqwest)?;
 
     Ok(Post {
         id: db_post.id,

@@ -5,10 +5,19 @@ use crate::store;
 use chrono::{TimeZone, Utc};
 use rand::{thread_rng, Rng};
 
+pub async fn get_user(id: &str) -> Result<User, Error> {
+    let path_suffix = format!("users/?id={}", id);
+    store::fetch::<Vec<User>>(&path_suffix)
+        .await
+        .map_err(Error::Reqwest)?
+        .into_iter()
+        .next()
+        .ok_or_else(|| Error::DbEntryNotFound)
+}
+
 // не делаю на session, иначе метод будет и у клиента (раскроет пароль)
 pub async fn verify_user_session(session: &Session) -> Result<User, Error> {
-    let path_suffix = format!("users/{}", session.user_id);
-    let db_user = store::fetch::<User>(&path_suffix).await?;
+    let db_user = get_user(&session.user_id).await?;
 
     if !db_user.payload.sessions.exists(&session.id) {
         return Err(Error::InvalidSession);

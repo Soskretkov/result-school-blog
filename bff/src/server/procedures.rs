@@ -7,8 +7,7 @@ use crate::store;
 pub use protected::*;
 
 pub async fn authorize(user_id: &str, password: &str) -> Result<String, Error> {
-    let path_suffix = format!("users/{user_id}");
-    let db_user = store::fetch::<User>(&path_suffix).await?;
+    let db_user = utils::get_user(user_id).await?;
 
     if db_user.payload.password != password {
         return Err(Error::InvalidPassword);
@@ -17,14 +16,17 @@ pub async fn authorize(user_id: &str, password: &str) -> Result<String, Error> {
     let mut new_sessions = db_user.payload.sessions;
     let session_id = new_sessions.add_rnd_session();
     let path_suffix = format!("users/{}", db_user.id);
-    store::update_field(&path_suffix, "sessions", &new_sessions).await?;
+    store::update_field(&path_suffix, "sessions", &new_sessions)
+        .await
+        .map_err(Error::Reqwest)?;
     Ok(session_id)
 }
 
 pub async fn register(login: String, password: String) -> Result<String, Error> {
     let path_suffix = format!("users/?login={}", &login);
-    if store::fetch::<Vec<UserPayload>>(&path_suffix)
-        .await?
+    if store::fetch::<Vec<User>>(&path_suffix)
+        .await
+        .map_err(Error::Reqwest)?
         .into_iter()
         .next()
         .is_some()
@@ -39,14 +41,14 @@ pub async fn register(login: String, password: String) -> Result<String, Error> 
         role_id: RoleType::Reader,
         sessions: SessionsStore::new(),
     };
-    let added_user: User = store::add("users", &user_payload).await?;
+    let added_user: User = store::add("users", &user_payload)
+        .await
+        .map_err(Error::Reqwest)?;
     Ok(added_user.id.to_string())
 }
 
 pub async fn logout(session: &Session) -> Result<(), Error> {
-    let path_suffix = format!("users/{}", session.user_id);
-    let db_user = store::fetch::<User>(&path_suffix).await?;
-
+    let db_user = utils::get_user(&session.user_id).await?;
     let sessions = db_user.payload.sessions;
 
     // Удалить нужную сессию и образовать обновленное хранилище сессий
@@ -54,7 +56,9 @@ pub async fn logout(session: &Session) -> Result<(), Error> {
 
     // Записать обновленые сессии через утилиту для json-server
     let path_suffix = format!("users/{}", db_user.id);
-    store::update_field(&path_suffix, "sessions", &new_sessions).await?;
+    store::update_field(&path_suffix, "sessions", &new_sessions)
+        .await
+        .map_err(Error::Reqwest)?;
     Ok(())
 }
 
@@ -74,5 +78,7 @@ pub async fn add_comment(
         created_at: utils::get_current_date(),
     };
 
-    store::add("comments", &comment_payload).await
+    store::add("comments", &comment_payload)
+        .await
+        .map_err(Error::Reqwest)
 }

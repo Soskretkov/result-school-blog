@@ -1,6 +1,5 @@
 use super::URL;
-use crate::server::error::Error;
-use reqwest::{StatusCode};
+use reqwest::Error;
 use serde::{de::DeserializeOwned, Serialize};
 use std::fmt::Debug;
 
@@ -14,12 +13,7 @@ where
     client
         .delete(url)
         .send()
-        .await
-        .map_err(|reqw_err| match reqw_err.status() {
-            Some(StatusCode::NOT_FOUND) => Error::DbEntryNotFound,
-            _ => Error::Reqwest(reqw_err),
-        })?
+        .await?
         .json::<T>()
         .await
-        .map_err(Error::Reqwest)
 }
