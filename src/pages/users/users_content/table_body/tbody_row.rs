@@ -38,10 +38,12 @@ where
         }
     };
 
+    let created_at = user.created_at.format("%Y-%m-%d").to_string();
+
     view! {
         <tr class="flex mt-2.5 ">
             <td class="w-[170px] px-2.5 flex items-center">{user.login.clone()}</td>
-            <td class="w-[170px] px-2.5 flex items-center">{user.created_at.clone()}</td>
+            <td class="w-[170px] px-2.5 flex items-center">{created_at}</td>
             <td class="w-auto flex items-center justify-between">
                 <RoleSelect
                 initial_role_type=user.role_id

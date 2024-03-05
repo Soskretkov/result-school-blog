@@ -1,5 +1,6 @@
 mod role_type;
 use super::sessions_store::SessionsStore;
+use chrono::{DateTime, Utc};
 pub use role_type::RoleType;
 use serde::{Deserialize, Serialize};
 
@@ -11,7 +12,7 @@ pub struct UserPayload {
     pub password: String,
     pub role_id: RoleType,
     pub sessions: SessionsStore,
-    pub created_at: String,
+    pub created_at: DateTime<Utc>,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -32,7 +33,7 @@ pub struct PostPayload {
     pub title: String,
     pub image_url: String,
     pub content: String,
-    pub created_at: String,
+    pub created_at: DateTime<Utc>,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -48,7 +49,7 @@ pub struct CommentPayload {
     pub user_id: String,
     pub login_snapshot: String,
     pub content: String,
-    pub created_at: String,
+    pub created_at: DateTime<Utc>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -58,5 +59,5 @@ pub struct Comment {
     pub user_id: String,
     pub login_snapshot: String,
     pub content: String,
-    pub created_at: String,
+    pub created_at: DateTime<Utc>,
 }

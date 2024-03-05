@@ -40,6 +40,8 @@ pub fn Comments() -> impl IntoView {
 
 #[component]
 pub fn Comment(comment: Comment) -> impl IntoView {
+    let created_at = comment.created_at.format("%Y-%m-%d %H:%M").to_string();
+
     view! {
         <div class="flex">
             <div class="">
@@ -50,7 +52,7 @@ pub fn Comment(comment: Comment) -> impl IntoView {
                     </div>
                     <div class="flex">
                         <Icon id="fa-calendar-o" class="top-[-1px] text-[18px] mr-[7px]"/>
-                        <div class = "">{comment.created_at}</div>
+                        <div class = "">{created_at}</div>
                     </div>
                 </div>
                 <div class="">{comment.content}</div>

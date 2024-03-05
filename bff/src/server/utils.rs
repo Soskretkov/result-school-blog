@@ -2,7 +2,7 @@ use crate::server::error::Error;
 use crate::server::types::db_interaction::User;
 use crate::server::types::Session;
 use crate::store;
-use chrono::{TimeZone, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 use rand::{thread_rng, Rng};
 
 pub async fn get_user(id: &str) -> Result<User, Error> {
@@ -69,8 +69,9 @@ pub fn _get_rnd_date() -> String {
         .replace("T", " ")
 }
 
-pub fn get_current_date() -> String {
-    let now = Utc::now(); // Получаем текущее время
-                          // now.format("%Y-%m-%d %H:%M").to_string()
-    now.format("%Y-%m-%d").to_string()
+pub fn get_current_date() -> DateTime<Utc> {
+    Utc::now() // Получаем текущее время
+    //  в соответствии с RFC 3339, профилем стандарта ISO 8601 для интернета
+    // now.format("%+").to_string()
+    // now.format("%Y-%m-%d").to_string()
 }
