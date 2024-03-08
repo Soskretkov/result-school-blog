@@ -52,7 +52,7 @@ pub struct CommentPayload {
     pub created_at: DateTime<Utc>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Comment {
     pub id: String,
     pub post_id: String,
