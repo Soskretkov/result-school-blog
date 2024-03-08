@@ -1,39 +1,51 @@
 use crate::components::Icon;
 use crate::server::{self, Comment};
-use leptos::*;
+use leptos::{ev::SubmitEvent, html::Textarea, *};
 
 #[component]
 pub fn Comments(post_id: String, comments: Vec<Comment>) -> impl IntoView {
     let (comments_signal, set_comments_signal) = create_signal(comments);
+    let comment_node_ref = create_node_ref::<Textarea>();
 
-    let add_action = create_action(move |new_content: &String| {
-        let new_content_clon = new_content.clone();
-        let post_id_clon = post_id.clone();
+    let on_new_comment_add = {
+        let add_action = create_action(move |&()| {
+            let post_id_clon = post_id.clone();
+            let new_content = comment_node_ref.get().unwrap().value();
 
-        async move {
-            server::add_comment(post_id_clon, new_content_clon)
-                .await
-                .map(|cmnt_type| set_comments_signal.update(|vec| vec.push(cmnt_type)))
+            async move {
+                server::add_comment(post_id_clon, new_content)
+                    .await
+                    .map(|cmnt| set_comments_signal.update(|vec| vec.push(cmnt)))
+            }
+        });
+
+        move |ev: SubmitEvent| {
+            ev.prevent_default();
+            add_action.dispatch(());
         }
-    });
+    };
 
-    // on_new_comment_add(post_id)
     view! {
         <div class="w-[580px] my-0 mx-auto"> // comments class
             // форма добавления нового комментария
-            <div class="flex w-full mt-[20px] items-start"> // new-comment class
+            <form on:submit = on_new_comment_add class="flex w-full mt-[20px] items-start"> // new-comment class
                 <textarea
                     name="comment"
                     value={""}
                     placeholder="Комментарий..."
                     class="text-[18px] pl-[2px] w-full h-[120px] border border-black rounded-sm outline-none"
-                    on:change=move|_| {}
+                    node_ref = comment_node_ref
                 />
-                <Icon
-                    id="fa-paper-plane-o"
-                    class="text-[18px] ml-[10px] cursor-pointer"
-                />
-            </div>
+                <button
+                    type="submit"
+                >
+                    <Icon
+                        id="fa-paper-plane-o"
+                        class="text-[18px] ml-[10px] cursor-pointer"
+                    />
+                </button>
+            </form>
+
 
             <For // все существующие комментарии
                 each=move || comments_signal.get()

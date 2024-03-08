@@ -7,12 +7,20 @@ use leptos_router::*;
 
 #[component]
 pub fn Post() -> impl IntoView {
+    let post_id = store_value(
+        use_params_map()
+            .with(|params| params.get("id").cloned())
+            .unwrap(),
+    );
+
     view! {
         <div class="px-20 my-10">
             <Await
                 future=move|| {
-                    let post_id = use_params_map().with(|params| params.get("id").cloned()).unwrap();
-                    async move { server::fetch_post(&post_id).await }
+                    let resp = async move {
+                        server::fetch_post(&post_id.get_value()).await
+                    };
+                    resp
                 }
                 let: post_wrapped
             >{
@@ -37,9 +45,9 @@ pub fn Post() -> impl IntoView {
                                 </div>
                                 <div class="text-[18px]">{&post.content}</div>
                             </div>
-                            <Comments post_id={"".to_string()} comments={post.comments.clone()}/>
-                        }
-                        .into_view()
+
+                            <Comments post_id=post_id.get_value() comments={post.comments.clone()}/>
+                        }.into_view()
                     },
                     Err(e) => {
                         let err_msg = e.to_string();
