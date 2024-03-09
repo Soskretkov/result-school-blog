@@ -7,12 +7,13 @@ edition = "2021"
 
 [dependencies]
 bff = { path = "bff" }
-chrono = "0.4"                                          # footer: отображает текущую дату
-serde = "1.0"                                           # footer: берет погоду в файле
-serde_json = "1.0"                                      # footer: берет погоду в файле
+chrono = "0.4"         # footer: отображает текущую дату
+serde = "1.0"          # footer: берет погоду в файле
+serde_json = "1.0"     # footer: берет погоду в файле
 # tokio = { version = "1.34", features = ["full"]}
 leptos = { version = "0.6", features = ["csr"] }
 leptos_router = { version = "0.6", features = ["csr"] }
-gloo-timers = { version = "0.3.0", features = [
+gloo-timers = { version = "0.3.0", features = [ # footer: имитирует задержку
     "futures",
-] } # footer: имитирует задержку
+] }
+leptos-use = { version = "0.10.4", features = ["serde"] }

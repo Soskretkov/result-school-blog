@@ -9,6 +9,7 @@ use leptos_router::*;
 use pages::*;
 use server::Session;
 use types::GlobContext;
+use leptos_use::{storage, utils::JsonCodec};
 
 fn main() {
     leptos::mount_to_body(App);
@@ -16,11 +17,7 @@ fn main() {
 
 #[component]
 pub fn App() -> impl IntoView {
-    let sess: Option<Session> = Some(Session {
-        id: "f2901591-466b-47cb-9b9b-45557e45e346".to_string(),
-        user_id: "400e".to_string(),
-    });
-    let (session, set_session) = create_signal::<Option<Session>>(None);
+    let (session, set_session, _) = storage::use_local_storage::<Option<Session>, JsonCodec>("user_session");
 
     view! {
         <Router>
