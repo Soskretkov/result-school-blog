@@ -16,7 +16,7 @@ pub async fn get_user(id: &str) -> Result<User, Error> {
 }
 
 // не делаю на session, иначе метод будет и у клиента (раскроет пароль)
-pub async fn verify_user_session(session: &Session) -> Result<User, Error> {
+pub async fn verify_session(session: &Session) -> Result<User, Error> {
     let db_user = get_user(&session.user_id).await?;
 
     if !db_user.payload.sessions.exists(&session.id) {
@@ -33,7 +33,7 @@ pub async fn verify_session_with_permissions<F>(
 where
     F: FnOnce(&User) -> bool,
 {
-    let db_user = verify_user_session(session).await?;
+    let db_user = verify_session(session).await?;
     // выход по ошибке если fn передана проверка, которая провалилась
     if !check_perm(&db_user) {
         return Err(Error::UserPermission);

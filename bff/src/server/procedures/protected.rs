@@ -1,8 +1,28 @@
 use super::super::utils;
 use crate::server::error::Error;
-use crate::server::types::db_interaction::{RoleType, User as DbUser};
+use crate::server::types::db_interaction::{Comment, CommentPayload, RoleType, User as DbUser};
 use crate::server::types::Session;
 use crate::store;
+
+pub async fn add_comment(
+    session: &Session,
+    post_id: String,
+    content: String,
+) -> Result<Comment, Error> {
+    let db_user = utils::verify_session(session).await?;
+
+    let comment_payload = CommentPayload {
+        post_id,
+        user_id: db_user.id,
+        login_snapshot: db_user.payload.login,
+        content,
+        created_at: utils::get_current_date(),
+    };
+
+    store::add("comments", &comment_payload)
+        .await
+        .map_err(Error::Reqwest)
+}
 
 pub async fn update_user_role(
     session: &Session,
