@@ -10,20 +10,22 @@ pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
 
     // выход из учетной записи в гостевое представление
-    let logout_action = create_action(move |_| async move {
-        if use_context::<GlobContext>()
-            .unwrap()
-            .session
-            .with_untracked(Option::is_some)
-        {
-            if server::logout().await.is_ok() {
-                set_session.update(|rf| *rf = None);
+    let on_click = {
+        let logout_action = create_action(move |_| async move {
+            if use_context::<GlobContext>()
+                .unwrap()
+                .session
+                .with_untracked(Option::is_some)
+            {
+                if server::logout().await.is_ok() {
+                    set_session.update(|rf| *rf = None);
+                }
             }
-        }
-    });
+        });
 
-    let on_click = move |_: ev::MouseEvent| {
-        logout_action.dispatch(set_session);
+        move |_: ev::MouseEvent| {
+            logout_action.dispatch(set_session);
+        }
     };
 
     // похожая логика в PageGuard
