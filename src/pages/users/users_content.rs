@@ -26,7 +26,7 @@ pub fn UsersContent() -> impl IntoView {
                             <table class="w-[570px] mx-auto text-[18px]">
                                 <thead  class="">
                                     <tr class="flex items-start text-left [&>*:not(:last-child)]:px-2.5">
-                                        <th class="w-[170px] font-normal">"Логин"</th>
+                                        <th class="w-[170px] font-normal">"Имя"</th>
                                         <th class="w-[170px] font-normal">"Дата регистрации"</th>
                                         <th class="w-auto font-normal">"Роль"</th>
                                         <th class="w-auto font-normal"></th>

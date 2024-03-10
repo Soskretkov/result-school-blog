@@ -70,7 +70,7 @@ pub fn Comment(comment: Comment) -> impl IntoView {
                 <div class="flex justify-between"> // information-panel class
                     <div class="flex"> // author class
                         <Icon id="fa-user-circle-o" class="text-[18px] mr-[7px]"/>
-                        {comment.login_snapshot}
+                        {comment.user_name_snapshot}
                     </div>
                     <div class="flex">
                         <Icon id="fa-calendar-o" class="top-[-1px] text-[18px] mr-[7px]"/>

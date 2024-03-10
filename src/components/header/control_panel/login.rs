@@ -42,11 +42,9 @@ pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
                     >{
                         // в учебном примере тоже вкладывается в замыкание
                         move || glob_ctx.user_resource.get().and_then(|wr_user| wr_user.map(|user| {
-                            // logging::log!("загружается: {}", glob_ctx.user_resource.loading().get_untracked());
-                            // logging::log!("some: {}", glob_ctx.user_resource.get().is_some());
                             view! {
                                 <div class="flex h-8">
-                                    <div class="mt-[2px] text-[18px] font-bold">{user.login.clone()}</div>
+                                    <div class="mt-[2px] text-[18px] font-bold">{user.name}</div>
                                     <button on:click=on_click class="bg-inherit ml-2.5 px-0 py-0 border-none cursor-pointer">
                                         <Icon id="fa-sign-out" class="text-[24px]".to_string()/>
                                     </button>

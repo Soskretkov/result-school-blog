@@ -38,7 +38,7 @@ pub async fn fetch_user(session: &Session, id_to_find: &str) -> Result<User, Err
     } else {
         return Ok(User {
             id: db_user.id,
-            login: db_user.payload.login,
+            name: db_user.payload.name,
             role_id: db_user.payload.role_id,
             created_at: db_user.payload.created_at,
         });

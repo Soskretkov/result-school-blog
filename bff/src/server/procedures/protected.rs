@@ -14,7 +14,7 @@ pub async fn add_comment(
     let comment_payload = CommentPayload {
         post_id,
         user_id: db_user.id,
-        login_snapshot: db_user.payload.login,
+        user_name_snapshot: db_user.payload.name,
         content,
         created_at: utils::get_current_date(),
     };

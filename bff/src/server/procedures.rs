@@ -44,7 +44,8 @@ pub async fn register(login: String, password: String) -> Result<(), Error> {
     }
 
     let user_payload = UserPayload {
-        login,
+        login: login.clone(),
+        name: login,
         password,
         created_at: utils::get_current_date(),
         role_id: RoleType::Reader,

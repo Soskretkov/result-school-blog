@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UserPayload {
     pub login: String,
+    pub name: String,
     pub password: String,
     pub role_id: RoleType,
     pub sessions: SessionsStore,
@@ -47,7 +48,7 @@ pub struct Post {
 pub struct CommentPayload {
     pub post_id: String,
     pub user_id: String,
-    pub login_snapshot: String,
+    pub user_name_snapshot: String,
     pub content: String,
     pub created_at: DateTime<Utc>,
 }
@@ -57,7 +58,7 @@ pub struct Comment {
     pub id: String,
     pub post_id: String,
     pub user_id: String,
-    pub login_snapshot: String,
+    pub user_name_snapshot: String,
     pub content: String,
     pub created_at: DateTime<Utc>,
 }
