@@ -3,9 +3,10 @@
     {
       "login": "admin",
       "password": "qwerty123",
-      "name": "admin",
+      "name": "Веселый админ",
       "role_id": "0",
       "sessions": [
+        "1ff3ad16-cf4f-4bc2-878d-135057fe7ad3",
         "f2901591-466b-47cb-9b9b-45557e45e346"
       ],
       "created_at": "2024-01-01T16:03:57.454Z",
@@ -14,7 +15,7 @@
     {
       "login": "guest",
       "password": "qwerty123",
-      "name": "guest",
+      "name": "Алиса",
       "role_id": "2",
       "sessions": [],
       "created_at": "2024-01-02T13:03:00Z",
@@ -95,17 +96,19 @@
   ],
   "comments": [
     {
+      "id": "060d",
       "post_id": "004",
       "user_id": "400e",
-      "user_name_snapshot": "Петя",
-      "content": "Статья говно, автора предать инквизиции (смайлик с костром)",
+      "user_name_snapshot": "Веселый админ",
+      "content": "Очень хорошо сказано, ставлю лайк статье!",
       "created_at": "2024-03-05T12:01:07Z"
     },
     {
+      "id": "1dc0",
       "post_id": "004",
-      "user_id": "40e",
+      "user_id": "707c",
       "user_name_snapshot": "Алиса",
-      "content": "Очень хорошо сказано, ставлю лайк статье!",
+      "content": "Статья говно, автора предать инквизиции (смайлик с костром)",
       "created_at": "2024-03-06T23:59:37Z"
     }
   ]
