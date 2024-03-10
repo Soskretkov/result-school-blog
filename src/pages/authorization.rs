@@ -28,22 +28,15 @@ pub fn Authorization(set_session: WriteSignal<Option<Session>>) -> impl IntoView
             let password = password_node_ref.get().unwrap().value();
 
             async move {
-                match server::fetch_id_by_login(&login).await {
-                    Ok(user_id) => match server::authorize(&user_id, &password).await {
-                        Ok(sess_id) => {
-                            let sess = Session {
-                                id: sess_id,
-                                user_id,
-                            };
-                            set_session.set(Some(sess));
+                match server::authorize(&login, &password).await {
+                    Ok(sess) => {
+                        set_session.set(Some(sess));
 
-                            // Возврат
-                            let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
-                        }
-                        Err(err_msg) => set_auth_error.set(Some(err_msg)),
-                    },
-                    Err(e) => set_auth_error.set(Some(e)),
-                };
+                        // Возврат
+                        let _ = leptos::web_sys::window().unwrap().history().unwrap().back();
+                    }
+                    Err(err_msg) => set_auth_error.set(Some(err_msg)),
+                }
             }
         });
 

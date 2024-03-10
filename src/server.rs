@@ -5,14 +5,14 @@ pub use bff::server::{Comment, Post, Role, RoleType, Session, User};
 use gloo_timers::future::TimeoutFuture;
 use leptos::*;
 
-pub async fn authorize(user_id: &str, password: &str) -> Result<String, String> {
+pub async fn authorize(user_id: &str, password: &str) -> Result<Session, String> {
     logging::log!("server.rs: authorize ({})", user_id);
     bff_server::authorize(user_id, password)
         .await
         .map_err(|e| e.to_string())
 }
 
-pub async fn register(login: String, password: String) -> Result<String, String> {
+pub async fn register(login: String, password: String) -> Result<(), String> {
     logging::log!("server.rs: register (логин: {})", login);
     bff_server::register(login, password)
         .await
@@ -48,14 +48,6 @@ pub async fn update_user_role(user_id: &str, role_name: RoleType) -> Result<(), 
         role_name.as_str()
     );
     bff_server::update_user_role(&get_session(), user_id, role_name)
-        .await
-        .map_err(|e| e.to_string())
-}
-
-pub async fn fetch_id_by_login(login: &str) -> Result<String, String> {
-    TimeoutFuture::new(1000).await;
-    logging::log!("server.rs: fetch_id_by_login (логин: {})", login);
-    bff_server::fetch_id_by_login(login)
         .await
         .map_err(|e| e.to_string())
 }

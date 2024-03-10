@@ -6,8 +6,14 @@ use crate::server::error::Error;
 use crate::store;
 pub use protected::*;
 
-pub async fn authorize(user_id: &str, password: &str) -> Result<String, Error> {
-    let db_user = utils::get_user(user_id).await?;
+pub async fn authorize(login: &str, password: &str) -> Result<Session, Error> {
+    let path_suffix = format!("users/?login={}", &login);
+    let db_user = store::fetch::<Vec<User>>(&path_suffix)
+        .await
+        .map_err(Error::Reqwest)?
+        .into_iter()
+        .next()
+        .ok_or_else(|| Error::DbEntryNotFound)?;
 
     if db_user.payload.password != password {
         return Err(Error::InvalidPassword);
@@ -19,10 +25,13 @@ pub async fn authorize(user_id: &str, password: &str) -> Result<String, Error> {
     store::update_field(&path_suffix, "sessions", &new_sessions)
         .await
         .map_err(Error::Reqwest)?;
-    Ok(session_id)
+    Ok(Session {
+        id: session_id,
+        user_id: db_user.id,
+    })
 }
 
-pub async fn register(login: String, password: String) -> Result<String, Error> {
+pub async fn register(login: String, password: String) -> Result<(), Error> {
     let path_suffix = format!("users/?login={}", &login);
     if store::fetch::<Vec<User>>(&path_suffix)
         .await
@@ -41,10 +50,12 @@ pub async fn register(login: String, password: String) -> Result<String, Error> 
         role_id: RoleType::Reader,
         sessions: SessionsStore::new(),
     };
-    let added_user: User = store::add("users", &user_payload)
+
+    let _added_user: User = store::add("users", &user_payload)
         .await
         .map_err(Error::Reqwest)?;
-    Ok(added_user.id.to_string())
+
+    Ok(())
 }
 
 // fn не размещается в protected.rs т.к. валидность сессии роли не играет

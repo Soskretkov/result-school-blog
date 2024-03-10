@@ -28,13 +28,9 @@ pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView 
             let password = password_node_ref.get().unwrap().value();
 
             async move {
-                match server::register(login, password.clone()).await {
-                    Ok(user_id) => match server::authorize(&user_id, &password).await {
-                        Ok(sess_id) => {
-                            let sess = Session {
-                                id: sess_id,
-                                user_id,
-                            };
+                match server::register(login.clone(), password.clone()).await {
+                    Ok(_) => match server::authorize(&login, &password).await {
+                        Ok(sess) => {
                             set_session.set(Some(sess));
 
                             // Возврат
