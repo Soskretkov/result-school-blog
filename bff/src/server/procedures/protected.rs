@@ -48,3 +48,11 @@ pub async fn remove_user(session: &Session, id_to_delete: &str) -> Result<(), Er
     let path_suffix = format!("users/{}", id_to_delete);
     store::delete(&path_suffix).await.map_err(Error::Reqwest)
 }
+
+pub async fn remove_comment(session: &Session, id_to_delete: &str) -> Result<(), Error> {
+    let check_perm = |db_user: &DbUser| db_user.payload.role_id.can_remove_comment();
+    utils::verify_session_with_permissions(session, check_perm).await?;
+
+    let path_suffix = format!("comments/{}", id_to_delete);
+    store::delete(&path_suffix).await.map_err(Error::Reqwest)
+}
