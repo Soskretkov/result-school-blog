@@ -37,7 +37,7 @@ impl RoleType {
     // использование: бек - сверяет право на извлечение, фронт - возможность попасть на страницу
     pub fn can_view_users(&self) -> bool {
         match self {
-            RoleType::Administrator | RoleType::Moderator => true,
+            RoleType::Administrator => true,
             _ => false,
         }
     }

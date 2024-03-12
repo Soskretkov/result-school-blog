@@ -1,9 +1,11 @@
 use crate::components::Icon;
-use crate::server::{self, Comment};
+mod comment;
+use crate::server::{self, Comment as CommentType};
+use comment::Comment;
 use leptos::{ev::SubmitEvent, html::Textarea, *};
 
 #[component]
-pub fn Comments(post_id: String, comments: Vec<Comment>) -> impl IntoView {
+pub fn Comments(post_id: String, comments: Vec<CommentType>) -> impl IntoView {
     let (comments_signal, set_comments_signal) = create_signal(comments);
     let comment_node_ref = create_node_ref::<Textarea>();
 
@@ -48,40 +50,19 @@ pub fn Comments(post_id: String, comments: Vec<Comment>) -> impl IntoView {
                     />
                 </button>
             </form>
-            
+
             <For // все существующие комментарии
                 each=move || comments_signal.get()
                 key=|cmnt| cmnt.id.clone()
                 children=move |cmnt| {
                     view! {
-                        <Comment comment=cmnt />
+                        <Comment
+                            comment=cmnt.clone()
+                            set_comments_signal=set_comments_signal
+                        />
                     }
                 }
             />
-        </div>
-    }
-}
-
-#[component]
-pub fn Comment(comment: Comment) -> impl IntoView {
-    let created_at = comment.created_at.format("%Y-%m-%d %H:%M").to_string();
-
-    view! {
-        <div class="flex mt-[10px]"> // ComentContainer
-            <div class="w-[550px] py-[5px] px-[10px] border border-black rounded-sm"> // comment class
-                <div class="flex justify-between"> // information-panel class
-                    <div class="flex"> // author class
-                        <Icon id="fa-user-circle-o" class="text-[18px] mr-[10px]"/>
-                        {comment.user_name_snapshot}
-                    </div>
-                    <div class="flex"> // published_at class
-                        <Icon id="fa-calendar-o" class="text-[18px] mr-[10px] top-[-1px]"/>
-                        {created_at}
-                    </div>
-                </div>
-                <div class="">{comment.content}</div> // comment-text class
-            </div>
-            <Icon id="fa-trash-o" class="text-[21px] ml-[10px] cursor-pointer"/>
         </div>
     }
 }

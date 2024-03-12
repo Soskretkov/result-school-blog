@@ -8,22 +8,19 @@ use role_select::RoleSelect;
 use save_icon::SaveIcon;
 
 #[component]
-pub fn TbodyRow<F>(user: User, on_delete: F) -> impl IntoView
-where
-    F: Fn(ev::MouseEvent) + 'static,
-{
+pub fn TbodyRow(user: User, set_users_signal: WriteSignal<Vec<User>>) -> impl IntoView {
+    let user_id = store_value(user.id.clone());
     let (role_type, set_role_type) = create_signal(user.role_id);
     let (new_role_type, set_new_role_type) = create_signal(user.role_id);
 
     let on_save = {
-        let save_action = create_action(move |arg: &(String, RoleType, WriteSignal<RoleType>)| {
-            let user_id = arg.0.clone();
-            let user_new_role_type = arg.1;
-            let set_role_type = arg.2;
+        let save_action = create_action(move |arg: &(RoleType, WriteSignal<RoleType>)| {
+            let user_new_role_type = arg.0;
+            let set_role_type = arg.1;
 
             async move {
                 if utils::is_sync_server_client_roles() {
-                    if server::update_user_role(&user_id, user_new_role_type)
+                    if server::update_user_role(&user_id.get_value(), user_new_role_type)
                         .await
                         .is_ok()
                     {
@@ -34,7 +31,22 @@ where
         });
 
         move |_: ev::MouseEvent| {
-            save_action.dispatch((user.id.clone(), new_role_type.get(), set_role_type));
+            save_action.dispatch((new_role_type.get(), set_role_type));
+        }
+    };
+
+    let on_delete = {
+        let delete_action = create_action(move |_: &()| {
+            let user_id = user_id.get_value();
+            async move {
+                if server::remove_user(&user_id).await.is_ok() {
+                    set_users_signal.update(|vec| vec.retain(|user| user_id != user.id))
+                }
+            }
+        });
+
+        move |_: ev::MouseEvent| {
+            delete_action.dispatch(());
         }
     };
 
