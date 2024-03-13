@@ -21,7 +21,7 @@ pub fn App() -> impl IntoView {
 
     view! {
         <Router>
-            { provide_context(GlobContext::new(session)) }
+            { provide_context(GlobContext::new(session, set_session)) }
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
                 <Header set_session={set_session}/> // btn. "выход" сбрасывает session на None
                 <main class="pt-[100px]">

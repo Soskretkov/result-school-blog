@@ -1,5 +1,5 @@
 use crate::server;
-use crate::server::{Role, Session, User};
+use crate::server::{Role, Session, User, Error};
 use bff::server::{self as bff_server};
 use leptos::*;
 // use leptos_router::*;
@@ -7,16 +7,20 @@ use leptos::*;
 #[derive(Clone)]
 pub struct GlobContext {
     pub session: Signal<Option<Session>>,
+    pub set_session: WriteSignal<Option<Session>>,
     pub user_resource: Resource<(), Option<User>>,
     pub roles: Action<(), Result<Vec<Role>, String>>,
 }
 
 impl GlobContext {
-    pub fn new(session: Signal<Option<Session>>) -> Self {
+    pub fn new(session: Signal<Option<Session>>, set_session: WriteSignal<Option<Session>>) -> Self {
+        let roles_action = create_action(move |_: &()| async move { server::fetch_all_roles().await });
+        
         Self {
-            session, // Authorization, Registration, struct UserInfo
-            user_resource: Self::create_user_resource(session), // Header, Users
-            roles: create_action(move |_: &()| async move { server::fetch_all_roles().await }),
+            session, // Header, Authorization, Registration, PageGuard, server.rs
+            set_session, // server.rs
+            user_resource: Self::create_user_resource(session), // Header, Users, PageGuard, Header
+            roles: roles_action, // Users, PageGuard
         }
     }
 
@@ -35,7 +39,14 @@ impl GlobContext {
                                 "glob_ctx.rs: async скачивание данных пользователя id={}",
                                 sess.user_id
                             );
-                            bff_server::fetch_user(&sess, &sess.user_id).await.ok()
+                            bff_server::fetch_user(&sess, &sess.user_id)
+                            .await
+                            .map_err(|e| {
+                                if let Error::InvalidSession = e {
+                                    use_context::<GlobContext>().unwrap().set_session.set(None);
+                                }
+                            })
+                            .ok()
                         }
                         None => {
                             logging::log!(

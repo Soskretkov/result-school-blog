@@ -17,7 +17,7 @@ pub async fn get_user(id: &str) -> Result<User, Error> {
 
 // не делаю на session, иначе метод будет и у клиента (раскроет пароль)
 pub async fn verify_session(session: &Session) -> Result<User, Error> {
-    let db_user = get_user(&session.user_id).await?;
+    let db_user = get_user(&session.user_id).await.map_err(|_| Error::InvalidSession)?;
 
     if !db_user.payload.sessions.exists(&session.id) {
         return Err(Error::InvalidSession);
