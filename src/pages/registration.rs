@@ -1,16 +1,15 @@
 use super::components::FormErrMsg;
 use crate::components::{Button, Content, Input};
-use crate::server::{self, Session};
-use crate::types::GlobContext;
+use crate::server::{self};
+use crate::types::{Auth, GlobContext};
 use leptos::{ev::SubmitEvent, html::Input, *};
 
 #[component]
-pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
+pub fn Registration(set_auth: WriteSignal<Option<Auth>>) -> impl IntoView {
     let glob_ctx = use_context::<GlobContext>().unwrap();
 
     // Пользователь уже авторизован, перенаправляем
-    // Предполагается что невалидные куки отсееваются на старте приложухи
-    if glob_ctx.session.with_untracked(Option::is_some) {
+    if glob_ctx.auth.with_untracked(Option::is_some) {
         let navigate = leptos_router::use_navigate();
         navigate("/", Default::default());
         return {}.into_view();
@@ -31,7 +30,7 @@ pub fn Registration(set_session: WriteSignal<Option<Session>>) -> impl IntoView 
                 match server::register(login.clone(), password.clone()).await {
                     Ok(_) => match server::authorize(&login, &password).await {
                         Ok(sess) => {
-                            set_session.set(Some(sess));
+                            set_auth.set(Some(Auth::new(sess, None)));
 
                             // Возврат
                             let _ = leptos::web_sys::window().unwrap().history().unwrap().back();

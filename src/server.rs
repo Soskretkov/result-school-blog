@@ -32,10 +32,11 @@ pub async fn fetch_post(id: &str) -> Result<Post, String> {
     bff_server::fetch_post(id).await.map_err(|e| e.to_string())
 }
 
-pub async fn fetch_user(id: &str) -> Result<User, String> {
+pub async fn fetch_current_user() -> Result<User, String> {
     TimeoutFuture::new(1000).await;
-    logging::log!("server.rs: fetch_user (id: {})", id);
-    bff_server::fetch_user(&get_session(), id)
+    let session = &get_session();
+    logging::log!("server.rs: fetch_current_user (id: {})", session.user_id);
+    bff_server::fetch_user(&session, &session.user_id)
         .await
         .map_err(|e| {
             if let Error::InvalidSession = e {
@@ -124,16 +125,15 @@ pub async fn update_user_role(user_id: &str, role_name: RoleType) -> Result<(), 
         })
 }
 
-
-
 fn get_session() -> Session {
     use_context::<GlobContext>()
         .unwrap()
-        .session
+        .auth
         .get_untracked()
         .unwrap()
+        .session
 }
 
 fn set_none_for_session() {
-    use_context::<GlobContext>().unwrap().set_session.set(None);
+    use_context::<GlobContext>().unwrap().set_auth.set(None);
 }
