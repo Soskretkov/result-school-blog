@@ -32,7 +32,7 @@ pub async fn fetch_post(id: &str) -> Result<Post, String> {
     bff_server::fetch_post(id).await.map_err(|e| e.to_string())
 }
 
-pub async fn _fetch_user(id: &str) -> Result<User, String> {
+pub async fn fetch_user(id: &str) -> Result<User, String> {
     TimeoutFuture::new(1000).await;
     logging::log!("server.rs: fetch_user (id: {})", id);
     bff_server::fetch_user(&get_session(), id)

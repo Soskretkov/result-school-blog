@@ -1,8 +1,6 @@
 use crate::server;
-use crate::server::{Role, Session, User, Error};
-use bff::server::{self as bff_server};
+use crate::server::{Role, Session, User};
 use leptos::*;
-// use leptos_router::*;
 
 #[derive(Clone)]
 pub struct GlobContext {
@@ -13,11 +11,15 @@ pub struct GlobContext {
 }
 
 impl GlobContext {
-    pub fn new(session: Signal<Option<Session>>, set_session: WriteSignal<Option<Session>>) -> Self {
-        let roles_action = create_action(move |_: &()| async move { server::fetch_all_roles().await });
-        
+    pub fn new(
+        session: Signal<Option<Session>>,
+        set_session: WriteSignal<Option<Session>>,
+    ) -> Self {
+        let roles_action =
+            create_action(move |_: &()| async move { server::fetch_all_roles().await });
+
         Self {
-            session, // Header, Authorization, Registration, PageGuard, server.rs
+            session,     // Header, Authorization, Registration, PageGuard, server.rs
             set_session, // server.rs
             user_resource: Self::create_user_resource(session), // Header, Users, PageGuard, Header
             roles: roles_action, // Users, PageGuard
@@ -39,14 +41,7 @@ impl GlobContext {
                                 "glob_ctx.rs: async скачивание данных пользователя id={}",
                                 sess.user_id
                             );
-                            bff_server::fetch_user(&sess, &sess.user_id)
-                            .await
-                            .map_err(|e| {
-                                if let Error::InvalidSession = e {
-                                    use_context::<GlobContext>().unwrap().set_session.set(None);
-                                }
-                            })
-                            .ok()
+                            server::fetch_user(&sess.user_id).await.ok()
                         }
                         None => {
                             logging::log!(
