@@ -62,6 +62,7 @@ pub fn Authorization(set_session: WriteSignal<Option<Session>>) -> impl IntoView
                 />
 
                 <Button
+                    class="w-full"
                     r#type="submit"
                     disabled={false}
                 >"Войти"

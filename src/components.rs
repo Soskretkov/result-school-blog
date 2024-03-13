@@ -5,6 +5,7 @@ mod h2;
 mod header;
 mod icon;
 mod input;
+mod modal;
 mod page_err_msg;
 
 pub use button::Button;

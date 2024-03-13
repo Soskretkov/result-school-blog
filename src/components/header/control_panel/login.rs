@@ -63,7 +63,7 @@ pub fn Login(set_session: WriteSignal<Option<Session>>) -> impl IntoView {
 pub fn LoginButton() -> impl IntoView {
     view! {
         <A href="/login" class="w-full no-underline h-8">
-            <Button>"Войти"</Button>
+            <Button class="w-full">"Войти"</Button>
         </A>
     }
 }
