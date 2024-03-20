@@ -19,6 +19,11 @@ fn main() {
 pub fn App() -> impl IntoView {
     let (auth, set_auth, _) = storage::use_local_storage::<Option<Auth>, JsonCodec>("user_session");
     let (modal_cfg, set_modal_cfg) = create_signal::<Option<ModalConfig>>(None);
+    // let (modal_cfg, set_modal_cfg) = create_signal::<Option<ModalConfig>>(Some(ModalConfig {
+    //     text: "Удалить комментарий?".to_string(),
+    //     on_confirm: Callback::from(move |_: ()| {}),
+    //     on_cancel: Callback::from(move |_: ()| {}),
+    // }));
 
     view! {
         <Router>

@@ -7,13 +7,13 @@ pub fn Modal(modal_cfg: ReadSignal<Option<ModalConfig>>) -> impl IntoView {
     view! {
         {move || match modal_cfg.get() {
             Some(modal_config) => view! {
-                <div> // Modal class
-                    <div></div> // owerlay class
-                    <div> // box class
-                        <h3>"удалить комментарий?"{modal_config.text}</h3>
-                        <div> // buttons class
-                            <Button on:click=move |ev| modal_config.on_confirm.call(ev) class="w-[120px]">"Да"</Button>
-                            <Button on:click=move |ev| modal_config.on_cancel.call(ev) class="w-[120px]">"Отмена"</Button>
+                <div class="fixed z-20 top-0 right-0 bottom-0 left-0"> // Modal class
+                    <div class="absolute w-full h-full bg-[rgba(0,0,0,0.7)]"></div> // overlay class
+                    <div class="relative top-[40%] w-[400px] mt-0 mx-auto pt-0 px-5 pb-5 text-center bg-[#fff] border-[3px] border-solid border-black z-30"> // box class
+                        <h3 class="font-bold py-[18px]">{modal_config.text}</h3>
+                        <div class="flex justify-center"> // buttons class
+                            <Button class="w-[120px] mx-[5px]" on:click=move |_| modal_config.on_confirm.call(())>"Да"</Button>
+                            <Button class="w-[120px] mx-[5px]" on:click=move |_| modal_config.on_cancel.call(())>"Отмена"</Button>
                         </div>
                     </div>
                 </div>
