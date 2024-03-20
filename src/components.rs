@@ -15,4 +15,5 @@ pub use h2::H2;
 pub use header::Header;
 pub use icon::Icon;
 pub use input::Input;
+pub use modal::Modal;
 pub use page_err_msg::PageErrMsg;
