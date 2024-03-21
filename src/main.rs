@@ -8,8 +8,7 @@ use components::{Footer, Header, Modal, PageErrMsg};
 use leptos_router::*;
 use leptos_use::{storage, utils::JsonCodec};
 use pages::*;
-use types::GlobContext;
-use types::{Auth, ModalConfig};
+use types::{Auth, GlobContext, ModalWindow};
 
 fn main() {
     leptos::mount_to_body(App);
@@ -18,16 +17,11 @@ fn main() {
 #[component]
 pub fn App() -> impl IntoView {
     let (auth, set_auth, _) = storage::use_local_storage::<Option<Auth>, JsonCodec>("user_session");
-    let (modal_cfg, set_modal_cfg) = create_signal::<Option<ModalConfig>>(None);
-    // let (modal_cfg, set_modal_cfg) = create_signal::<Option<ModalConfig>>(Some(ModalConfig {
-    //     text: "Удалить комментарий?".to_string(),
-    //     on_confirm: Callback::from(move |_: ()| {}),
-    //     on_cancel: Callback::from(move |_: ()| {}),
-    // }));
+    let (modal_window, set_modal_window) = create_signal::<Option<ModalWindow>>(None);
 
     view! {
         <Router>
-            { provide_context(GlobContext::new(auth, set_auth, set_modal_cfg)) }
+            { provide_context(GlobContext::new(auth, set_auth, set_modal_window)) }
             { create_user_updater(auth, set_auth) }
             <div class="flex flex-col justify-between bg-white w-[1000px] min-h-screen mx-auto">
                 <Header set_auth={set_auth}/> // btn. "выход" сбрасывает auth на None
@@ -43,7 +37,7 @@ pub fn App() -> impl IntoView {
                     </Routes>
                 </main>
                 <Footer/>
-                <Modal modal_cfg=modal_cfg/>
+                <Modal modal_window=modal_window/>
             </div>
         </Router>
     }

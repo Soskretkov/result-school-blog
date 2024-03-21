@@ -10,23 +10,29 @@ pub fn Comments(post_id: String, comments: Vec<CommentType>) -> impl IntoView {
     let comment_node_ref = create_node_ref::<Textarea>();
 
     let on_new_comment_add = {
-        let add_action = create_action(move |&()| {
-            let post_id_clon = post_id.clone();
-            let comment_node_ref = comment_node_ref.get().unwrap();
+        let add_action = create_action(move |comment_html_node: &HtmlElement<Textarea>| {
+            let post_id_clone = post_id.clone();
+            let comment_html_node_clone = comment_html_node.clone();
+            let comment_text = comment_html_node_clone.value();
 
             async move {
-                server::add_comment(post_id_clon, comment_node_ref.value())
+                server::add_comment(post_id_clone, comment_text)
                     .await
                     .map(|cmnt| {
                         set_comments_signal.update(|vec| vec.push(cmnt));
-                        comment_node_ref.set_value("")
+                        comment_html_node_clone.set_value("");
                     })
             }
         });
 
         move |ev: SubmitEvent| {
             ev.prevent_default();
-            add_action.dispatch(());
+            let comment_html_node = comment_node_ref.get().unwrap();
+            let comment_text = comment_html_node.value();
+
+            if !comment_text.is_empty() {
+                add_action.dispatch(comment_html_node);
+            }
         }
     };
 

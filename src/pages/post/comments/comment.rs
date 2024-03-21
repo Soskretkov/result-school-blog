@@ -1,22 +1,29 @@
 use crate::components::Icon;
 use crate::server::{self, Comment};
+use crate::types::ModalWindow;
 use leptos::*;
 
 #[component]
 pub fn Comment(comment: Comment, set_comments_signal: WriteSignal<Vec<Comment>>) -> impl IntoView {
+    let comment_id = store_value(comment.id);
+    
     let on_delete = {
-        let delete_action = create_action(move |comment_id: &String| {
-            let comment_id_clone = comment_id.clone();
-
-            async move {
-                if server::remove_comment(&comment_id_clone).await.is_ok() {
-                    set_comments_signal.update(|vec| vec.retain(|cmnt| cmnt.id != comment_id_clone))
-                }
+        let delete_action = create_action(move |_: &()| async move {
+            if server::remove_comment(&comment_id.get_value())
+                .await
+                .is_ok()
+            {
+                set_comments_signal.update(|vec| {
+                    vec.retain(|cmnt| comment_id.with_value(|comment_id| &cmnt.id != comment_id))
+                })
             }
         });
 
         move |_: ev::MouseEvent| {
-            delete_action.dispatch(comment.id.clone());
+            ModalWindow::set(
+                "Удалить комментарий?".to_string(),
+                move || delete_action.dispatch(()),
+            )
         }
     };
 

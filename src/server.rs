@@ -1,4 +1,4 @@
-use super::GlobContext;
+use crate::types::GlobContext;
 use bff::server as bff_server;
 pub use bff::server::{Comment, Error, Post, Role, RoleType, Session, User};
 
