@@ -4,6 +4,7 @@ use leptos::{*, html::Input};
 pub fn Input(
     #[prop(optional)] r#type: &'static str,
     #[prop(optional)] placeholder: &'static str,
+    #[prop(optional)] default: String,
     /// в формате тайлвинд
     #[prop(default = "w-full")] width: &'static str,
     #[prop(optional)] node_ref:  NodeRef<Input>
@@ -19,6 +20,7 @@ pub fn Input(
             placeholder=placeholder
             node_ref=node_ref
             class=class_list
+            default=default
         />        
     }
 }
