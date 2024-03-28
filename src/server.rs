@@ -1,6 +1,6 @@
 use crate::types::GlobContext;
 use bff::server as bff_server;
-pub use bff::server::{Comment, Error, Post, Role, RoleType, Session, User};
+pub use bff::server::{Comment, Error, Post, PostWC, Role, RoleType, Session, User};
 
 use gloo_timers::future::TimeoutFuture;
 use leptos::*;
@@ -29,7 +29,17 @@ pub async fn logout() -> Result<(), String> {
 pub async fn fetch_post(id: &str) -> Result<Post, String> {
     TimeoutFuture::new(1000).await;
     logging::log!("server.rs: fetch_post (id: {})", id);
-    bff_server::fetch_post(id).await.map_err(|e| e.to_string())
+    bff_server::fetch_post(id)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+pub async fn fetch_post_wc(id: &str) -> Result<PostWC, String> {
+    TimeoutFuture::new(1000).await;
+    logging::log!("server.rs: fetch_post (id: {})", id);
+    bff_server::fetch_post_wc(id)
+        .await
+        .map_err(|e| e.to_string())
 }
 
 pub async fn fetch_current_user() -> Result<User, String> {

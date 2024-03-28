@@ -40,8 +40,10 @@ pub struct PostPayload {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Post {
     pub id: String,
-    #[serde(flatten)] // не реэкспортируем клиенту, поэтому можно и так
-    pub payload: PostPayload,
+    pub title: String,
+    pub image_url: String,
+    pub content: String,
+    pub created_at: DateTime<Utc>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

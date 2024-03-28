@@ -11,7 +11,7 @@ pub struct User {
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Post {
+pub struct PostWC {
     pub id: String,
     pub title: String,
     pub image_url: String,
