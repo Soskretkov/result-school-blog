@@ -1,7 +1,7 @@
 mod comments;
 mod post_content;
 use crate::components::{Icon, Input, PageErrMsg};
-use crate::server::{self, PostWC};
+use crate::server::{self, Post};
 use comments::Comments;
 use leptos::*;
 use leptos_router::*;
@@ -9,7 +9,9 @@ use post_content::PostContent;
 
 #[component(transparent)]
 pub fn Post() -> impl IntoView {
-    let post_wc_stored_value: StoredValue<Option<PostWC>> = store_value(None);
+    let post_stored_value: StoredValue<Option<Post>> = store_value(None);
+
+    // не будет параметров если вызывать get_post_id() внутри async
     let get_post_id = || {
         use_params_map()
             .with_untracked(|params| params.get("id").cloned())
@@ -22,18 +24,17 @@ pub fn Post() -> impl IntoView {
                 <div class="px-20 my-10">
                     <Await
                         future=move|| {
-                            // не будет параметров если вызывать get_post_id() внутри async
                             let post_id = get_post_id();
                             let resp = async move {
-                                server::fetch_post_wc(&post_id).await
+                                server::fetch_post(&post_id).await
                             };
                             resp
                         }
-                        let: post_wc_wrapped
+                        let: post_wrapped
                     >{
-                        match post_wc_wrapped {
-                            Ok(post_wc) => {
-                                post_wc_stored_value.set_value(Some(post_wc.clone()));
+                        match post_wrapped {
+                            Ok(post) => {
+                                post_stored_value.set_value(Some(post.clone()));
                                 view! {<Outlet/>}
                             },
                             Err(e) => {
@@ -46,14 +47,14 @@ pub fn Post() -> impl IntoView {
             }
         }>
             <Route path="" view=move || {
-                post_wc_stored_value.get_value().map(|post| view!{
+                post_stored_value.get_value().map(|post| view!{
                     <PostContent post=post.clone()/>
-                    <Comments post_id=get_post_id() comments={post.comments}/>
+                    <Comments post_id=get_post_id()/>
                 })
             }/>
             <Route path="edit" view=move || {
-                post_wc_stored_value.get_value().map(|post_wc| view!{
-                    <PostForm post=post_wc.clone()/>
+                post_stored_value.get_value().map(|post| view!{
+                    <PostForm post=post.clone()/>
                 })
             }/>
         </Route>
@@ -61,7 +62,7 @@ pub fn Post() -> impl IntoView {
 }
 
 #[component]
-pub fn PostForm(post: PostWC) -> impl IntoView {
+pub fn PostForm(post: Post) -> impl IntoView {
     let created_at = post.created_at.format("%Y-%m-%d").to_string();
     view! {
         <div>

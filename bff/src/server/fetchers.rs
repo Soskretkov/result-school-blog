@@ -15,6 +15,13 @@ pub async fn fetch_post(post_id: &str) -> Result<DbPost, Error> {
         .ok_or_else(|| Error::DbEntryNotFound)
 }
 
+pub async fn fetch_post_comments(post_id: &str) -> Result<Vec<Comment>, Error> {
+    let comments_path_suffix = format!("comments/?post_id={}", post_id);
+    store::fetch::<Vec<Comment>>(&comments_path_suffix)
+        .await
+        .map_err(Error::Reqwest)
+}
+
 pub async fn fetch_post_wc(post_id: &str) -> Result<PostWC, Error> {
     let post_path_suffix = format!("posts/?id={post_id}");
     let db_post = store::fetch::<Vec<DbPost>>(&post_path_suffix)

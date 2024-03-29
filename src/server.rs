@@ -26,18 +26,26 @@ pub async fn logout() -> Result<(), String> {
         .map_err(|e| e.to_string())
 }
 
-pub async fn fetch_post(id: &str) -> Result<Post, String> {
+pub async fn fetch_post(post_id: &str) -> Result<Post, String> {
     TimeoutFuture::new(1000).await;
-    logging::log!("server.rs: fetch_post (id: {})", id);
-    bff_server::fetch_post(id)
+    logging::log!("server.rs: fetch_post (post_id: {})", post_id);
+    bff_server::fetch_post(post_id)
         .await
         .map_err(|e| e.to_string())
 }
 
-pub async fn fetch_post_wc(id: &str) -> Result<PostWC, String> {
+pub async fn fetch_post_comments(post_id: &str) -> Result<Vec<Comment>, String> {
     TimeoutFuture::new(1000).await;
-    logging::log!("server.rs: fetch_post (id: {})", id);
-    bff_server::fetch_post_wc(id)
+    logging::log!("server.rs: fetch_post_comments (post_id: {})", post_id);
+    bff_server::fetch_post_comments(post_id)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+pub async fn fetch_post_wc(post_id: &str) -> Result<PostWC, String> {
+    TimeoutFuture::new(1000).await;
+    logging::log!("server.rs: fetch_post_wc (post_id: {})", post_id);
+    bff_server::fetch_post_wc(post_id)
         .await
         .map_err(|e| e.to_string())
 }

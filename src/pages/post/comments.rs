@@ -5,7 +5,27 @@ use comment::Comment;
 use leptos::{ev::SubmitEvent, html::Textarea, *};
 
 #[component]
-pub fn Comments(post_id: String, comments: Vec<CommentType>) -> impl IntoView {
+pub fn Comments(post_id: String) -> impl IntoView {
+    let post_id = store_value(post_id);
+    view! {
+        <Await
+            future=move|| {
+                let resp = async move {
+                    server::fetch_post_comments(&post_id.get_value()).await
+                };
+                resp
+            }
+            let: comments_wrapped
+        >{
+            comments_wrapped.as_ref().ok().map(|comments_vec| view!{
+                <CommentsContent post_id=post_id.get_value() comments=comments_vec.clone()/>
+            })
+        }</Await>
+    }
+}
+
+#[component]
+fn CommentsContent(post_id: String, comments: Vec<CommentType>) -> impl IntoView {
     let (comments_signal, set_comments_signal) = create_signal(comments);
     let comment_node_ref = create_node_ref::<Textarea>();
 

@@ -1,9 +1,9 @@
 use crate::components::{Icon, H2};
-use crate::server::PostWC;
+use crate::server::Post;
 use leptos::*;
 
 #[component]
-pub fn PostContent(post: PostWC) -> impl IntoView {
+pub fn PostContent(post: Post) -> impl IntoView {
     let created_at = post.created_at.format("%Y-%m-%d").to_string();
     
     view! {

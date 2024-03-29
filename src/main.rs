@@ -31,7 +31,6 @@ pub fn App() -> impl IntoView {
                         <Route path="/login" view=move || { view!{<Authorization set_auth={set_auth}/>} }/>
                         <Route path="/register" view=move || { view!{<Registration set_auth={set_auth}/>} }/>
                         <Route path="/users" view=move || { Users }/>
-                        <Route path="/post" view=move || { view!{<div>"Новая статья"</div>} }/>
                         <Route path="/post" view=move || { view!{<Outlet/>} }>
                             <Route path="" view=move || { view!{<div>"Новая статья"</div>} }/>
                             <Post/>
